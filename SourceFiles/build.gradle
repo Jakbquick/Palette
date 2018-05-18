@@ -57,6 +57,7 @@ project(":core") {
 
 
     dependencies {
+        compile "org.mini2Dx:universal-tween-engine:6.3.3"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
