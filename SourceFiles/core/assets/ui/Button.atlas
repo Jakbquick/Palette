@@ -1,0 +1,20 @@
+
+Button.png
+size: 1722,308
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+StartButtonDown
+  rotate: false
+  xy: 860, 62
+  size: 862, 246
+  orig: 862, 246
+  offset: 0, 0
+  index: -1
+StartButtonUp
+  rotate: false
+  xy: 0, 0
+  size: 860, 308
+  orig: 860, 308
+  offset: 0, 0
+  index: -1

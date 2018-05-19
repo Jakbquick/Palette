@@ -9,11 +9,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.fourmen.screens.Splash;
 
 public class Palette extends Game {
-	SpriteBatch batch;
-	Texture img;
+	public static final String TITLE = "Palette", VERSION = "0.0";
 	
 	@Override
 	public void create () {
+
 		setScreen(new Splash());
 	}
 
