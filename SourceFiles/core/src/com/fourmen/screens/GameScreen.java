@@ -1,7 +1,6 @@
 package com.fourmen.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -11,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.fourmen.Actors.Player;
 import com.fourmen.Actors.PlayerBounds;
 
 public class GameScreen extends ScreenAdapter {
@@ -24,6 +24,7 @@ public class GameScreen extends ScreenAdapter {
     private Camera camera;
     private SpriteBatch batch;
     private PlayerBounds playerBounds = new PlayerBounds(WORLD_WIDTH,WORLD_HEIGHT);
+    private Player player;
 
     @Override
     public void show() {
@@ -33,6 +34,7 @@ public class GameScreen extends ScreenAdapter {
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
+        player = new Player();
 
     }
 
@@ -47,6 +49,7 @@ public class GameScreen extends ScreenAdapter {
         //flower.drawDebug(shapeRenderer);
 
         shapeRenderer.end();
+        player.act();       //add to update instead
         //update(delta);
     }
 
@@ -68,6 +71,7 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.setTransformMatrix(camera.view);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         playerBounds.drawDebug(shapeRenderer);
+        player.drawDebug(shapeRenderer);
         shapeRenderer.end();
     }
 
