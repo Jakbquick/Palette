@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.fourmen.Actors.Player;
@@ -50,6 +51,7 @@ public class GameScreen extends ScreenAdapter {
 
         shapeRenderer.end();
         player.act();       //add to update instead
+        blockPlayerLeavingTheWorld();
         //update(delta);
     }
 
@@ -75,6 +77,10 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.end();
     }
 
+
+    private void blockPlayerLeavingTheWorld() {
+        player.setPosition(MathUtils.clamp(player.getX(),playerBounds.getX(),playerBounds.getWidth()+ playerBounds.getX() - player.getPlayerWidth()), MathUtils.clamp(player.getY(), playerBounds.getX(), playerBounds.getHeight() + 4 + player.getPlayerHeight()));
+    }
     private void clearScreen() {
         Gdx.gl.glClearColor(com.badlogic.gdx.graphics.Color.BLACK.r, com.badlogic.gdx.graphics.Color.BLACK.g,
                 com.badlogic.gdx.graphics.Color.BLACK.b, Color.BLACK.a);

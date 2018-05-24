@@ -15,11 +15,12 @@ public class Player extends Entity {
     private double acceleration;
     private double deceleration;
     private Vector2 direction;
-
+    private final static float playerWidth = 15;
+    private final static float playerHeight = 20;
     //constructors
     public Player() {
         super();
-        rectangle = new Rectangle(getX(), getY(), 15, 20);
+        rectangle = new Rectangle(getX(), getY(), playerWidth, playerHeight);
         targetSpeed = new Vector2(0, 0);
         currentSpeed = new Vector2(0, 0);
         maxSpeed = 400;
@@ -28,7 +29,12 @@ public class Player extends Entity {
         direction = new Vector2(0, 0);
 
     }
-
+    public float getPlayerWidth(){
+        return playerWidth;
+    }
+    public float getPlayerHeight(){
+        return playerHeight;
+    }
     //methods
     public void act() {
         updateDirection();
@@ -91,6 +97,7 @@ public class Player extends Entity {
     private void updateRectangle() {
         rectangle.setX(position.x);
         rectangle.setY(position.y);
+
     }
 
     public void drawDebug(ShapeRenderer shapeRenderer) {

@@ -13,6 +13,11 @@ public abstract class Entity {
         position = new Vector2(600, 300);
     }
 
+    public void setPosition(float x, float y) {
+        position.x = x;
+        position.y = y;
+    }
+
     public Entity(int hp) {
         health = hp;
     }
