@@ -60,8 +60,8 @@ public class GameScreen extends ScreenAdapter {
         float startX = camera.viewportWidth /2;
         float startY = camera.viewportHeight /2;
 
-        CameraStyles.boundary(camera, startX, startY, BOUND_WIDTH - startY,
-                BOUND_HEIGHT - (startX));
+        CameraStyles.boundary(camera, startX, startY, BOUND_WIDTH - (2 * startX),
+                BOUND_HEIGHT - (2 * startY));
 
 
 
@@ -91,6 +91,8 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.setTransformMatrix(camera.view);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         playerBounds.drawDebug(shapeRenderer);
+        shapeRenderer.end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         player.drawDebug(shapeRenderer);
         shapeRenderer.end();
     }

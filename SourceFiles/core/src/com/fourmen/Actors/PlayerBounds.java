@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
 public class PlayerBounds {
-    private final Rectangle collisionRect;
+    public final Rectangle collisionRect;
 
     private float x = 45;
     //private float y = 78.75f;

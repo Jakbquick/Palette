@@ -169,4 +169,6 @@ public class Player extends Entity {
         shapeRenderer.rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     }
 
+
+
 }
