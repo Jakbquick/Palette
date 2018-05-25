@@ -7,36 +7,69 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Player extends Entity {
+    //constants
+    private static final double ACCELERATION_CONSTANT = .8;
+    private static final double DECELERATION_CONSTANT = .8;
+    private final static float playerWidth = 15;
+    private final static float playerHeight = 20;
+    private enum PlayerState {
+        MOVING, DASHING
+    }
+
     //instance variables
     private Rectangle rectangle;
-    private Vector2 targetSpeed;
-    private Vector2 currentSpeed;
-    private int maxSpeed;
+    private Vector2 targetSpeed;        // contains a target speed for x and y
+    private Vector2 currentSpeed;       // how fast the player is currently going in x and y
+    private int maxSpeed;               // the max speed a player can move
     private double acceleration;
     private double deceleration;
-    private Vector2 direction;
+    private Vector2 direction;          // contains a x direction and y direction from -1 to 1
+    private Vector2 dashDirection;
+    private double dashSpeed;
+    private double dashCooldown;
+    private double dashTimer;
+    private PlayerState playerState;
 
     //constructors
     public Player() {
         super();
-        rectangle = new Rectangle(getX(), getY(), 15, 20);
+        rectangle = new Rectangle(getX(), getY(), playerWidth, playerHeight);
         targetSpeed = new Vector2(0, 0);
         currentSpeed = new Vector2(0, 0);
-        maxSpeed = 400;
-        acceleration = .5 * maxSpeed;
-        deceleration = .2 * maxSpeed;
+        maxSpeed = 500;
+        acceleration = ACCELERATION_CONSTANT * maxSpeed;
+        deceleration = DECELERATION_CONSTANT * maxSpeed;
         direction = new Vector2(0, 0);
+        dashDirection = new Vector2(0, 0);
+        dashSpeed = 2000;
+        dashCooldown = .1;
+        dashTimer = 0;
+        playerState = playerState.MOVING;
 
     }
 
     //methods
     public void act() {
         updateDirection();
-        move();
+        switch (playerState) {
+            case MOVING:
+
+                move();
+                checkDash();
+                break;
+            case DASHING:
+                dash();
+                dashTimer -= Gdx.graphics.getDeltaTime();
+                if(dashTimer <= 0) {
+                    playerState = playerState.MOVING;
+                }
+                break;
+        }
+
         updateRectangle();
     }
 
-    public void updateDirection() {
+    private void updateDirection() {
         direction.x = 0;
         direction.y = 0;
 
@@ -60,32 +93,59 @@ public class Player extends Entity {
 
     }
 
+    private void checkDash() {
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            playerState = playerState.DASHING;
+            dashDirection.x = direction.x;
+            dashDirection.y = direction.y;
+            System.out.println(dashDirection);
+
+            currentSpeed = new Vector2(0,0);
+            dashTimer = dashCooldown;
+        }
+    }
+
     private void move() {
         Vector2 curDir = new Vector2(Math.signum(targetSpeed.x - currentSpeed.x), Math.signum(targetSpeed.y - currentSpeed.y));
 
-        if(targetSpeed.x == 0) {
-            currentSpeed.x += deceleration * curDir.x;
+        if(targetSpeed.x == 0) {                                            // checks want to be stopped on the x axis
+            currentSpeed.x += deceleration * curDir.x;                      // decelerates the player's x movement speed
         }
         else {
-            currentSpeed.x += acceleration * curDir.x;
+            currentSpeed.x += acceleration * curDir.x;                      // accelerates the player's x movement speed
         }
 
-        if(targetSpeed.y == 0) {
-            currentSpeed.y += deceleration * curDir.y;
+        if(targetSpeed.y == 0) {                                            // checks want to be stopped on the y axis
+            currentSpeed.y += deceleration * curDir.y;                      // decelerates the player's x movement speed
         }
         else {
-            currentSpeed.y += acceleration * curDir.y;
+            currentSpeed.y += acceleration * curDir.y;                      // accelerates the player's x movement speed
         }
 
-        if(Math.signum(targetSpeed.x - currentSpeed.x) != curDir.x) {
+        if(Math.signum(targetSpeed.x - currentSpeed.x) != curDir.x) {       // checks if the player passes the x targetSpeed
             currentSpeed.x = targetSpeed.x;
         }
-        if(Math.signum(targetSpeed.y - currentSpeed.y) != curDir.y) {
+        if(Math.signum(targetSpeed.y - currentSpeed.y) != curDir.y) {       // checks if the player passes the y targetSpeed
             currentSpeed.y = targetSpeed.y;
         }
 
+        setX(getX() + currentSpeed.x * Gdx.graphics.getDeltaTime());        // changes the x position of the entity
+        setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());        // changes the y position of the entity
+    }
+
+    private void dash() {
+        currentSpeed.x = (float) (dashSpeed * dashDirection.x);
+        currentSpeed.y = (float) (dashSpeed * dashDirection.y);
+
         setX(getX() + currentSpeed.x * Gdx.graphics.getDeltaTime());
         setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());
+    }
+
+    public float getPlayerWidth(){
+        return playerWidth;
+    }
+    public float getPlayerHeight(){
+        return playerHeight;
     }
 
     private void updateRectangle() {
