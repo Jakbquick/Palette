@@ -17,7 +17,7 @@ public class DesktopLauncher {
 		config.useGL30 = true;
 		config.width = 1280;
 		config.height = 720;
-		config.useGL30 = false;
+		config.useGL30 = false;			// runs without using openGl so Collin's baka computer can handle it
 
 		new LwjglApplication(new Palette(), config);
 	}
