@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import javax.swing.text.Position;
+
 public class Player extends Entity {
     //instance variables
     private Rectangle rectangle;

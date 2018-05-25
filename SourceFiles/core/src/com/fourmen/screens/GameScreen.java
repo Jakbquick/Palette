@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.fourmen.Actors.Player;
@@ -18,7 +19,7 @@ public class GameScreen extends ScreenAdapter {
 
     private static final float WORLD_WIDTH = 1280;
     private static final float WORLD_HEIGHT = 720;
-
+    public static final float PPM = 32;
 
     private ShapeRenderer shapeRenderer;
     private Viewport viewport;
@@ -42,6 +43,7 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         clearScreen();
+        cameraUpdate();
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
         batch.begin();
@@ -77,7 +79,17 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.end();
     }
 
-
+    private void cameraUpdate(){
+        Vector3 position = camera.position;
+        //position.x = camera.position.x + (player.getX() * PPM - camera.position.x) * .1f;
+        //position.y = camera.position.y + (player.getY() * PPM - camera.position.y) * .1f;
+        //position.x = player.getX();
+        //position.y = player.getY();
+        position.x = camera.position.x + (player.getX() - camera.position.x) * .1f;
+        position.y = camera.position.y + (player.getY() - camera.position.y) * .1f;
+        camera.position.set(position);
+        camera.update();
+    }
     private void blockPlayerLeavingTheWorld() {
         player.setPosition(MathUtils.clamp(player.getX(),playerBounds.getX(),playerBounds.getWidth()+ playerBounds.getX() - player.getPlayerWidth()), MathUtils.clamp(player.getY(), playerBounds.getX(), playerBounds.getHeight() + 4 + player.getPlayerHeight()));
     }
