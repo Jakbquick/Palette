@@ -51,6 +51,8 @@ public class GameScreen extends ScreenAdapter {
         drawDebug();
         //flower.drawDebug(shapeRenderer);
 
+        player.update(delta);
+
         shapeRenderer.end();
         player.act();       //add to update instead
         blockPlayerLeavingTheWorld();

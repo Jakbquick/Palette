@@ -25,12 +25,13 @@ public class Player extends Entity {
     private int maxSpeed;               // the max speed a player can move
     private double acceleration;
     private double deceleration;
-  
     private Vector2 direction;          // contains a x direction and y direction from -1 to 1
     private Vector2 dashDirection;
     private double dashSpeed;
     private double dashCooldown;
-    private double dashTimer;
+    private double dashDuration;
+    private double dashDurationTimer;
+    private double dashCooldownTimer;
     private PlayerState playerState;
 
 
@@ -46,17 +47,14 @@ public class Player extends Entity {
         direction = new Vector2(0, 0);
         dashDirection = new Vector2(0, 0);
         dashSpeed = 2000;
-        dashCooldown = .1;
-        dashTimer = 0;
+        dashCooldown = .8;
+        dashDuration = .1;
+        dashDurationTimer = 0;
+        dashCooldownTimer = 0;
         playerState = playerState.MOVING;
 
     }
-    public float getPlayerWidth(){
-        return playerWidth;
-    }
-    public float getPlayerHeight(){
-        return playerHeight;
-    }
+
     //methods
     public void act() {
         updateDirection();
@@ -64,12 +62,12 @@ public class Player extends Entity {
             case MOVING:
 
                 move();
-                checkDash();
+                if(dashCooldownTimer <= 0)
+                    checkDash();
                 break;
             case DASHING:
                 dash();
-                dashTimer -= Gdx.graphics.getDeltaTime();
-                if(dashTimer <= 0) {
+                if(dashDurationTimer <= 0) {
                     playerState = playerState.MOVING;
                 }
                 break;
@@ -107,10 +105,10 @@ public class Player extends Entity {
             playerState = playerState.DASHING;
             dashDirection.x = direction.x;
             dashDirection.y = direction.y;
-            System.out.println(dashDirection);
 
             currentSpeed = new Vector2(0,0);
-            dashTimer = dashCooldown;
+            dashDurationTimer = dashDuration;
+            dashCooldownTimer = dashCooldown;
         }
     }
 
@@ -161,6 +159,11 @@ public class Player extends Entity {
         rectangle.setX(position.x);
         rectangle.setY(position.y);
 
+    }
+
+    public void update(float delta) {
+        dashDurationTimer -= delta;
+        dashCooldownTimer -= delta;
     }
 
     public void drawDebug(ShapeRenderer shapeRenderer) {
