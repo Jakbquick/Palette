@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.fourmen.Actors.Player;
 import com.fourmen.Actors.PlayerBounds;
+import com.fourmen.utils.CameraStyles;
 
 public class GameScreen extends ScreenAdapter {
 
@@ -25,7 +26,8 @@ public class GameScreen extends ScreenAdapter {
     private Viewport viewport;
     private Camera camera;
     private SpriteBatch batch;
-    private PlayerBounds playerBounds = new PlayerBounds(WORLD_WIDTH,WORLD_HEIGHT);
+    //private PlayerBounds playerBounds = new PlayerBounds(WORLD_WIDTH,WORLD_HEIGHT);
+    private PlayerBounds playerBounds = new PlayerBounds(1500,1500);
     private Player player;
 
     @Override
@@ -82,15 +84,7 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void cameraUpdate(){
-        Vector3 position = camera.position;
-        //position.x = camera.position.x + (player.getX() * PPM - camera.position.x) * .1f;
-        //position.y = camera.position.y + (player.getY() * PPM - camera.position.y) * .1f;
-        //position.x = player.getX();
-        //position.y = player.getY();
-        position.x = camera.position.x + (player.getX() - camera.position.x) * .1f;
-        position.y = camera.position.y + (player.getY() - camera.position.y) * .1f;
-        camera.position.set(position);
-        camera.update();
+        CameraStyles.lockOnTarget(camera,player);
     }
     private void blockPlayerLeavingTheWorld() {
         player.setPosition(MathUtils.clamp(player.getX(),playerBounds.getX(),playerBounds.getWidth()+ playerBounds.getX() - player.getPlayerWidth()), MathUtils.clamp(player.getY(), playerBounds.getX(), playerBounds.getHeight() + 4 + player.getPlayerHeight()));

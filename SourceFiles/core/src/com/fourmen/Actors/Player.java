@@ -54,7 +54,6 @@ public class Player extends Entity {
         playerState = playerState.MOVING;
 
     }
-
     //methods
     public void act() {
         updateDirection();
