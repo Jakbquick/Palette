@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import javax.swing.text.Position;
+
 public class Player extends Entity {
     //constants
     private static final double ACCELERATION_CONSTANT = .8;
@@ -23,12 +25,14 @@ public class Player extends Entity {
     private int maxSpeed;               // the max speed a player can move
     private double acceleration;
     private double deceleration;
+  
     private Vector2 direction;          // contains a x direction and y direction from -1 to 1
     private Vector2 dashDirection;
     private double dashSpeed;
     private double dashCooldown;
     private double dashTimer;
     private PlayerState playerState;
+
 
     //constructors
     public Player() {
@@ -47,7 +51,12 @@ public class Player extends Entity {
         playerState = playerState.MOVING;
 
     }
-
+    public float getPlayerWidth(){
+        return playerWidth;
+    }
+    public float getPlayerHeight(){
+        return playerHeight;
+    }
     //methods
     public void act() {
         updateDirection();
@@ -151,6 +160,7 @@ public class Player extends Entity {
     private void updateRectangle() {
         rectangle.setX(position.x);
         rectangle.setY(position.y);
+
     }
 
     public void drawDebug(ShapeRenderer shapeRenderer) {
