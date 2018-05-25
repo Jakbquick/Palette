@@ -51,12 +51,6 @@ public class Player extends Entity {
         playerState = playerState.MOVING;
 
     }
-    public float getPlayerWidth(){
-        return playerWidth;
-    }
-    public float getPlayerHeight(){
-        return playerHeight;
-    }
     //methods
     public void act() {
         updateDirection();
