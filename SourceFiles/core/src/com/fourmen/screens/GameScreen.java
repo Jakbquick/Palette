@@ -22,12 +22,15 @@ public class GameScreen extends ScreenAdapter {
     private static final float WORLD_HEIGHT = 720;
     public static final float PPM = 32;
 
+    private float BOUND_WIDTH = 1500;
+    private float BOUND_HEIGHT = 1500;
+
     private ShapeRenderer shapeRenderer;
     private Viewport viewport;
     private Camera camera;
     private SpriteBatch batch;
     //private PlayerBounds playerBounds = new PlayerBounds(WORLD_WIDTH,WORLD_HEIGHT);
-    private PlayerBounds playerBounds = new PlayerBounds(1500,1500);
+    private PlayerBounds playerBounds = new PlayerBounds(BOUND_WIDTH,BOUND_HEIGHT);
     private Player player;
 
     @Override
@@ -52,6 +55,12 @@ public class GameScreen extends ScreenAdapter {
         batch.end();
         drawDebug();
         //flower.drawDebug(shapeRenderer);
+
+        float startX = camera.viewportWidth /2;
+        float startY = camera.viewportHeight /2;
+        CameraStyles.boundary(camera, startX, startY, BOUND_WIDTH - startY,
+                BOUND_HEIGHT - (startX));
+
 
         player.update(delta);
 
