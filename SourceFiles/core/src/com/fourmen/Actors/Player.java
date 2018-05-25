@@ -34,7 +34,6 @@ public class Player extends Entity {
     private double dashCooldownTimer;
     private PlayerState playerState;
 
-
     //constructors
     public Player() {
         super();
@@ -54,6 +53,7 @@ public class Player extends Entity {
         playerState = playerState.MOVING;
 
     }
+
     //methods
     public void act() {
         updateDirection();
@@ -100,7 +100,7 @@ public class Player extends Entity {
     }
 
     private void checkDash() {
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && !(direction.x == 0 && direction.y == 0)) {
             playerState = playerState.DASHING;
             dashDirection.x = direction.x;
             dashDirection.y = direction.y;
