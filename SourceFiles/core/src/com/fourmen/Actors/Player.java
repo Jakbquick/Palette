@@ -3,6 +3,7 @@ package com.fourmen.Actors;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -19,7 +20,7 @@ public class Player extends Entity {
     }
 
     //instance variables
-    private Rectangle rectangle;
+    public Rectangle rectangle;
     private Vector2 targetSpeed;        // contains a target speed for x and y
     private Vector2 currentSpeed;       // how fast the player is currently going in x and y
     private int maxSpeed;               // the max speed a player can move
@@ -71,8 +72,6 @@ public class Player extends Entity {
                 }
                 break;
         }
-
-        updateRectangle();
     }
 
     private void updateDirection() {
@@ -166,6 +165,7 @@ public class Player extends Entity {
     }
 
     public void drawDebug(ShapeRenderer shapeRenderer) {
+        updateRectangle();
         shapeRenderer.rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     }
 

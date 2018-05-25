@@ -53,13 +53,16 @@ public class GameScreen extends ScreenAdapter {
         batch.setTransformMatrix(camera.view);
         batch.begin();
         batch.end();
+        blockPlayerLeavingTheWorld();
         drawDebug();
         //flower.drawDebug(shapeRenderer);
 
         float startX = camera.viewportWidth /2;
         float startY = camera.viewportHeight /2;
+
         CameraStyles.boundary(camera, startX, startY, BOUND_WIDTH - startY,
                 BOUND_HEIGHT - (startX));
+
 
 
         player.update(delta);
@@ -95,9 +98,11 @@ public class GameScreen extends ScreenAdapter {
     private void cameraUpdate(){
         CameraStyles.lockOnTarget(camera,player);
     }
+
     private void blockPlayerLeavingTheWorld() {
         player.setPosition(MathUtils.clamp(player.getX(),playerBounds.getX(),playerBounds.getWidth()+ playerBounds.getX() - player.getPlayerWidth()), MathUtils.clamp(player.getY(), playerBounds.getX(), playerBounds.getHeight() + 4 + player.getPlayerHeight()));
     }
+
     private void clearScreen() {
         Gdx.gl.glClearColor(com.badlogic.gdx.graphics.Color.BLACK.r, com.badlogic.gdx.graphics.Color.BLACK.g,
                 com.badlogic.gdx.graphics.Color.BLACK.b, Color.BLACK.a);
