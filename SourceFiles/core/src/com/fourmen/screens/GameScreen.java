@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -20,10 +21,9 @@ public class GameScreen extends ScreenAdapter {
 
     private static final float WORLD_WIDTH = 1280;
     private static final float WORLD_HEIGHT = 720;
-    public static final float PPM = 32;
 
     private float BOUND_WIDTH = 1500;
-    private float BOUND_HEIGHT = 1500;
+    private float BOUND_HEIGHT = 800;
 
     private ShapeRenderer shapeRenderer;
     private Viewport viewport;
@@ -32,6 +32,7 @@ public class GameScreen extends ScreenAdapter {
     //private PlayerBounds playerBounds = new PlayerBounds(WORLD_WIDTH,WORLD_HEIGHT);
     private PlayerBounds playerBounds = new PlayerBounds(BOUND_WIDTH,BOUND_HEIGHT);
     private Player player;
+    private Texture floor;
 
     @Override
     public void show() {
@@ -40,6 +41,7 @@ public class GameScreen extends ScreenAdapter {
         camera.update();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         shapeRenderer = new ShapeRenderer();
+        floor = new Texture(Gdx.files.internal("Images/FloorImage.png"));
         batch = new SpriteBatch();
         player = new Player();
 
@@ -52,6 +54,7 @@ public class GameScreen extends ScreenAdapter {
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
         batch.begin();
+        batch.draw(floor,0,0,BOUND_WIDTH,BOUND_HEIGHT);
         batch.end();
         blockPlayerLeavingTheWorld();
         drawDebug();
@@ -91,7 +94,7 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void blockPlayerLeavingTheWorld() {
-        player.setPosition(MathUtils.clamp(player.getX(),playerBounds.getX(),playerBounds.getWidth()+ playerBounds.getX() - player.getPlayerWidth()), MathUtils.clamp(player.getY(), playerBounds.getX(), playerBounds.getHeight() + 4 + player.getPlayerHeight()));
+        player.setPosition(MathUtils.clamp(player.getX(),playerBounds.getX(),playerBounds.getWidth()+ playerBounds.getX() - player.getPlayerWidth()), MathUtils.clamp(player.getY(), playerBounds.getY(), BOUND_HEIGHT - playerBounds.getY() - player.getPlayerHeight()));
     }
 
     private void clearScreen() {
@@ -115,5 +118,9 @@ public class GameScreen extends ScreenAdapter {
 
         player.update(delta);
 
+    }
+    public void dispose(){
+        batch.dispose();
+        floor.dispose();
     }
 }
