@@ -55,18 +55,7 @@ public class GameScreen extends ScreenAdapter {
         batch.end();
         blockPlayerLeavingTheWorld();
         drawDebug();
-        //flower.drawDebug(shapeRenderer);
-
-        float startX = camera.viewportWidth /2;
-        float startY = camera.viewportHeight /2;
-
-        CameraStyles.boundary(camera, startX, startY, BOUND_WIDTH - (2 * startX),
-                BOUND_HEIGHT - (2 * startY));
-
-
-
-        player.update(delta);
-
+        update(delta);
         shapeRenderer.end();
         player.act();       //add to update instead
         blockPlayerLeavingTheWorld();
@@ -110,6 +99,21 @@ public class GameScreen extends ScreenAdapter {
                 com.badlogic.gdx.graphics.Color.BLACK.b, Color.BLACK.a);
         //Gdx.gl.glClearColor(255,255,255,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+    }
+
+    public void update(float delta){
+        //flower.drawDebug(shapeRenderer);
+
+        float startX = camera.viewportWidth /2;
+        float startY = camera.viewportHeight /2;
+
+        CameraStyles.boundary(camera, startX, startY, BOUND_WIDTH - (2 * startX),
+                BOUND_HEIGHT - (2 * startY));
+
+
+
+        player.update(delta);
 
     }
 }
