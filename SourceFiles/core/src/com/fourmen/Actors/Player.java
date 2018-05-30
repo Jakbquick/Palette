@@ -18,8 +18,8 @@ import javax.swing.text.Position;
 public class Player extends Entity {
     //constants
     private static final double ACCELERATION_CONSTANT = .6;
-    private static final double DECELERATION_CONSTANT = .2;
-    private static final float PLAYER_SIZE = .35f;
+    private static final double DECELERATION_CONSTANT = .3;
+    private static final float PLAYER_SIZE = .5f;
     private final static float playerWidth = 163 * PLAYER_SIZE; //163    40
     private final static float playerHeight = 251 * PLAYER_SIZE;
     private enum PlayerState {
@@ -66,9 +66,9 @@ public class Player extends Entity {
         deceleration = DECELERATION_CONSTANT * maxSpeed;
         direction = new Vector2(0, 0);
         dashDirection = new Vector2(0, 0);
-        dashSpeed = 1800;
+        dashSpeed = 2000;
         dashCooldown = .6;
-        dashDuration = .08;
+        dashDuration = .15;
         standingCooldown = .1;
         dashDurationTimer = 0;
         dashCooldownTimer = 0;
@@ -84,6 +84,7 @@ public class Player extends Entity {
     //methods
     public void act() {
         updateDirection();
+        System.out.println(currentSpeed);
         switch (playerState) {
             case STANDING:
                 rectangleColor = new Color(Color.BLUE);
