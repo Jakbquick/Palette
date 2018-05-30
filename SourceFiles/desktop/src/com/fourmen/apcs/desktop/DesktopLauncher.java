@@ -15,8 +15,8 @@ public class DesktopLauncher {
 		config.title = Palette.TITLE + " v " + Palette.VERSION;
 		config.vSyncEnabled = true;
 		config.useGL30 = true;
-		config.width = 1280;
-		config.height = 720;
+		config.width = 1920;
+		config.height = 1200;
 		config.useGL30 = false;			// runs without using openGl so Collin's baka computer can handle it
 		//config.fullscreen = true;
 

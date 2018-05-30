@@ -19,7 +19,7 @@ public class Player extends Entity {
     //constants
     private static final double ACCELERATION_CONSTANT = .6;
     private static final double DECELERATION_CONSTANT = .3;
-    private static final float PLAYER_SIZE = .5f;
+    private static final float PLAYER_SIZE = .75f;
     private final static float playerWidth = 163 * PLAYER_SIZE; //163    40
     private final static float playerHeight = 251 * PLAYER_SIZE;
     private enum PlayerState {
