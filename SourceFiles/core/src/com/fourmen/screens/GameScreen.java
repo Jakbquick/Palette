@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.fourmen.Actors.Enemy;
 import com.fourmen.Actors.Player;
 import com.fourmen.Actors.PlayerBounds;
 import com.fourmen.utils.CameraStyles;
@@ -33,6 +34,9 @@ public class GameScreen extends ScreenAdapter {
     private Player player;
     private Texture floor;
 
+    private Enemy enemy;
+
+
     @Override
     public void show() {
         camera = new OrthographicCamera();
@@ -43,6 +47,7 @@ public class GameScreen extends ScreenAdapter {
         floor = new Texture(Gdx.files.internal("Images/FloorImage.png"));
         batch = new SpriteBatch();
         player = new Player();
+        enemy = new Enemy();
 
     }
 
@@ -59,8 +64,10 @@ public class GameScreen extends ScreenAdapter {
         blockPlayerLeavingTheWorld();
         drawDebug();
         update(delta);
+        enemy.update(delta);
         shapeRenderer.end();
         player.act();       //add to update instead
+        enemy.act();
         blockPlayerLeavingTheWorld();
         //update(delta);
     }
@@ -86,6 +93,7 @@ public class GameScreen extends ScreenAdapter {
         //shapeRenderer.end();
         //shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         player.drawDebug(shapeRenderer);
+        enemy.drawDebug(shapeRenderer);
         shapeRenderer.end();
     }
 
@@ -95,7 +103,10 @@ public class GameScreen extends ScreenAdapter {
 
     private void blockPlayerLeavingTheWorld() {
         player.setPosition(MathUtils.clamp(player.getX(),playerBounds.getW1(),playerBounds.getWidth()+ playerBounds.getW1() - player.getPlayerWidth()), MathUtils.clamp(player.getY(), playerBounds.getH2(), playerBounds.getHeight() + playerBounds.getH2() - player.getPlayerHeight()));
+        enemy.setPosition(MathUtils.clamp(enemy.getX(),playerBounds.getW1(),playerBounds.getWidth()+ playerBounds.getW1() - enemy.getEnemyWidth()), MathUtils.clamp(enemy.getY(), playerBounds.getH2(), playerBounds.getHeight() + playerBounds.getH2() - enemy.getEnemyHeight()));
     }
+
+
 
     private void clearScreen() {
         Gdx.gl.glClearColor(com.badlogic.gdx.graphics.Color.BLACK.r, com.badlogic.gdx.graphics.Color.BLACK.g,
