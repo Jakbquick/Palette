@@ -17,10 +17,10 @@ import javax.swing.text.Position;
 
 public class Player extends Entity {
     //constants
-    private static final double ACCELERATION_CONSTANT = .8;
-    private static final double DECELERATION_CONSTANT = .8;
-    private static final float PLAYER_SIZE = .5f;
-    private final static float playerWidth = 40 * PLAYER_SIZE; //163
+    private static final double ACCELERATION_CONSTANT = .6;
+    private static final double DECELERATION_CONSTANT = .2;
+    private static final float PLAYER_SIZE = .35f;
+    private final static float playerWidth = 163 * PLAYER_SIZE; //163    40
     private final static float playerHeight = 251 * PLAYER_SIZE;
     private enum PlayerState {
         STANDING, MOVING, DASHING
@@ -28,6 +28,8 @@ public class Player extends Entity {
 
     //instance variables
     public Rectangle rectangle;
+    public Rectangle body;
+    public Rectangle wings;
     private Color rectangleColor;
     private Vector2 targetSpeed;        // contains a target speed for x and y
     private Vector2 currentSpeed;       // how fast the player is currently going in x and y
@@ -49,24 +51,24 @@ public class Player extends Entity {
     private TextureRegion current;
     private Animation<TextureRegion> moving;
     private Animation<TextureRegion> idle;
-    private Texture moveSheet;
-    private Texture idleSheet;
 
     //constructors
     public Player() {
         super();
         rectangle = new Rectangle(getX(), getY(), playerWidth, playerHeight);
+        body = new Rectangle(getX() + 63 * PLAYER_SIZE, getY(), 40 * PLAYER_SIZE, 251 * PLAYER_SIZE);
+        wings = new Rectangle(getX() + 16, getY() + 85, 137 * PLAYER_SIZE,109 * PLAYER_SIZE);
         rectangleColor = new Color();
         targetSpeed = new Vector2(0, 0);
         currentSpeed = new Vector2(0, 0);
-        maxSpeed = 500;
+        maxSpeed = 700;
         acceleration = ACCELERATION_CONSTANT * maxSpeed;
         deceleration = DECELERATION_CONSTANT * maxSpeed;
         direction = new Vector2(0, 0);
         dashDirection = new Vector2(0, 0);
-        dashSpeed = 1000;
-        dashCooldown = .8;
-        dashDuration = .3;
+        dashSpeed = 1800;
+        dashCooldown = .6;
+        dashDuration = .08;
         standingCooldown = .1;
         dashDurationTimer = 0;
         dashCooldownTimer = 0;
@@ -85,6 +87,7 @@ public class Player extends Entity {
         switch (playerState) {
             case STANDING:
                 rectangleColor = new Color(Color.BLUE);
+                move();
                 if(!direction.isZero())
                     playerState = playerState.MOVING;
                 break;
@@ -180,16 +183,20 @@ public class Player extends Entity {
         setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());
     }
 
-    public float getPlayerWidth(){
+    public float getPlayerWidth() {
         return playerWidth;
     }
-    public float getPlayerHeight(){
+    public float getPlayerHeight() {
         return playerHeight;
     }
 
     private void updateRectangle() {
         rectangle.setX(position.x);
         rectangle.setY(position.y);
+        body.setX(position.x + 63 * PLAYER_SIZE);
+        body.setY(position.y);
+        wings.setX(position.x + 16 * PLAYER_SIZE);
+        wings.setY(position.y + 85 * PLAYER_SIZE);
 
     }
 
@@ -204,11 +211,15 @@ public class Player extends Entity {
         updateRectangle();
         shapeRenderer.rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height,
                 rectangleColor, rectangleColor, rectangleColor, rectangleColor);
+        shapeRenderer.rect(body.x, body.y, body.width, body.height,
+                rectangleColor, rectangleColor, rectangleColor, rectangleColor);
+        shapeRenderer.rect(wings.x, wings.y, wings.width, wings.height,
+                rectangleColor, rectangleColor, rectangleColor, rectangleColor);
     }
 
     public void updateAnimations(SpriteBatch batch) {
         current = moving.getKeyFrame(stateTime, true);
-        batch.draw(current, position.x - 123f * PLAYER_SIZE, position.y - 20f * PLAYER_SIZE, 300 * PLAYER_SIZE, 300 * PLAYER_SIZE);
+        batch.draw(current, position.x - 60 * PLAYER_SIZE, position.y - 20 * PLAYER_SIZE, 300 * PLAYER_SIZE, 300 * PLAYER_SIZE);
     }
 
 }
