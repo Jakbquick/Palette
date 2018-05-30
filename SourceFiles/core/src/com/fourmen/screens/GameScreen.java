@@ -25,7 +25,7 @@ public class GameScreen extends ScreenAdapter {
     private static final float WORLD_WIDTH = 1280;
     private static final float WORLD_HEIGHT = 720;
 
-    private float BOUND_WIDTH = 1750;
+    private float BOUND_WIDTH = 2000;
     private float BOUND_HEIGHT = BOUND_WIDTH * (3f/5f);
 
     private ShapeRenderer shapeRenderer;
