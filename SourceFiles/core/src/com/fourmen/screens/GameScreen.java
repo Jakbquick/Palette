@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
@@ -32,7 +34,9 @@ public class GameScreen extends ScreenAdapter {
     private SpriteBatch batch;
     private PlayerBounds playerBounds = new PlayerBounds(BOUND_WIDTH,BOUND_HEIGHT);
     private Player player;
-    private Texture floor;
+    private Animation<TextureRegion> floor;
+    private TextureRegion state;
+    private float timeSinceStart;
 
     private Enemy enemy;
 
@@ -44,21 +48,24 @@ public class GameScreen extends ScreenAdapter {
         camera.update();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         shapeRenderer = new ShapeRenderer();
-        floor = new Texture(Gdx.files.internal("Images/FloorImage.png"));
+        floor = new Animation<TextureRegion>(0.25f, setUpSpriteSheet("Images/FloorSprites.png", 1, 26));;
         batch = new SpriteBatch();
         player = new Player();
         enemy = new Enemy();
+        timeSinceStart = 0;
 
     }
 
     @Override
     public void render(float delta) {
+        timeSinceStart += delta;
         clearScreen();
         cameraUpdate();
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
         batch.begin();
-        batch.draw(floor,0,0,BOUND_WIDTH,BOUND_HEIGHT);
+        state = floor.getKeyFrame(timeSinceStart, true);
+        batch.draw(state, 0,0,BOUND_WIDTH,BOUND_HEIGHT);
         updateAnimations(batch);
         batch.end();
         blockPlayerLeavingTheWorld();
@@ -138,7 +145,23 @@ public class GameScreen extends ScreenAdapter {
 
     public void dispose(){
         batch.dispose();
-        floor.dispose();
 
+
+
+    }
+    public TextureRegion[] setUpSpriteSheet(String internalPath, int frameRows, int frameCols) {
+        Texture spriteSheet = new Texture(internalPath);
+        TextureRegion[][] tmp = TextureRegion.split(spriteSheet, spriteSheet.getWidth() / frameCols, spriteSheet.getHeight() / frameRows);
+
+        TextureRegion[] spriteFrames = new TextureRegion[frameCols * frameRows];
+        int index = 0;
+
+        for (int r = 0; r < frameRows; r++) {
+            for (int c = 0; c < frameCols; c++) {
+                spriteFrames[index++] = tmp[r][c];
+            }
+        }
+
+        return spriteFrames;
     }
 }
