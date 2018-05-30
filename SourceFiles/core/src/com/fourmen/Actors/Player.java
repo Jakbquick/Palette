@@ -20,7 +20,7 @@ public class Player extends Entity {
     private static final double ACCELERATION_CONSTANT = .8;
     private static final double DECELERATION_CONSTANT = .8;
     private static final float PLAYER_SIZE = .5f;
-    private final static float playerWidth = 163 * PLAYER_SIZE;
+    private final static float playerWidth = 40 * PLAYER_SIZE; //163
     private final static float playerHeight = 251 * PLAYER_SIZE;
     private enum PlayerState {
         STANDING, MOVING, DASHING
@@ -95,8 +95,8 @@ public class Player extends Entity {
                     checkDash();
                 if(!direction.isZero())
                     standingCooldownTimer = standingCooldown;
-                if(standingCooldownTimer <= 0)
-                    playerState = playerState.STANDING;
+                //if(standingCooldownTimer <= 0)
+                    //playerState = playerState.STANDING;
                 break;
             case DASHING:
                 rectangleColor = new Color(Color.RED);
@@ -208,7 +208,7 @@ public class Player extends Entity {
 
     public void updateAnimations(SpriteBatch batch) {
         current = moving.getKeyFrame(stateTime, true);
-        batch.draw(current, position.x - 60f * PLAYER_SIZE, position.y - 20f * PLAYER_SIZE, 300 * PLAYER_SIZE, 300 * PLAYER_SIZE);
+        batch.draw(current, position.x - 123f * PLAYER_SIZE, position.y - 20f * PLAYER_SIZE, 300 * PLAYER_SIZE, 300 * PLAYER_SIZE);
     }
 
 }

@@ -29,7 +29,6 @@ public class GameScreen extends ScreenAdapter {
     private Viewport viewport;
     private Camera camera;
     private SpriteBatch batch;
-    //private PlayerBounds playerBounds = new PlayerBounds(WORLD_WIDTH,WORLD_HEIGHT);
     private PlayerBounds playerBounds = new PlayerBounds(BOUND_WIDTH,BOUND_HEIGHT);
     private Player player;
     private Texture floor;
