@@ -22,8 +22,8 @@ public class GameScreen extends ScreenAdapter {
     private static final float WORLD_WIDTH = 1280;
     private static final float WORLD_HEIGHT = 720;
 
-    private float BOUND_WIDTH = 1500;
-    private float BOUND_HEIGHT = 800;
+    private float BOUND_WIDTH = 2000;
+    private float BOUND_HEIGHT = 1200;
 
     private ShapeRenderer shapeRenderer;
     private Viewport viewport;
@@ -82,7 +82,7 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.setProjectionMatrix(camera.projection);
         shapeRenderer.setTransformMatrix(camera.view);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        playerBounds.drawDebug(shapeRenderer);
+        //playerBounds.drawDebug(shapeRenderer);
         shapeRenderer.end();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         player.drawDebug(shapeRenderer);
@@ -94,7 +94,7 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void blockPlayerLeavingTheWorld() {
-        player.setPosition(MathUtils.clamp(player.getX(),playerBounds.getX(),playerBounds.getWidth()+ playerBounds.getX() - player.getPlayerWidth()), MathUtils.clamp(player.getY(), playerBounds.getY(), BOUND_HEIGHT - playerBounds.getY() - player.getPlayerHeight()));
+        player.setPosition(MathUtils.clamp(player.getX(),playerBounds.getW1(),playerBounds.getWidth()+ playerBounds.getW1() - player.getPlayerWidth()), MathUtils.clamp(player.getY(), playerBounds.getH2(), playerBounds.getHeight() + playerBounds.getH2() - player.getPlayerHeight()));
     }
 
     private void clearScreen() {

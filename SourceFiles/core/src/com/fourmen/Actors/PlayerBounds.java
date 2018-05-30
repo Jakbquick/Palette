@@ -7,13 +7,15 @@ import com.badlogic.gdx.math.Rectangle;
 public class PlayerBounds {
     public final Rectangle collisionRect;
 
-    private float x, y;
+    private float w1, w2,h1,h2;
     //private float y = 78.75f;
 
     public PlayerBounds(float width, float height){
-        x = .088f * width;
-        y = .14f * height;
-        collisionRect = new Rectangle(x,y, width - (x *2), height - (2 * y));
+        w1 = .086f * width;
+        w2 = .088f * width;
+        h1 = .14f * height;
+        h2 = .153333333f * height;
+        collisionRect = new Rectangle(w1,h2, width - w1 - w2, height - h1- h2);
     }
 
     public float getWidth(){
@@ -22,10 +24,18 @@ public class PlayerBounds {
     public float getHeight(){
         return collisionRect.height;
     }
-    public float getX(){
-        return x;
+    public float getW1(){
+        return w1;
     }
-    public float getY(){ return y;}
+    public float getW2(){
+        return w2;
+    }
+    public float getH1(){
+        return h1;
+    }
+    public float getH2(){
+        return h2;
+    }
     public void drawDebug(ShapeRenderer shapeRenderer){
         shapeRenderer.rect(collisionRect.x,collisionRect.y, collisionRect.width,collisionRect.height);
     }
