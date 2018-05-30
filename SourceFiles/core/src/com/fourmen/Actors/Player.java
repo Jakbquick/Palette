@@ -2,10 +2,16 @@ package com.fourmen.Actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import sun.awt.image.GifImageDecoder;
 
 import javax.swing.text.Position;
 
@@ -13,14 +19,16 @@ public class Player extends Entity {
     //constants
     private static final double ACCELERATION_CONSTANT = .8;
     private static final double DECELERATION_CONSTANT = .8;
-    private final static float playerWidth = 15;
-    private final static float playerHeight = 20;
+    private static final float PLAYER_SIZE = .5f;
+    private final static float playerWidth = 163 * PLAYER_SIZE;
+    private final static float playerHeight = 251 * PLAYER_SIZE;
     private enum PlayerState {
-        MOVING, DASHING
+        STANDING, MOVING, DASHING
     }
 
     //instance variables
     public Rectangle rectangle;
+    private Color rectangleColor;
     private Vector2 targetSpeed;        // contains a target speed for x and y
     private Vector2 currentSpeed;       // how fast the player is currently going in x and y
     private int maxSpeed;               // the max speed a player can move
@@ -31,14 +39,24 @@ public class Player extends Entity {
     private double dashSpeed;
     private double dashCooldown;
     private double dashDuration;
+    private double standingCooldown;
     private double dashDurationTimer;
     private double dashCooldownTimer;
+    private double standingCooldownTimer;
+    private float stateTime;
     private PlayerState playerState;
+
+    private TextureRegion current;
+    private Animation<TextureRegion> moving;
+    private Animation<TextureRegion> idle;
+    private Texture moveSheet;
+    private Texture idleSheet;
 
     //constructors
     public Player() {
         super();
         rectangle = new Rectangle(getX(), getY(), playerWidth, playerHeight);
+        rectangleColor = new Color();
         targetSpeed = new Vector2(0, 0);
         currentSpeed = new Vector2(0, 0);
         maxSpeed = 500;
@@ -46,12 +64,18 @@ public class Player extends Entity {
         deceleration = DECELERATION_CONSTANT * maxSpeed;
         direction = new Vector2(0, 0);
         dashDirection = new Vector2(0, 0);
-        dashSpeed = 2000;
+        dashSpeed = 1000;
         dashCooldown = .8;
-        dashDuration = .1;
+        dashDuration = .3;
+        standingCooldown = .1;
         dashDurationTimer = 0;
         dashCooldownTimer = 0;
+        standingCooldownTimer = 0;
+        stateTime = 0;
         playerState = playerState.MOVING;
+
+        moving = new Animation<TextureRegion>(0.25f, setUpSpriteSheet("Images/spritemovesheet.png", 1, 4));
+        //idle = new Animation<TextureRegion>();
 
     }
 
@@ -59,13 +83,23 @@ public class Player extends Entity {
     public void act() {
         updateDirection();
         switch (playerState) {
+            case STANDING:
+                rectangleColor = new Color(Color.BLUE);
+                if(!direction.isZero())
+                    playerState = playerState.MOVING;
+                break;
             case MOVING:
-
+                rectangleColor = new Color(Color.GREEN);
                 move();
                 if(dashCooldownTimer <= 0)
                     checkDash();
+                if(!direction.isZero())
+                    standingCooldownTimer = standingCooldown;
+                if(standingCooldownTimer <= 0)
+                    playerState = playerState.STANDING;
                 break;
             case DASHING:
+                rectangleColor = new Color(Color.RED);
                 dash();
                 if(dashDurationTimer <= 0) {
                     playerState = playerState.MOVING;
@@ -162,13 +196,19 @@ public class Player extends Entity {
     public void update(float delta) {
         dashDurationTimer -= delta;
         dashCooldownTimer -= delta;
+        standingCooldownTimer -= delta;
+        stateTime += delta;
     }
 
     public void drawDebug(ShapeRenderer shapeRenderer) {
         updateRectangle();
-        shapeRenderer.rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+        shapeRenderer.rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height,
+                rectangleColor, rectangleColor, rectangleColor, rectangleColor);
     }
 
-
+    public void updateAnimations(SpriteBatch batch) {
+        current = moving.getKeyFrame(stateTime, true);
+        batch.draw(current, position.x - 60f * PLAYER_SIZE, position.y - 20f * PLAYER_SIZE, 300 * PLAYER_SIZE, 300 * PLAYER_SIZE);
+    }
 
 }

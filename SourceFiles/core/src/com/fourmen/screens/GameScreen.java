@@ -55,6 +55,7 @@ public class GameScreen extends ScreenAdapter {
         batch.setTransformMatrix(camera.view);
         batch.begin();
         batch.draw(floor,0,0,BOUND_WIDTH,BOUND_HEIGHT);
+        updateAnimations(batch);
         batch.end();
         blockPlayerLeavingTheWorld();
         drawDebug();
@@ -83,8 +84,8 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.setTransformMatrix(camera.view);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         //playerBounds.drawDebug(shapeRenderer);
-        shapeRenderer.end();
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        //shapeRenderer.end();
+        //shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         player.drawDebug(shapeRenderer);
         shapeRenderer.end();
     }
@@ -108,6 +109,7 @@ public class GameScreen extends ScreenAdapter {
     public void update(float delta){
         //flower.drawDebug(shapeRenderer);
 
+        // we should move this camera stuff to a new method
         float startX = camera.viewportWidth /2;
         float startY = camera.viewportHeight /2;
 
@@ -119,6 +121,11 @@ public class GameScreen extends ScreenAdapter {
         player.update(delta);
 
     }
+
+    public void updateAnimations(SpriteBatch batch) {
+        player.updateAnimations(batch);
+    }
+
     public void dispose(){
         batch.dispose();
         floor.dispose();
