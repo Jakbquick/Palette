@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.fourmen.Actors.Enemy;
 import com.fourmen.Actors.Player;
 import com.fourmen.Actors.PlayerBounds;
+import com.fourmen.utils.Animator;
 import com.fourmen.utils.CameraStyles;
 
 public class GameScreen extends ScreenAdapter {
@@ -48,7 +49,7 @@ public class GameScreen extends ScreenAdapter {
         camera.update();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         shapeRenderer = new ShapeRenderer();
-        floor = new Animation<TextureRegion>(0.25f, setUpSpriteSheet("Images/FloorSprites.png", 1, 26));;
+        floor = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/FloorSprites.png", 1, 26));;
         batch = new SpriteBatch();
         player = new Player();
         enemy = new Enemy();
@@ -148,20 +149,5 @@ public class GameScreen extends ScreenAdapter {
 
 
 
-    }
-    public TextureRegion[] setUpSpriteSheet(String internalPath, int frameRows, int frameCols) {
-        Texture spriteSheet = new Texture(internalPath);
-        TextureRegion[][] tmp = TextureRegion.split(spriteSheet, spriteSheet.getWidth() / frameCols, spriteSheet.getHeight() / frameRows);
-
-        TextureRegion[] spriteFrames = new TextureRegion[frameCols * frameRows];
-        int index = 0;
-
-        for (int r = 0; r < frameRows; r++) {
-            for (int c = 0; c < frameCols; c++) {
-                spriteFrames[index++] = tmp[r][c];
-            }
-        }
-
-        return spriteFrames;
     }
 }
