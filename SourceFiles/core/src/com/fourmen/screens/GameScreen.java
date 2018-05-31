@@ -48,7 +48,7 @@ public class GameScreen extends ScreenAdapter {
         camera.update();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         shapeRenderer = new ShapeRenderer();
-        floor = new Animation<TextureRegion>(0.25f, setUpSpriteSheet("Images/FloorSprites.png", 1, 26));;
+        floor = new Animation<TextureRegion>(0.1f, setUpSpriteSheet("Images/FloorSprites.png", 1, 26));;
         batch = new SpriteBatch();
         player = new Player();
         enemy = new Enemy();
