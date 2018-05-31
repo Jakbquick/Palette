@@ -34,6 +34,7 @@ public class Player extends Entity {
     private Color rectangleColor;
     private Vector2 targetSpeed;        // contains a target speed for x and y
     private Vector2 currentSpeed;       // how fast the player is currently going in x and y
+    private Vector2 tempSpeed;
     private int maxSpeed;               // the max speed a player can move
     private double acceleration;
     private double deceleration;
@@ -62,14 +63,15 @@ public class Player extends Entity {
         rectangleColor = new Color();
         targetSpeed = new Vector2(0, 0);
         currentSpeed = new Vector2(0, 0);
+        tempSpeed = new Vector2(0, 0);
         maxSpeed = 700;
         acceleration = ACCELERATION_CONSTANT * maxSpeed;
         deceleration = DECELERATION_CONSTANT * maxSpeed;
         direction = new Vector2(0, 0);
         dashDirection = new Vector2(0, 0);
-        dashSpeed = 2000;
+        dashSpeed = 1600;
         dashCooldown = .6;
-        dashDuration = .15;
+        dashDuration = .3;
         standingCooldown = .1;
         dashDurationTimer = 0;
         dashCooldownTimer = 0;
@@ -84,6 +86,7 @@ public class Player extends Entity {
 
     //methods
     public void act() {
+        System.out.println(currentSpeed + " " + playerState);
         updateDirection();
         switch (playerState) {
             case STANDING:
@@ -106,6 +109,8 @@ public class Player extends Entity {
                 rectangleColor = new Color(Color.RED);
                 dash();
                 if(dashDurationTimer <= 0) {
+                    currentSpeed.x = tempSpeed.x;
+                    currentSpeed.y = tempSpeed.y;
                     playerState = playerState.MOVING;
                 }
                 break;
@@ -142,6 +147,8 @@ public class Player extends Entity {
             dashDirection.x = direction.x;
             dashDirection.y = direction.y;
 
+            tempSpeed.x = currentSpeed.x;
+            tempSpeed.y = currentSpeed.y;
             currentSpeed = new Vector2(0,0);
             dashDurationTimer = dashDuration;
             dashCooldownTimer = dashCooldown;
