@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.fourmen.utils.Animator;
 import sun.awt.image.GifImageDecoder;
 
 import javax.swing.text.Position;
@@ -76,7 +77,7 @@ public class Player extends Entity {
         stateTime = 0;
         playerState = playerState.MOVING;
 
-        moving = new Animation<TextureRegion>(0.25f, setUpSpriteSheet("Images/spritemovesheet.png", 1, 4));
+        moving = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/spritemovesheet.png", 1, 4));
         //idle = new Animation<TextureRegion>();
 
     }
@@ -84,7 +85,6 @@ public class Player extends Entity {
     //methods
     public void act() {
         updateDirection();
-        System.out.println(currentSpeed);
         switch (playerState) {
             case STANDING:
                 rectangleColor = new Color(Color.BLUE);
