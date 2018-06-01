@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.fourmen.Actors.Enemy;
@@ -23,8 +24,8 @@ import com.fourmen.utils.CameraStyles;
 
 public class GameScreen extends ScreenAdapter {
 
-    private static final float WORLD_WIDTH = 1920;
-    private static final float WORLD_HEIGHT = 1200;
+    private static float WORLD_WIDTH;
+    private static float WORLD_HEIGHT;
 
     private float BOUND_WIDTH = 3000;
     private float BOUND_HEIGHT = BOUND_WIDTH * (3f/5f);
@@ -38,16 +39,23 @@ public class GameScreen extends ScreenAdapter {
     private Animation<TextureRegion> floor;
     private TextureRegion state;
     private float timeSinceStart;
-
     private Enemy enemy;
 
+    private int cameraVal;
+    public String cameraType;
 
+    public GameScreen(int width, int height){
+        WORLD_WIDTH = width;
+        WORLD_HEIGHT = height;
+    }
     @Override
     public void show() {
+        cameraVal = 0;
+        cameraType = "None yet";
         camera = new OrthographicCamera();
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         camera.update();
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         shapeRenderer = new ShapeRenderer();
         floor = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/FloorSprites.png", 1, 26));;
         batch = new SpriteBatch();
@@ -106,7 +114,17 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void cameraUpdate(){
-        CameraStyles.lockOnTarget(camera,player);
+        switch (cameraVal) {
+            case 0:
+                CameraStyles.lockOnTarget(camera,player);
+                cameraType = "Lerp on Player Only";
+                break;
+            case 1:
+                CameraStyles.lockAverageBetweenTargets(camera, player, enemy);
+                cameraType = "Lerp between enemy and Player";
+        }
+        //CameraStyles.lockAverageBetweenTargets(camera,player, enemy);
+        //CameraStyles.lockOnTarget(camera,player);
     }
 
     private void blockPlayerLeavingTheWorld() {

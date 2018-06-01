@@ -10,13 +10,18 @@ import com.fourmen.screens.GameScreen;
 import com.fourmen.screens.Splash;
 
 public class Palette extends Game {
+
 	public static final String TITLE = "Palette", VERSION = "0.0";
-	
+	int screenWidth, screenHeight;
+	public Palette(int width, int height){
+		screenWidth = width;
+		screenHeight = height;
+	}
 	@Override
 	public void create () {
 
 		//setScreen(new Splash());
-		setScreen(new GameScreen());
+		setScreen(new GameScreen(screenWidth,screenHeight));
 	}
 
 	@Override
