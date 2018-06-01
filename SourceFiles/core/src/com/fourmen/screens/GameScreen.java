@@ -75,9 +75,9 @@ public class GameScreen extends ScreenAdapter {
         enemy.update(delta);
         shapeRenderer.end();
         player.act();       //add to update instead
+        enemy.getPlayer(player);
         enemy.act();
         blockPlayerLeavingTheWorld();
-        //update(delta);
     }
 
     /**
@@ -134,10 +134,7 @@ public class GameScreen extends ScreenAdapter {
         CameraStyles.boundary(camera, startX, startY, BOUND_WIDTH - (2 * startX),
                 BOUND_HEIGHT - (2 * startY));
 
-
-
         player.update(delta);
-
     }
 
     public void updateAnimations(SpriteBatch batch) {

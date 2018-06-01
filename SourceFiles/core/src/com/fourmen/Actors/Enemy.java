@@ -2,13 +2,16 @@ package com.fourmen.Actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import javafx.scene.control.skin.TextInputControlSkin;
 
 import javax.swing.text.Position;
+import javax.xml.stream.Location;
 
 public class Enemy extends Entity {
     //constants
@@ -16,8 +19,8 @@ public class Enemy extends Entity {
     private static final double DECELERATION_CONSTANT = 0.2;
     private final static float enemyWidth = 30;
     private final static float enemyHeight = 30;
-    private float lastDirection = 0;
-    private float lastLastDirection = 3;
+    private Player player = new Player();
+
     private enum PlayerState {
         MOVING, DASHING
     }
@@ -58,15 +61,68 @@ public class Enemy extends Entity {
 
     }
 
+    private void updateDirection() {
+        direction.x = 0;
+        direction.y = 0;
+        if(distanceBetween(player, getX(), getY()) > 800) {
+            if (player.getX() > getX())
+                direction.x += 1;
+            else if (player.getX() < getX())
+                direction.x -= 1;
+
+            if (player.getY() > getY())
+                direction.y += 1;
+            else if (player.getY() < getY())
+                direction.y -= 1;
+        }
+        else {
+            int directionFactor = MathUtils.random(7);
+            if(directionFactor == 0) {
+                direction.x -= 1;
+            }
+            else if(directionFactor == 1) {
+                direction.x -= 1;
+                direction.y += 1;
+            }
+            else if(directionFactor == 2) {
+                direction.y += 1;
+            }
+            else if(directionFactor == 3) {
+                direction.x += 1;
+                direction.y += 1;
+            }
+            else if(directionFactor == 4) {
+                direction.x += 1;
+            }
+            else if(directionFactor == 5) {
+                direction.x += 1;
+                direction.y -= 1;
+            }
+            else if(directionFactor == 6) {
+                direction.y -= 1;
+            }
+            else if(directionFactor == 7) {
+                direction.x -= 1;
+                direction.y -= 1;
+            }
+        }
+        direction.nor();
+
+        targetSpeed.x = (int) (direction.x * maxSpeed);
+        targetSpeed.y = (int) (direction.y * maxSpeed);
+
+    }
+
     //methods
     public void act() {
         updateDirection();
         switch (enemyState) {
             case MOVING:
-
                 move();
                 if(dashCooldownTimer <= 0)
                     checkDash();
+                //if(standingCooldownTimer <= 0)
+                //playerState = playerState.STANDING;
                 break;
             case DASHING:
                 dash();
@@ -75,70 +131,6 @@ public class Enemy extends Entity {
                 }
                 break;
         }
-    }
-
-    private void updateDirection() {
-        direction.x = 0;
-        direction.y = 0;
-
-        int directionFactor = MathUtils.random(7);
-        if (directionFactor == lastDirection) {
-            if(directionFactor == lastLastDirection) {
-                if(directionFactor < 7)
-                    directionFactor++;
-                else
-                    directionFactor = 0;
-            }
-            else if(directionFactor < 7)
-                directionFactor++;
-            else
-                directionFactor = 0;
-        }
-
-        lastLastDirection = lastDirection;
-
-        if(directionFactor == 0) {
-            direction.x -= 1;
-            lastDirection = 0;
-        }
-        else if(directionFactor == 1) {
-            direction.x -= 1;
-            direction.y += 1;
-            lastDirection = 1;
-        }
-        else if(directionFactor == 2) {
-            direction.y += 1;
-            lastDirection = 2;
-        }
-        else if(directionFactor == 3) {
-            direction.x += 1;
-            direction.y += 1;
-            lastDirection = 3;
-        }
-        else if(directionFactor == 4) {
-            direction.x += 1;
-            lastDirection = 4;
-        }
-        else if(directionFactor == 5) {
-            direction.x += 1;
-            direction.y -= 1;
-            lastDirection = 5;
-        }
-        else if(directionFactor == 6) {
-            direction.y -= 1;
-            lastDirection = 6;
-        }
-        else if(directionFactor == 7) {
-            direction.x -= 1;
-            direction.y -= 1;
-            lastDirection = 7;
-        }
-
-        direction.nor();
-
-        targetSpeed.x = (int) (direction.x * maxSpeed);
-        targetSpeed.y = (int) (direction.y * maxSpeed);
-
     }
 
     private void checkDash() {
@@ -192,11 +184,19 @@ public class Enemy extends Entity {
         setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());
     }
 
+    private double distanceBetween(Player player1, float xVal, float yVal){
+        return Math.sqrt(Math.pow((xVal - player1.getX()), 2) + Math.pow((yVal - player1.getY()), 2));
+    }
+
     public float getEnemyWidth(){
         return enemyWidth;
     }
     public float getEnemyHeight(){
         return enemyHeight;
+    }
+
+    public void getPlayer(Player playerr) {
+        player = playerr;
     }
 
     private void updateRectangle() {

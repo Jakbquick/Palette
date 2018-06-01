@@ -12,9 +12,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.fourmen.utils.Animator;
-import sun.awt.image.GifImageDecoder;
+//import sun.awt.image.GifImageDecoder;
 
 import javax.swing.text.Position;
+import javax.xml.stream.Location;
 
 public class Player extends Entity {
     //constants
