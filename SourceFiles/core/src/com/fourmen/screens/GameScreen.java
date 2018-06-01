@@ -39,8 +39,10 @@ public class GameScreen extends ScreenAdapter {
     private Animation<TextureRegion> floor;
     private TextureRegion state;
     private float timeSinceStart;
-
     private Enemy enemy;
+
+    private int cameraVal;
+    public String cameraType;
 
     public GameScreen(int width, int height){
         WORLD_WIDTH = width;
@@ -48,6 +50,8 @@ public class GameScreen extends ScreenAdapter {
     }
     @Override
     public void show() {
+        cameraVal = 0;
+        cameraType = "None yet";
         camera = new OrthographicCamera();
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         camera.update();
@@ -110,7 +114,17 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void cameraUpdate(){
-        CameraStyles.lockOnTarget(camera,player);
+        switch (cameraVal) {
+            case 0:
+                CameraStyles.lockOnTarget(camera,player);
+                cameraType = "Lerp on Player Only";
+                break;
+            case 1:
+                CameraStyles.lockAverageBetweenTargets(camera, player, enemy);
+                cameraType = "Lerp between enemy and Player";
+        }
+        //CameraStyles.lockAverageBetweenTargets(camera,player, enemy);
+        //CameraStyles.lockOnTarget(camera,player);
     }
 
     private void blockPlayerLeavingTheWorld() {

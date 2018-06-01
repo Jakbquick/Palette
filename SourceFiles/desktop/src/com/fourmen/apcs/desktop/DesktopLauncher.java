@@ -18,7 +18,7 @@ public class DesktopLauncher {
 		config.width = 1500;
 		config.height = (int)(config.width * (double)(9.0/16.0));
 		config.useGL30 = false;			// runs without using openGl so Collin's baka computer can handle it
-		//config.fullscreen = true;
+		config.fullscreen = true;
 
 		new LwjglApplication(new Palette(config.width,config.height), config);
 	}
