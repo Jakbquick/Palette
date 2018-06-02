@@ -3,21 +3,23 @@ package com.fourmen.actors;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.*;
 import com.fourmen.utils.Animator;
 //import sun.awt.image.GifImageDecoder;
 
+import javax.swing.text.Position;
+import javax.xml.stream.Location;
 
 public class Player extends Entity {
     //constants
     private static final double ACCELERATION_CONSTANT = .6;
     private static final double DECELERATION_CONSTANT = .3;
-    private static final float PLAYER_SIZE = .50f;
+    private static final float PLAYER_SIZE = .5f;
     private final static float playerWidth = 163 * PLAYER_SIZE; //163    40
     private final static float playerHeight = 251 * PLAYER_SIZE;
     private enum PlayerState {
@@ -26,6 +28,8 @@ public class Player extends Entity {
 
     //instance variables
     public Rectangle rectangle;
+    public Circle attackRange;
+    public Circle attack;
     public Rectangle body;
     public Rectangle wings;
     private Color rectangleColor;
@@ -36,6 +40,7 @@ public class Player extends Entity {
     private double acceleration;
     private double deceleration;
     private Vector2 direction;          // contains a x direction and y direction from -1 to 1
+    private Vector2 attackDirection;
     private Vector2 dashDirection;
     private double dashSpeed;
     private double dashCooldown;
@@ -47,7 +52,7 @@ public class Player extends Entity {
     private float stateTime;
     private PlayerState playerState;
 
-    private TextureRegion current;
+    private TextureRegion currentFrame;
     private Animation<TextureRegion> moving;
     private Animation<TextureRegion> idle;
 
@@ -55,6 +60,8 @@ public class Player extends Entity {
     public Player() {
         super();
         rectangle = new Rectangle(getX(), getY(), playerWidth, playerHeight);
+        attackRange = new Circle(getX(), getY(), playerHeight / 1.5f);
+        attack = new Circle(getX(), getY(), 25);
         body = new Rectangle(getX() + 63 * PLAYER_SIZE, getY(), 40 * PLAYER_SIZE, 251 * PLAYER_SIZE);
         wings = new Rectangle(getX() + 16, getY() + 85, 137 * PLAYER_SIZE,109 * PLAYER_SIZE);
         rectangleColor = new Color();
@@ -65,11 +72,12 @@ public class Player extends Entity {
         acceleration = ACCELERATION_CONSTANT * maxSpeed;
         deceleration = DECELERATION_CONSTANT * maxSpeed;
         direction = new Vector2(0, 0);
+        attackDirection = new Vector2(0, 0);
         dashDirection = new Vector2(0, 0);
-        dashSpeed = 1600;
+        dashSpeed = 2800;
         dashCooldown = .6;
-        dashDuration = .3;
-        standingCooldown = .1;
+        dashDuration = .1;
+        standingCooldown = .25;
         dashDurationTimer = 0;
         dashCooldownTimer = 0;
         standingCooldownTimer = 0;
@@ -77,30 +85,34 @@ public class Player extends Entity {
         playerState = playerState.MOVING;
 
         moving = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/spritemovesheet.png", 1, 4));
-        //idle = new Animation<TextureRegion>();
+        idle = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/spriteidlesheet.png", 1, 5));
+        currentFrame = idle.getKeyFrame(stateTime, true);
 
     }
 
     //methods
     public void act() {
-        System.out.println(currentSpeed + " " + playerState);
+        //System.out.println(currentSpeed + " " + playerState);
         updateDirection();
+        updateAttackDirection();
         switch (playerState) {
             case STANDING:
                 rectangleColor = new Color(Color.BLUE);
+                currentFrame = idle.getKeyFrame(stateTime, true);
                 move();
                 if(!direction.isZero())
                     playerState = playerState.MOVING;
                 break;
             case MOVING:
                 rectangleColor = new Color(Color.GREEN);
+                currentFrame = moving.getKeyFrame(stateTime, true);
                 move();
                 if(dashCooldownTimer <= 0)
                     checkDash();
                 if(!direction.isZero())
                     standingCooldownTimer = standingCooldown;
-                //if(standingCooldownTimer <= 0)
-                    //playerState = playerState.STANDING;
+                if(standingCooldownTimer <= 0)
+                    playerState = playerState.STANDING;
                 break;
             case DASHING:
                 rectangleColor = new Color(Color.RED);
@@ -135,6 +147,36 @@ public class Player extends Entity {
 
         targetSpeed.x = (int) (direction.x * maxSpeed);
         targetSpeed.y = (int) (direction.y * maxSpeed);
+
+    }
+
+    private void updateAttackDirection() {
+        Vector2 tempDir = new Vector2(attackDirection.x, attackDirection.y);
+
+        attackDirection.x = 0;
+        attackDirection.y = 0;
+
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            attackDirection.x -= 1;
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            attackDirection.x += 1;
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            attackDirection.y = 0;
+            attackDirection.y += 1;
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            attackDirection.y = 0;
+            attackDirection.y -= 1;
+        }
+
+        attackDirection.nor();
+
+        if(attackDirection.isZero()) {
+            attackDirection = tempDir;
+        }
+
 
     }
 
@@ -198,6 +240,10 @@ public class Player extends Entity {
     private void updateRectangle() {
         rectangle.setX(position.x);
         rectangle.setY(position.y);
+        attackRange.x = position.x + playerWidth / 2;
+        attackRange.y = position.y + playerHeight / 2;
+        attack.x = position.x + playerWidth / 2 + attackRange.radius * attackDirection.x;
+        attack.y = position.y + playerHeight / 2 + attackRange.radius * attackDirection.y;
         body.setX(position.x + 63 * PLAYER_SIZE);
         body.setY(position.y);
         wings.setX(position.x + 16 * PLAYER_SIZE);
@@ -216,6 +262,8 @@ public class Player extends Entity {
         updateRectangle();
         shapeRenderer.rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height,
                 rectangleColor, rectangleColor, rectangleColor, rectangleColor);
+        shapeRenderer.circle(attackRange.x, attackRange.y, attackRange.radius);
+        shapeRenderer.circle(attack.x, attack.y, attack.radius);
         shapeRenderer.rect(body.x, body.y, body.width, body.height,
                 rectangleColor, rectangleColor, rectangleColor, rectangleColor);
         shapeRenderer.rect(wings.x, wings.y, wings.width, wings.height,
@@ -223,8 +271,7 @@ public class Player extends Entity {
     }
 
     public void updateAnimations(SpriteBatch batch) {
-        current = moving.getKeyFrame(stateTime, true);
-        batch.draw(current, position.x - 60 * PLAYER_SIZE, position.y - 20 * PLAYER_SIZE, 300 * PLAYER_SIZE, 300 * PLAYER_SIZE);
+        batch.draw(currentFrame, position.x - 60 * PLAYER_SIZE, position.y - 20 * PLAYER_SIZE, 300 * PLAYER_SIZE, 300 * PLAYER_SIZE);
     }
 
 }

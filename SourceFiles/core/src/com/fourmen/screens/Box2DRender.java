@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.fourmen.actors.Box2DPlayer;
 import com.fourmen.box2D.Walls;
 
 public class Box2DRender extends ScreenAdapter {
@@ -14,6 +15,7 @@ public class Box2DRender extends ScreenAdapter {
     World world;
     Body body;
     Walls leftWall,rightWall, topWall,bottomWall;
+    Box2DPlayer player;
     private float BOUND_WIDTH = 3000;
     private float BOUND_HEIGHT = BOUND_WIDTH * (3f/5f);
 
@@ -28,6 +30,7 @@ public class Box2DRender extends ScreenAdapter {
                 BOUND_WIDTH, BOUND_HEIGHT * .14f);
         rightWall = new Walls(world,BOUND_WIDTH - (BOUND_WIDTH * .088f),
                 0,BOUND_WIDTH * .088f,BOUND_HEIGHT);
+        player = new Box2DPlayer(world);
 
     }
 
@@ -45,6 +48,7 @@ public class Box2DRender extends ScreenAdapter {
                 topWall.getHeight());
         batch.draw(rightWall.getWallSprite(), rightWall.getWallSprite().getX(), rightWall.getWallSprite().getY(),rightWall.getWidth(),
                 rightWall.getHeight());
+        batch.draw(player.currentFrame, player.getX(), player.getY());
         batch.end();
     }
 

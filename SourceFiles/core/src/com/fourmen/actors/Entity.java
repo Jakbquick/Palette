@@ -1,8 +1,9 @@
 package com.fourmen.actors;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public abstract class Entity {
+public abstract class Entity extends Actor {
     //instance variables
     public int health;
     public Vector2 position;
