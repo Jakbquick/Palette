@@ -11,14 +11,18 @@ public class Walls {
     private Texture img;
     private Sprite wallSprite;
     private Body body;
-    public Walls(World world){
-        img = new Texture("Images/Logo.jpg");
-        wallSprite = new Sprite(img);
-        wallSprite.setPosition(0, 0);
+    private float width, height;
+    public Walls(World world, float x, float y, float width, float height){
+        this.width = width;
+        this.height = height;
 
+        img = new Texture("Images/TileTextureDebug.jpg");
+        wallSprite = new Sprite(img);
+        wallSprite.setPosition(x, y);
+        wallSprite.setSize(width,height);
 
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.set(wallSprite.getX(), wallSprite.getY());
         body = world.createBody(bodyDef);
 
@@ -42,6 +46,12 @@ public class Walls {
     //public void updateWall(){
         //wallSprite.setPosition(body.getPosition().x, body.getPosition().y);
     //}
+    public float getWidth(){
+        return width;
+    }
+    public float getHeight(){
+        return height;
+    }
 }
 
 
