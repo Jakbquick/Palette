@@ -1,4 +1,4 @@
-package com.fourmen.Actors;
+package com.fourmen.actors;
 
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
