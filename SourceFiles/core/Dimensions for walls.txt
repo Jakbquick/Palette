@@ -1,0 +1,6 @@
+distance from left bound to left wall(x) = 43 pixels
+distance from right bound to right wall(x) = 44 pixels
+distance from top bound to top wall(y) = 42 pixels
+distance from bottom bound to bottom wall(y) = 46 pixel
+
+spawns at (43,46)
