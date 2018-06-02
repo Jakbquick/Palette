@@ -1,62 +1,47 @@
 package com.fourmen.box2D;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.physics.box2d.*;
 
-/**
- * Created by julienvillegas on 01/02/2017.
- */
 
-public class Walls extends Image {
-
+public class Walls {
+    private Texture img;
+    private Sprite wallSprite;
     private Body body;
-    private World world;
+    public Walls(World world){
+        img = new Texture("Images/Logo.jpg");
+        wallSprite = new Sprite(img);
+        wallSprite.setPosition(0, 0);
 
-    public Walls(World aWorld, float pos_x, float pos_y, float aWidth, float aHeight, float angle){
-        super(new Texture(Gdx.files.internal("Images/Logo.jpg")));
-        this.setSize(aWidth,aHeight);
-        this.setOrigin(this.getWidth()/2,this.getHeight()/2);
-        this.rotateBy(angle);
-        this.setPosition(pos_x,pos_y);
-        world = aWorld;
-        BodyDef groundBodyDef = new BodyDef();
-        // Set its world position
-        groundBodyDef.position.set(new Vector2(pos_x, pos_y));
 
-        // Create a body from the defintion and add it to the world
-        body = world.createBody(groundBodyDef);
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(wallSprite.getX(), wallSprite.getY());
+        body = world.createBody(bodyDef);
 
-        // Create a polygon shape
-        PolygonShape groundBox = new PolygonShape();
-        // Set the polygon shape as a box which is twice the size of our view port and 20 high
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(wallSprite.getWidth()/2, wallSprite.getHeight()/2);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
 
-        // (setAsBox takes half-width and half-height as arguments)
-        groundBox.setAsBox(this.getWidth()/2, this.getHeight()/2);
-        body.setTransform(this.getX()+this.getWidth()/2,this.getY()+this.getHeight()/2, (float)Math.toRadians(angle));
-
-        // Create a fixture from our polygon shape and add it to our ground body
-        body.createFixture(groundBox, 0.0f);
-        // Clean up after ourselves
-        groundBox.dispose();
-
+        Fixture fixture = body.createFixture(fixtureDef);
+        shape.dispose();
     }
-
-    @Override
-    public void act(float delta) {
-        super.act(delta);
+    public Sprite getWallSprite(){
+        return wallSprite;
     }
-
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
+    public void dispose(){
+        img.dispose();
     }
+    //code left here so I could look at it later for objects that actually move
+
+    //public void updateWall(){
+        //wallSprite.setPosition(body.getPosition().x, body.getPosition().y);
+    //}
 }
+
 
