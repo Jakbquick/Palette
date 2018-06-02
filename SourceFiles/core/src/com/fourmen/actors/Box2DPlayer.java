@@ -50,6 +50,14 @@ public class Box2DPlayer extends Entity{
     }
 
     //methods
+    public float getPlayerWidth() {
+        return PLAYER_WIDTH;
+    }
+
+    public float getPlayerHeight() {
+        return PLAYER_HEIGHT;
+    }
+
     public void act() {
 
     }
