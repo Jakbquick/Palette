@@ -13,6 +13,7 @@ import com.fourmen.box2D.Walls;
 public class Box2DRender extends ScreenAdapter {
     SpriteBatch batch;
     World world;
+    private Box2DDebugRenderer debugRenderer;
     Body body;
     Walls leftWall,rightWall, topWall,bottomWall;
     Box2DPlayer player;
@@ -24,6 +25,8 @@ public class Box2DRender extends ScreenAdapter {
 
         batch = new SpriteBatch();
         world = new World(new Vector2(0, 0), true);
+        debugRenderer = new Box2DDebugRenderer();
+
         leftWall = new Walls(world,0,0,BOUND_WIDTH * .086f,BOUND_HEIGHT);
         bottomWall = new Walls(world,0,0, BOUND_WIDTH,BOUND_HEIGHT * .1533333333f);
         topWall = new Walls(world,0,BOUND_HEIGHT - (.14F * BOUND_HEIGHT),
@@ -39,6 +42,11 @@ public class Box2DRender extends ScreenAdapter {
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        player.act();
+
+        //debugRenderer.render(world, );
+
         batch.begin();
         batch.draw(leftWall.getWallSprite(), leftWall.getWallSprite().getX(), leftWall.getWallSprite().getY(),leftWall.getWidth(),
                 leftWall.getHeight());
@@ -48,8 +56,12 @@ public class Box2DRender extends ScreenAdapter {
                 topWall.getHeight());
         batch.draw(rightWall.getWallSprite(), rightWall.getWallSprite().getX(), rightWall.getWallSprite().getY(),rightWall.getWidth(),
                 rightWall.getHeight());
-        batch.draw(player.currentFrame, player.getX(), player.getY());
+        player.draw(batch);
         batch.end();
+    }
+
+    public void drawDebug() {
+
     }
 
 
