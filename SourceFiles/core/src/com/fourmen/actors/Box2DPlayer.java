@@ -87,7 +87,7 @@ public class Box2DPlayer extends Entity{
         body = world.createBody(bodyDef);
 
         PolygonShape square = new PolygonShape();
-        square.setAsBox(PLAYER_WIDTH * BOX2D_SCALE, PLAYER_HEIGHT * BOX2D_SCALE);
+        square.setAsBox(PLAYER_WIDTH * BOX2D_SCALE / 2f, PLAYER_HEIGHT * BOX2D_SCALE /2f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = square;
