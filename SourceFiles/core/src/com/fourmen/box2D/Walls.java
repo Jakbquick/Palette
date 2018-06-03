@@ -23,9 +23,9 @@ public class Walls {
         bodyDef.position.set(x , y);
         body = world.createBody(bodyDef);
 
-        bodyEditorLoader = new BodyEditorLoader(Gdx.files.internal("Box2d"));
+        bodyEditorLoader = new BodyEditorLoader(Gdx.files.internal("Box2d/Walls"));
         fixtureDef = new FixtureDef();
-        bodyEditorLoader.attachFixture(body,"Walls.JSON",fixtureDef,28.04907975f);
+        bodyEditorLoader.attachFixture(body,"Name",fixtureDef,28.04907975f);
 
 
 
