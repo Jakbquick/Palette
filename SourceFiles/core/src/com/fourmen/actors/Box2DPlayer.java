@@ -19,7 +19,7 @@ import java.awt.*;
 public class Box2DPlayer extends Entity{
     //instance variables
     private final static float PLAYER_SIZE = 1f;
-    private final static float BOX2D_SCALE = 1/3f;
+    private final static float BOX2D_SCALE = 1f;
     private final static float PLAYER_WIDTH = 163 * PLAYER_SIZE; //163    40
     private final static float PLAYER_HEIGHT = 251 * PLAYER_SIZE;
     private final static int MAX_SPEED = 700;

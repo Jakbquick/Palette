@@ -1,6 +1,7 @@
 package com.fourmen.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -29,7 +30,7 @@ public class Box2DRender extends ScreenAdapter {
 
     Box2DPlayer player;
     private float scale = 3000;
-    //private float BOUND_HEIGHT = BOUND_WIDTH * (3f/5f);
+    private float BOUND_HEIGHT = scale * (3f/5f);
 
     Box2DDebugRenderer debugRenderer;
 
@@ -70,17 +71,23 @@ public class Box2DRender extends ScreenAdapter {
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
         batch.begin();
-        walls.draw(batch);
-        player.draw(batch);
-        debugRenderer.render(world, camera.combined);
+        if(Gdx.input.isKeyPressed(Input.Keys.L)){
+            debugView();
+        }
+        else {
+            walls.draw(batch);
+            player.draw(batch);
+        }
         batch.end();
     }
-
+    private void debugView(){
+            debugRenderer.render(world, camera.combined);
+        }
     private void clearScreen() {
-        // Gdx.gl.glClearColor(com.badlogic.gdx.graphics.Color.BLACK.r, com.badlogic.gdx.graphics.Color.BLACK.g,
-        //com.badlogic.gdx.graphics.Color.BLACK.b, Color.BLACK.a);
+         Gdx.gl.glClearColor(com.badlogic.gdx.graphics.Color.BLACK.r, com.badlogic.gdx.graphics.Color.BLACK.g,
+        com.badlogic.gdx.graphics.Color.BLACK.b, Color.BLACK.a);
 
-        Gdx.gl.glClearColor(255, 255, 255, 1);
+        //Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
     }
@@ -89,11 +96,11 @@ public class Box2DRender extends ScreenAdapter {
         //flower.drawDebug(shapeRenderer);
 
         // we should move this camera stuff to a new method
-        //float startX = camera.viewportWidth / 2;
-        //float startY = camera.viewportHeight / 2;
+        float startX = camera.viewportWidth / 2;
+        float startY = camera.viewportHeight / 2;
 
-        //CameraStyles.boundary(camera, startX, startY, BOUND_WIDTH - (2 * startX),
-                //BOUND_HEIGHT - (2 * startY));
+        CameraStyles.boundary(camera, startX, startY, scale - (2 * startX),
+                BOUND_HEIGHT - (2 * startY));
         walls.updateAnimations(delta);
         player.updateTimers(delta);
     }
