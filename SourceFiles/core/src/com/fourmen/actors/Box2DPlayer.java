@@ -236,8 +236,11 @@ public class Box2DPlayer extends Entity{
     }
 
     public void draw(Batch batch) {
-        batch.draw(currentFrame, getX() - 141.5f * PLAYER_SIZE, getY() - 146 * PLAYER_SIZE);
-
+        boolean flip = (direction.x > 0);
+        //batch.draw(currentFrame, getX() - 141.5f * PLAYER_SIZE, getY() - 146 * PLAYER_SIZE);
+        batch.draw(currentFrame, flip ? getX() - (16f * PLAYER_SIZE) - (141.5f * PLAYER_SIZE)+currentFrame.getRegionWidth()* PLAYER_SIZE : getX() - (141.5f * PLAYER_SIZE),
+                getY() - 146 * PLAYER_SIZE, flip ? -currentFrame.getRegionWidth()* PLAYER_SIZE: currentFrame.getRegionWidth()* PLAYER_SIZE,
+                currentFrame.getRegionHeight()* PLAYER_SIZE);
     }
 
     public void updateTimers(float delta) {
