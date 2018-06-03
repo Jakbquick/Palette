@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -13,6 +14,7 @@ import com.fourmen.box2D.Walls;
 public class Box2DRender extends ScreenAdapter {
     SpriteBatch batch;
     World world;
+    OrthographicCamera camera;
     private Box2DDebugRenderer debugRenderer;
     Body body;
     Walls leftWall,rightWall, topWall,bottomWall;
@@ -25,6 +27,7 @@ public class Box2DRender extends ScreenAdapter {
 
         batch = new SpriteBatch();
         world = new World(new Vector2(0, 0), true);
+        camera = new OrthographicCamera();
         debugRenderer = new Box2DDebugRenderer();
 
         leftWall = new Walls(world,0,0,BOUND_WIDTH * .086f,BOUND_HEIGHT);
@@ -45,7 +48,7 @@ public class Box2DRender extends ScreenAdapter {
 
         player.act();
 
-        //debugRenderer.render(world, );
+        debugRenderer.render(world, camera.combined);
 
         batch.begin();
         batch.draw(leftWall.getWallSprite(), leftWall.getWallSprite().getX(), leftWall.getWallSprite().getY(),leftWall.getWidth(),
