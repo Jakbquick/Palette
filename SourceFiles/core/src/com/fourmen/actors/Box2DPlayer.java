@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -46,6 +47,8 @@ public class Box2DPlayer extends Entity{
 
     private PlayerState playerState;
 
+    private PlayerBounds playerBounds;
+
     private double dashDurationTimer = 0;
     private double dashCooldownTimer = 0;
     private double standingCooldownTimer = 0;
@@ -56,7 +59,7 @@ public class Box2DPlayer extends Entity{
     private Animation<TextureRegion> idle;
 
     //constructors
-    public Box2DPlayer(World world) {
+    public Box2DPlayer(World world, PlayerBounds MyPlayerBounds) {
         super();
 
         direction = new Vector2(0, 0);
@@ -69,6 +72,8 @@ public class Box2DPlayer extends Entity{
         deceleration = DECELERATION_CONSTANT * MAX_SPEED;
 
         playerState = PlayerState.STANDING;
+
+        playerBounds = MyPlayerBounds;
 
         moving = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/spritemovesheet.png", 1, 4));
         idle = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/spriteidlesheet.png", 1, 5));
@@ -137,6 +142,7 @@ public class Box2DPlayer extends Entity{
                 }
                 break;
         }
+        blockPlayerLeavingTheWorld();
         updatePosition();
     }
 
@@ -247,6 +253,11 @@ public class Box2DPlayer extends Entity{
 
     public void drawDebug(Box2DDebugRenderer debug) {
 
+    }
+
+    private void blockPlayerLeavingTheWorld() {
+        setPosition(MathUtils.clamp(getX(),playerBounds.getW1(),playerBounds.getWidth()+ playerBounds.getW1() - PLAYER_WIDTH), MathUtils.clamp(getY(), playerBounds.getH2(), playerBounds.getHeight() + playerBounds.getH2() - PLAYER_HEIGHT));
+        //enemy.setPosition(MathUtils.clamp(enemy.getX(),playerBounds.getW1(),playerBounds.getWidth()+ playerBounds.getW1() - enemy.getEnemyWidth()), MathUtils.clamp(enemy.getY(), playerBounds.getH2(), playerBounds.getHeight() + playerBounds.getH2() - enemy.getEnemyHeight()));
     }
 
 

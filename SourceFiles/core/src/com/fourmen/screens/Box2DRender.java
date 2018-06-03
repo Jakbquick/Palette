@@ -51,7 +51,7 @@ public class Box2DRender extends ScreenAdapter {
         batch = new SpriteBatch();
         world = new World(new Vector2(0, 0), true);
         debugRenderer = new Box2DDebugRenderer();
-        player = new Box2DPlayer(world);
+        player = new Box2DPlayer(world, playerBounds);
         walls = new Walls(world,0,0, scale);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
@@ -71,7 +71,6 @@ public class Box2DRender extends ScreenAdapter {
         clearScreen();
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         player.act();
-        blockPlayerLeavingTheWorld();
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
         batch.begin();
