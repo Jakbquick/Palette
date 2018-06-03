@@ -1,6 +1,5 @@
 package com.fourmen.screens;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
@@ -8,7 +7,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -28,6 +26,8 @@ public class Box2DRender extends ScreenAdapter {
     World world;
     Body body;
     Walls leftWall,rightWall, topWall,bottomWall;
+
+    Box2DPlayer player;
     private float BOUND_WIDTH = 3000;
     private float BOUND_HEIGHT = BOUND_WIDTH * (3f/5f);
 
@@ -36,7 +36,6 @@ public class Box2DRender extends ScreenAdapter {
     private Camera camera;
     private Viewport viewport;
 
-    private Box2DPlayer player;
 
     public Box2DRender(int width, int height){
         WORLD_WIDTH = width;
