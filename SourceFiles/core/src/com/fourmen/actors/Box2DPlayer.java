@@ -22,7 +22,7 @@ public class Box2DPlayer extends Entity{
     private final static float BOX2D_SCALE = 1f;
     private final static float PLAYER_WIDTH = 163 * PLAYER_SIZE; //163    40
     private final static float PLAYER_HEIGHT = 251 * PLAYER_SIZE;
-    private final static int MAX_SPEED = 999999999;
+    private final static int MAX_SPEED = 700;
     private final static float DASH_SPEED = 2800;
     private final static float ACCELERATION_CONSTANT = 1f;
     private final static float DECELERATION_CONSTANT = 1f;
@@ -114,13 +114,13 @@ public class Box2DPlayer extends Entity{
         switch (playerState) {
             case STANDING:
                 currentFrame = idle.getKeyFrame(stateTime, true);
-                bodyMove();
+                move();
                 if(!direction.isZero())
                     playerState = playerState.MOVING;
                 break;
             case MOVING:
                 currentFrame = moving.getKeyFrame(stateTime, true);
-                bodyMove();
+                move();
                 if(dashCooldownTimer <= 0)
                     checkDash();
                 if(!direction.isZero())
@@ -137,7 +137,7 @@ public class Box2DPlayer extends Entity{
                 }
                 break;
         }
-        //updatePosition();
+        updatePosition();
     }
 
     private void updateDirection() {
