@@ -1,6 +1,7 @@
 package com.fourmen.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -21,17 +22,14 @@ import com.fourmen.utils.CameraStyles;
 public class Box2DRender extends ScreenAdapter {
     private static float WORLD_WIDTH;
     private static float WORLD_HEIGHT;
-
-
+    
     SpriteBatch batch;
     World world;
-    Walls leftWall,rightWall, topWall,bottomWall;
+    Walls leftWall, rightWall, topWall, bottomWall;
 
     Box2DPlayer player;
     private float BOUND_WIDTH = 3000;
-    private float BOUND_HEIGHT = BOUND_WIDTH * (3f/5f);
-
-    private Matrix4 cameraBox2D;
+    private float BOUND_HEIGHT = BOUND_WIDTH * (3f / 5f);
 
     Box2DDebugRenderer debugRenderer;
 
@@ -39,7 +37,7 @@ public class Box2DRender extends ScreenAdapter {
     private Viewport viewport;
 
 
-    public Box2DRender(int width, int height){
+    public Box2DRender(int width, int height) {
         WORLD_WIDTH = width;
         WORLD_HEIGHT = height;
     }
@@ -49,24 +47,25 @@ public class Box2DRender extends ScreenAdapter {
         world = new World(new Vector2(0, 0), true);
         debugRenderer = new Box2DDebugRenderer();
         player = new Box2DPlayer(world);
-        leftWall = new Walls(world,0,0,BOUND_WIDTH * .086f,BOUND_HEIGHT);
-        bottomWall = new Walls(world,0,0, BOUND_WIDTH,BOUND_HEIGHT * .1533333333f);
-        topWall = new Walls(world,0,BOUND_HEIGHT - (.14F * BOUND_HEIGHT),
+        leftWall = new Walls(world, 0, 0, BOUND_WIDTH * .086f, BOUND_HEIGHT);
+        bottomWall = new Walls(world, 0, 0, BOUND_WIDTH, BOUND_HEIGHT * .1533333333f);
+        topWall = new Walls(world, 0, BOUND_HEIGHT - (.14F * BOUND_HEIGHT),
                 BOUND_WIDTH, BOUND_HEIGHT * .14f);
-        rightWall = new Walls(world,BOUND_WIDTH - (BOUND_WIDTH * .088f),
-                0,BOUND_WIDTH * .088f,BOUND_HEIGHT);
+        rightWall = new Walls(world, BOUND_WIDTH - (BOUND_WIDTH * .088f),
+                0, BOUND_WIDTH * .088f, BOUND_HEIGHT);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         camera.update();
-        viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        //viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        viewport = new ExtendViewport(camera.viewportWidth / 2f, camera.viewportHeight / 2f, camera);
     }
 
 
     public void render(float delta) {
-        clearScreen();
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         camera.update();
-        debugRenderer.render(world,camera.combined);
+        clearScreen();
+        debugRenderer.render(world, camera.combined);
         cameraUpdate();
         player.act();
         batch.setProjectionMatrix(camera.projection);
@@ -77,25 +76,27 @@ public class Box2DRender extends ScreenAdapter {
     }
 
     private void clearScreen() {
-       // Gdx.gl.glClearColor(com.badlogic.gdx.graphics.Color.BLACK.r, com.badlogic.gdx.graphics.Color.BLACK.g,
-                //com.badlogic.gdx.graphics.Color.BLACK.b, Color.BLACK.a);
+        // Gdx.gl.glClearColor(com.badlogic.gdx.graphics.Color.BLACK.r, com.badlogic.gdx.graphics.Color.BLACK.g,
+        //com.badlogic.gdx.graphics.Color.BLACK.b, Color.BLACK.a);
 
-        Gdx.gl.glClearColor(255,255,255,1);
+        Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
     }
-    public void update(float delta){
+
+    public void update(float delta) {
         //flower.drawDebug(shapeRenderer);
 
         // we should move this camera stuff to a new method
-        float startX = camera.viewportWidth /2;
-        float startY = camera.viewportHeight /2;
+        float startX = camera.viewportWidth / 2;
+        float startY = camera.viewportHeight / 2;
 
         CameraStyles.boundary(camera, startX, startY, BOUND_WIDTH - (2 * startX),
                 BOUND_HEIGHT - (2 * startY));
 
         //player.update(delta);
     }
+
     public void dispose() {
         leftWall.dispose();
         world.dispose();
@@ -110,12 +111,13 @@ public class Box2DRender extends ScreenAdapter {
         world.destroyBody(leftWall.getBody());
     }
 
-    private void cameraUpdate(){
-        CameraStyles.lockOnTarget(camera,player);
+    private void cameraUpdate() {
+        CameraStyles.lockOnTarget(camera, player);
     }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
     }
+
 }
