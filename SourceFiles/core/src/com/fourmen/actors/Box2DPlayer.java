@@ -256,7 +256,8 @@ public class Box2DPlayer extends Entity{
     }
 
     private void blockPlayerLeavingTheWorld() {
-        setPosition(MathUtils.clamp(getX(),playerBounds.getW1(),playerBounds.getWidth()+ playerBounds.getW1() - PLAYER_WIDTH), MathUtils.clamp(getY(), playerBounds.getH2(), playerBounds.getHeight() + playerBounds.getH2() - PLAYER_HEIGHT));
+        setPosition(MathUtils.clamp(getX(),playerBounds.getW1()+ (.5f* PLAYER_WIDTH),playerBounds.getWidth()+ playerBounds.getW1() - PLAYER_WIDTH + (.5f * PLAYER_WIDTH)),
+                MathUtils.clamp(getY(), playerBounds.getH2() + (.5f *PLAYER_HEIGHT), playerBounds.getHeight() + playerBounds.getH2() - PLAYER_HEIGHT + (.5f *PLAYER_HEIGHT)));
         //enemy.setPosition(MathUtils.clamp(enemy.getX(),playerBounds.getW1(),playerBounds.getWidth()+ playerBounds.getW1() - enemy.getEnemyWidth()), MathUtils.clamp(enemy.getY(), playerBounds.getH2(), playerBounds.getHeight() + playerBounds.getH2() - enemy.getEnemyHeight()));
     }
 
