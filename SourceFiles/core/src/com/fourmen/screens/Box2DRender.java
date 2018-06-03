@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.fourmen.actors.Box2DPlayer;
 import com.fourmen.box2D.Walls;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.fourmen.utils.BodyEditorLoader;
 import com.fourmen.utils.CameraStyles;
 
 
@@ -24,7 +25,7 @@ public class Box2DRender extends ScreenAdapter {
 
     SpriteBatch batch;
     World world;
-    Walls leftWall, rightWall, topWall, bottomWall;
+    Walls walls;
 
     Box2DPlayer player;
     private float BOUND_WIDTH = 3000;
@@ -34,7 +35,6 @@ public class Box2DRender extends ScreenAdapter {
 
     private OrthographicCamera camera;
     private Viewport viewport;
-
     private float timeSinceStart;
 
 
@@ -48,15 +48,7 @@ public class Box2DRender extends ScreenAdapter {
         world = new World(new Vector2(0, 0), true);
         debugRenderer = new Box2DDebugRenderer();
         player = new Box2DPlayer(world);
-        leftWall = new Walls(world,0,0,BOUND_WIDTH * .086f,BOUND_HEIGHT);
-        bottomWall = new Walls(world,0,0, BOUND_WIDTH,BOUND_HEIGHT * .1533333333f);
-        topWall = new Walls(world,0,BOUND_HEIGHT - (.14F * BOUND_HEIGHT),
-                BOUND_WIDTH, BOUND_HEIGHT * .14f);
-        rightWall = new Walls(world, BOUND_WIDTH - (BOUND_WIDTH * .088f),
-                0, BOUND_WIDTH * .088f, BOUND_HEIGHT);
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        rightWall = new Walls(world,BOUND_WIDTH - (BOUND_WIDTH * .088f),
-                0,BOUND_WIDTH * .088f,BOUND_HEIGHT);
+        walls = new Walls(world,0,0);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         camera.update();
@@ -114,17 +106,11 @@ public class Box2DRender extends ScreenAdapter {
     }
 
     public void dispose() {
-        leftWall.dispose();
         world.dispose();
         batch.dispose();
         debugRenderer.dispose();
-        topWall.dispose();
-        rightWall.dispose();
-        leftWall.dispose();
-        world.destroyBody(topWall.getBody());
-        world.destroyBody(bottomWall.getBody());
-        world.destroyBody(rightWall.getBody());
-        world.destroyBody(leftWall.getBody());
+        walls.dispose();
+        world.destroyBody(walls.getBody());
     }
 
     private void cameraUpdate() {

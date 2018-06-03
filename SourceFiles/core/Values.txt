@@ -1,0 +1,13 @@
+Pixel Values:
+
+width = 163
+height = 251
+
+world width = 3000
+world height = 1800
+
+Palette is 1.524m wide
+Palette is 2.3467728528m tall
+
+The room is 28.04907975m wide
+the room is 16.82944785m tall

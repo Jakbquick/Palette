@@ -6,31 +6,29 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.*;
+import com.fourmen.utils.BodyEditorLoader;
 
 
 public class Walls {
     private Body body;
-    private float width, height,x,y;
-    private Fixture wallFixture;
-    public Walls(World world, float x, float y, float width, float height){
-        this.width = width;
-        this.height = height;
+    private float x,y;
+    BodyEditorLoader bodyEditorLoader;
+    private FixtureDef fixtureDef;
+    public Walls(World world, float x, float y){
         this.x = x;
         this.y = y;
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(x + (.5f + width), y + (.5f * height));
+        bodyDef.position.set(x , y);
         body = world.createBody(bodyDef);
 
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(width, height);
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = 1f;
+        bodyEditorLoader = new BodyEditorLoader("Box2d");
+        fixtureDef = new FixtureDef();
+        bodyEditorLoader.attachFixture(body,"Walls",fixtureDef,28.04907975f);
 
-        wallFixture = body.createFixture(fixtureDef);
-        shape.dispose();
+
+
     }
     public void dispose(){
 
@@ -40,15 +38,7 @@ public class Walls {
     //public void updateWall(){
         //wallSprite.setPosition(body.getPosition().x, body.getPosition().y);
     //}
-    public float getWidth(){
-        return width;
-    }
-    public float getHeight(){
-        return height;
-    }
-    public void drawDebug(ShapeRenderer shapeRenderer){
 
-    }
     public Body getBody(){
         return body;
     }
