@@ -28,7 +28,7 @@ public class Box2DPlayer extends Entity{
     private Vector2 currentSpeed;
     private float acceleration;
     private float deceleration;
-
+    private Body body;
     private float stateTime = 0;
 
     public TextureRegion currentFrame;
@@ -52,7 +52,7 @@ public class Box2DPlayer extends Entity{
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(getX(), getY());
 
-        Body body = world.createBody(bodyDef);
+        body = world.createBody(bodyDef);
 
         PolygonShape square = new PolygonShape();
         square.setAsBox(PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -75,6 +75,10 @@ public class Box2DPlayer extends Entity{
 
     public float getPlayerHeight() {
         return PLAYER_HEIGHT;
+    }
+
+    public Body getPlayerBody(){
+        return body;
     }
 
     public void act() {

@@ -1,7 +1,9 @@
 package com.fourmen.utils;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.fourmen.actors.Box2DPlayer;
 import com.fourmen.actors.Enemy;
 import com.fourmen.actors.Player;
 
@@ -17,7 +19,17 @@ public class CameraStyles {
         camera.position.set(position);
         camera.update();
     }
-
+    public static void lockOnTarget(Camera camera, Box2DPlayer player){
+        Vector3 position = camera.position;
+        //position.x = camera.position.x + (player.getX() * PPM - camera.position.x) * .1f;
+        //position.y = camera.position.y + (player.getY() * PPM - camera.position.y) * .1f;
+        //position.x = player.getX();
+        //position.y = player.getY();
+        position.x = camera.position.x + (player.getX() + (player.getPlayerWidth() / 2f) - camera.position.x) * .1f;
+        position.y = camera.position.y + (player.getY() + (player.getPlayerHeight() / 2f) - camera.position.y) * .1f;
+        camera.position.set(position);
+        camera.update();
+    }
     public static void boundary(Camera camera, float startX, float startY, float width, float height){
         Vector3 position = camera.position;
 

@@ -140,7 +140,6 @@ public class GameScreen extends ScreenAdapter {
     }
 
     public void update(float delta){
-        //flower.drawDebug(shapeRenderer);
 
         // we should move this camera stuff to a new method
         float startX = camera.viewportWidth /2;
