@@ -25,8 +25,10 @@ public class CameraStyles {
         //position.y = camera.position.y + (player.getY() * PPM - camera.position.y) * .1f;
         //position.x = player.getX();
         //position.y = player.getY();
-        position.x = camera.position.x + (player.getX() + (player.getPlayerWidth() / 2f) - camera.position.x) * .1f;
-        position.y = camera.position.y + (player.getY() + (player.getPlayerHeight() / 2f) - camera.position.y) * .1f;
+        //position.x = camera.position.x + (player.getX() + (player.getPlayerWidth() / 2f) - camera.position.x) * .1f;
+        //position.y = camera.position.y + (player.getY() + (player.getPlayerHeight() / 2f) - camera.position.y) * .1f;
+        position.x = player.getX();
+        position.y = player.getY();
         camera.position.set(position);
         camera.update();
     }

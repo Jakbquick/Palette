@@ -11,7 +11,7 @@ public abstract class Entity extends Actor {
     //constructors
     public Entity() {
         health = 100;
-        position = new Vector2(600, 300);
+        position = new Vector2(1500, 900);
     }
 
     public void setPosition(float x, float y) {

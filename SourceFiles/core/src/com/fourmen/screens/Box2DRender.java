@@ -28,8 +28,8 @@ public class Box2DRender extends ScreenAdapter {
     Walls walls;
 
     Box2DPlayer player;
-    private float BOUND_WIDTH = 3000;
-    private float BOUND_HEIGHT = BOUND_WIDTH * (3f/5f);
+    private float scale = 3000;
+    //private float BOUND_HEIGHT = BOUND_WIDTH * (3f/5f);
 
     Box2DDebugRenderer debugRenderer;
 
@@ -48,7 +48,7 @@ public class Box2DRender extends ScreenAdapter {
         world = new World(new Vector2(0, 0), true);
         debugRenderer = new Box2DDebugRenderer();
         player = new Box2DPlayer(world);
-        walls = new Walls(world,0,0);
+        walls = new Walls(world,0,0, scale);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         camera.update();
@@ -61,20 +61,18 @@ public class Box2DRender extends ScreenAdapter {
 
     public void render(float delta) {
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
-        camera.update();
+        cameraUpdate();
         timeSinceStart += delta;
         update(delta);
         clearScreen();
-        debugRenderer.render(world, camera.combined);
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
-        camera.update();
-        debugRenderer.render(world,camera.combined);
-        cameraUpdate();
         player.act();
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
         batch.begin();
+        walls.draw(batch);
         player.draw(batch);
+        debugRenderer.render(world, camera.combined);
         batch.end();
     }
 
@@ -91,12 +89,12 @@ public class Box2DRender extends ScreenAdapter {
         //flower.drawDebug(shapeRenderer);
 
         // we should move this camera stuff to a new method
-        float startX = camera.viewportWidth / 2;
-        float startY = camera.viewportHeight / 2;
+        //float startX = camera.viewportWidth / 2;
+        //float startY = camera.viewportHeight / 2;
 
-        CameraStyles.boundary(camera, startX, startY, BOUND_WIDTH - (2 * startX),
-                BOUND_HEIGHT - (2 * startY));
-
+        //CameraStyles.boundary(camera, startX, startY, BOUND_WIDTH - (2 * startX),
+                //BOUND_HEIGHT - (2 * startY));
+        walls.updateAnimations(delta);
         player.updateTimers(delta);
     }
 
@@ -120,6 +118,10 @@ public class Box2DRender extends ScreenAdapter {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+    }
+
+    public void pause(){
+        Gdx.app.exit();
     }
 }
 

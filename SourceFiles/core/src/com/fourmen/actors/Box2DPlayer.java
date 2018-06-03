@@ -76,7 +76,7 @@ public class Box2DPlayer extends Entity{
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(position);
+        bodyDef.position.set(new Vector2(position));
 
         body = world.createBody(bodyDef);
 
