@@ -1,0 +1,103 @@
+package aurelienribon.bodyeditor.canvas;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import aurelienribon.bodyeditor.Ctx;
+import aurelienribon.bodyeditor.models.RigidBodyModel;
+import aurelienribon.utils.gdx.TextureUtils;
+import aurelienribon.utils.notifications.ObservableList;
+
+/**
+ * @author Aurelien Ribon | http://www.aurelienribon.com/
+ */
+public class Assets extends AssetManager {
+    private static Assets instance = new Assets();
+
+    public static Assets inst() {
+        return instance;
+    }
+
+    private final Map<RigidBodyModel, TextureRegion> rigidBodiesRegions = new HashMap<RigidBodyModel, TextureRegion>();
+    private TextureRegion unknownRegion;
+
+    public void initialize() {
+        String[] texturesNearest = new String[]{
+                "data/transparent-light.png",
+                "data/transparent-dark.png",
+                "data/white.png"
+        };
+
+        String[] texturesLinear = new String[]{
+                "data/ball.png",
+                "data/v00.png",
+                "data/v01.png",
+                "data/v10.png",
+                "data/unknown.png"
+        };
+
+        for (String tex : texturesNearest) load(tex, Texture.class);
+        for (String tex : texturesLinear) load(tex, Texture.class);
+
+        while (update() == false) {
+        }
+
+        for (String tex : texturesLinear) {
+            get(tex, Texture.class).setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        }
+
+        unknownRegion = new TextureRegion(get("data/unknown.png", Texture.class));
+
+        Ctx.bodies.getModels().addListChangedListener(new ObservableList.ListChangeListener<RigidBodyModel>() {
+            @Override
+            public void changed(Object source, List<RigidBodyModel> added, List<RigidBodyModel> removed) {
+                for (RigidBodyModel body : removed) {
+                    final TextureRegion region = rigidBodiesRegions.remove(body);
+                    if (region != null){
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                region.getTexture().dispose();
+                            }
+                        });
+                    }
+                }
+
+                for (RigidBodyModel body : added) {
+                    load(body);
+                }
+            }
+        });
+    }
+
+    public TextureRegion getRegion(RigidBodyModel body) {
+        if (!body.isImagePathValid()) return unknownRegion;
+        if (body.getImagePath() == null) return null;
+        if (!rigidBodiesRegions.containsKey(body)) load(body);
+        return rigidBodiesRegions.get(body);
+    }
+
+    private void load(final RigidBodyModel body) {
+        if (!body.isImagePathValid()) return;
+        if (body.getImagePath() == null) return;
+
+        final File file = Ctx.io.getImageFile(body.getImagePath());
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                // process the result, e.g. add it to an Array<Result> field of the ApplicationListener.
+                TextureRegion region = TextureUtils.getPOTTexture(file.getPath());
+                rigidBodiesRegions.put(body, region);
+
+            }
+        });
+
+    }
+}

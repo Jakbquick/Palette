@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.*;
 public class Walls {
     private Body body;
     private float width, height,x,y;
+    private Fixture wallFixture;
     public Walls(World world, float x, float y, float width, float height){
         this.width = width;
         this.height = height;
@@ -28,8 +29,7 @@ public class Walls {
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
 
-        body.createFixture(fixtureDef);
-
+        wallFixture = body.createFixture(fixtureDef);
         shape.dispose();
     }
     public void dispose(){
