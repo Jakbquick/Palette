@@ -22,10 +22,10 @@ public class Box2DPlayer extends Entity{
     private final static float BOX2D_SCALE = 1f;
     private final static float PLAYER_WIDTH = 163 * PLAYER_SIZE; //163    40
     private final static float PLAYER_HEIGHT = 251 * PLAYER_SIZE;
-    private final static int MAX_SPEED = 700;
+    private final static int MAX_SPEED = 999999999;
     private final static float DASH_SPEED = 2800;
-    private final static float ACCELERATION_CONSTANT = .6f;
-    private final static float DECELERATION_CONSTANT = .3f;
+    private final static float ACCELERATION_CONSTANT = 1f;
+    private final static float DECELERATION_CONSTANT = 1f;
     private final static float DASH_COOLDOWN = .6f;
     private final static float DASH_DURATION = .1f;
     private final static float STANDING_COOLDOWN = .25f;
@@ -77,6 +77,7 @@ public class Box2DPlayer extends Entity{
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(new Vector2(position));
+        bodyDef.fixedRotation = true;
 
         body = world.createBody(bodyDef);
 
@@ -85,6 +86,9 @@ public class Box2DPlayer extends Entity{
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = square;
+        fixtureDef.density = 0f;
+        fixtureDef.friction = 0f;
+        fixtureDef.restitution = 0f;
 
         Fixture fixure = body.createFixture(fixtureDef);
 
@@ -110,13 +114,13 @@ public class Box2DPlayer extends Entity{
         switch (playerState) {
             case STANDING:
                 currentFrame = idle.getKeyFrame(stateTime, true);
-                move();
+                bodyMove();
                 if(!direction.isZero())
                     playerState = playerState.MOVING;
                 break;
             case MOVING:
                 currentFrame = moving.getKeyFrame(stateTime, true);
-                move();
+                bodyMove();
                 if(dashCooldownTimer <= 0)
                     checkDash();
                 if(!direction.isZero())
@@ -133,7 +137,7 @@ public class Box2DPlayer extends Entity{
                 }
                 break;
         }
-        updatePosition();
+        //updatePosition();
     }
 
     private void updateDirection() {
@@ -188,6 +192,14 @@ public class Box2DPlayer extends Entity{
         setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());        // changes the y position of the entity
     }
 
+    private void bodyMove() {
+        Vector2 force = new Vector2(acceleration * direction.x,acceleration * direction.y);
+        applyForce(force);
+
+        setX(body.getPosition().x);
+        setY(body.getPosition().y);
+    }
+
     private void checkDash() {
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && !(direction.x == 0 && direction.y == 0)) {
             playerState = playerState.DASHING;
@@ -210,6 +222,11 @@ public class Box2DPlayer extends Entity{
 
         setX(getX() + currentSpeed.x * Gdx.graphics.getDeltaTime());
         setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());
+    }
+
+    private void applyForce(Vector2 force) {
+        Vector2 pos = body.getWorldCenter();
+        body.applyForce(force, pos, true);
     }
 
     public void draw(Batch batch) {
