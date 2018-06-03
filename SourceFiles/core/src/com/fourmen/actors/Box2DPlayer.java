@@ -2,6 +2,7 @@ package com.fourmen.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -22,32 +23,55 @@ public class Box2DPlayer extends Entity{
     private final static float PLAYER_WIDTH = 163 * PLAYER_SIZE; //163    40
     private final static float PLAYER_HEIGHT = 251 * PLAYER_SIZE;
     private final static int MAX_SPEED = 700;
+    private final static float DASH_SPEED = 2800;
     private final static float ACCELERATION_CONSTANT = .6f;
     private final static float DECELERATION_CONSTANT = .3f;
+    private final static float DASH_COOLDOWN = .6f;
+    private final static float DASH_DURATION = .1f;
+    private final static float STANDING_COOLDOWN = .25f;
+    private enum PlayerState {
+        STANDING, MOVING, DASHING
+    }
 
     private Vector2 direction;
+    private Vector2 dashDirection;
     private Vector2 targetSpeed;        // contains a target speed for x and y
     private Vector2 currentSpeed;
+    private Vector2 tempSpeed;
+
     private float acceleration;
     private float deceleration;
+
     private Body body;
+
+    private PlayerState playerState;
+
+    private double dashDurationTimer = 0;
+    private double dashCooldownTimer = 0;
+    private double standingCooldownTimer = 0;
     private float stateTime = 0;
 
     public TextureRegion currentFrame;
     private Animation<TextureRegion> moving;
+    private Animation<TextureRegion> idle;
 
     //constructors
     public Box2DPlayer(World world) {
         super();
 
         direction = new Vector2(0, 0);
+        dashDirection = new Vector2(0, 0);
         targetSpeed = new Vector2(0, 0);
         currentSpeed = new Vector2(0, 0);
+        tempSpeed = new Vector2(0,0);
 
         acceleration = ACCELERATION_CONSTANT * MAX_SPEED;
         deceleration = DECELERATION_CONSTANT * MAX_SPEED;
 
+        playerState = PlayerState.STANDING;
+
         moving = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/spritemovesheet.png", 1, 4));
+        idle = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/spriteidlesheet.png", 1, 5));
         currentFrame = moving.getKeyFrame(stateTime, true);
 
         BodyDef bodyDef = new BodyDef();
@@ -81,9 +105,34 @@ public class Box2DPlayer extends Entity{
     }
 
     public void act() {
+        System.out.println(currentSpeed + " " + playerState);
         updateDirection();
-        move();
-        currentFrame = moving.getKeyFrame(stateTime, true);
+        switch (playerState) {
+            case STANDING:
+                currentFrame = idle.getKeyFrame(stateTime, true);
+                move();
+                if(!direction.isZero())
+                    playerState = playerState.MOVING;
+                break;
+            case MOVING:
+                currentFrame = moving.getKeyFrame(stateTime, true);
+                move();
+                if(dashCooldownTimer <= 0)
+                    checkDash();
+                if(!direction.isZero())
+                    standingCooldownTimer = STANDING_COOLDOWN;
+                if(standingCooldownTimer <= 0)
+                    playerState = playerState.STANDING;
+                break;
+            case DASHING:
+                dash();
+                if(dashDurationTimer <= 0) {
+                    currentSpeed.x = tempSpeed.x;
+                    currentSpeed.y = tempSpeed.y;
+                    playerState = playerState.MOVING;
+                }
+                break;
+        }
         updatePosition();
     }
 
@@ -139,12 +188,39 @@ public class Box2DPlayer extends Entity{
         setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());        // changes the y position of the entity
     }
 
+    private void checkDash() {
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && !(direction.x == 0 && direction.y == 0)) {
+            playerState = playerState.DASHING;
+            dashDirection.x = direction.x;
+            dashDirection.y = direction.y;
+
+            tempSpeed.x = currentSpeed.x;
+            tempSpeed.y = currentSpeed.y;
+
+            currentSpeed = new Vector2(0,0);
+
+            dashDurationTimer = DASH_DURATION;
+            dashCooldownTimer = DASH_COOLDOWN;
+        }
+    }
+
+    private void dash() {
+        currentSpeed.x = DASH_SPEED * dashDirection.x;
+        currentSpeed.y = DASH_SPEED * dashDirection.y;
+
+        setX(getX() + currentSpeed.x * Gdx.graphics.getDeltaTime());
+        setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());
+    }
+
     public void draw(Batch batch) {
         batch.draw(currentFrame, getX() - 141.5f * PLAYER_SIZE, getY() - 146 * PLAYER_SIZE);
 
     }
 
     public void updateTimers(float delta) {
+        dashDurationTimer -= delta;
+        dashCooldownTimer -= delta;
+        standingCooldownTimer -= delta;
         stateTime += delta;
     }
 
