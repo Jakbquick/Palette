@@ -105,7 +105,7 @@ public class Box2DPlayer extends Entity{
     }
 
     public void act() {
-        System.out.println(currentSpeed + " " + playerState);
+        //System.out.println(currentSpeed + " " + playerState);
         updateDirection();
         switch (playerState) {
             case STANDING:
