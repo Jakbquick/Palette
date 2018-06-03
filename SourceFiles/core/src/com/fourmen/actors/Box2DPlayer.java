@@ -58,10 +58,14 @@ public class Box2DPlayer extends Entity{
     private Animation<TextureRegion> moving;
     private Animation<TextureRegion> idle;
 
+    private int lastDirectionfaced;
+    private int LEFT = 0;
+    private int RIGHT =1;
+
     //constructors
     public Box2DPlayer(World world, PlayerBounds MyPlayerBounds) {
         super();
-
+        lastDirectionfaced = LEFT;
         direction = new Vector2(0, 0);
         dashDirection = new Vector2(0, 0);
         targetSpeed = new Vector2(0, 0);
@@ -152,9 +156,11 @@ public class Box2DPlayer extends Entity{
 
         if(Gdx.input.isKeyPressed(Input.Keys.A)) {
             direction.x -= 1;
+            lastDirectionfaced = LEFT;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.D)) {
             direction.x += 1;
+            lastDirectionfaced= RIGHT;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.W)) {
             direction.y += 1;
@@ -236,7 +242,7 @@ public class Box2DPlayer extends Entity{
     }
 
     public void draw(Batch batch) {
-        boolean flip = (direction.x > 0);
+        boolean flip = (lastDirectionfaced == RIGHT);
         //batch.draw(currentFrame, getX() - 141.5f * PLAYER_SIZE, getY() - 146 * PLAYER_SIZE);
         batch.draw(currentFrame, flip ? getX() - (16f * PLAYER_SIZE) - (141.5f * PLAYER_SIZE)+currentFrame.getRegionWidth()* PLAYER_SIZE : getX() - (141.5f * PLAYER_SIZE),
                 getY() - 146 * PLAYER_SIZE, flip ? -currentFrame.getRegionWidth()* PLAYER_SIZE: currentFrame.getRegionWidth()* PLAYER_SIZE,
