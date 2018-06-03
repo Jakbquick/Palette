@@ -38,6 +38,8 @@ public class Box2DRender extends ScreenAdapter {
     private OrthographicCamera camera;
     private Viewport viewport;
 
+    private float timeSinceStart;
+
 
     public Box2DRender(int width, int height){
         WORLD_WIDTH = width;
@@ -59,10 +61,13 @@ public class Box2DRender extends ScreenAdapter {
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         camera.update();
         viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        timeSinceStart = 0;
     }
 
 
     public void render(float delta) {
+        timeSinceStart += delta;
+        update(delta);
         clearScreen();
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         camera.update();
@@ -94,8 +99,13 @@ public class Box2DRender extends ScreenAdapter {
         CameraStyles.boundary(camera, startX, startY, BOUND_WIDTH - (2 * startX),
                 BOUND_HEIGHT - (2 * startY));
 
-        //player.update(delta);
+        player.updateTimers(delta);
     }
+
+    public void drawDebug() {
+        
+    }
+
     public void dispose() {
         leftWall.dispose();
         world.dispose();

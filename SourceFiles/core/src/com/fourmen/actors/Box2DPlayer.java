@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.fourmen.utils.Animator;
@@ -17,6 +18,7 @@ import java.awt.*;
 public class Box2DPlayer extends Entity{
     //instance variables
     private final static float PLAYER_SIZE = 1f;
+    private final static float BOX2D_SCALE = 1/3f;
     private final static float PLAYER_WIDTH = 163 * PLAYER_SIZE; //163    40
     private final static float PLAYER_HEIGHT = 251 * PLAYER_SIZE;
     private final static int MAX_SPEED = 700;
@@ -50,18 +52,15 @@ public class Box2DPlayer extends Entity{
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(getX(), getY());
+        bodyDef.position.set(position);
 
         body = world.createBody(bodyDef);
 
         PolygonShape square = new PolygonShape();
-        square.setAsBox(PLAYER_WIDTH, PLAYER_HEIGHT);
+        square.setAsBox(PLAYER_WIDTH * BOX2D_SCALE, PLAYER_HEIGHT * BOX2D_SCALE);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = square;
-        fixtureDef.density = 0.5f;
-        fixtureDef.friction = 0.4f;
-        fixtureDef.restitution = 1;
 
         Fixture fixure = body.createFixture(fixtureDef);
 
@@ -84,6 +83,8 @@ public class Box2DPlayer extends Entity{
     public void act() {
         updateDirection();
         move();
+        currentFrame = moving.getKeyFrame(stateTime, true);
+        updatePosition();
     }
 
     private void updateDirection() {
@@ -139,15 +140,22 @@ public class Box2DPlayer extends Entity{
     }
 
     public void draw(Batch batch) {
-        batch.draw(currentFrame, getX(), getY());
+        batch.draw(currentFrame, getX() - 141.5f * PLAYER_SIZE, getY() - 146 * PLAYER_SIZE);
+
+    }
+
+    public void updateTimers(float delta) {
+        stateTime += delta;
     }
 
     public void updatePosition() {
-
+        body.setTransform(position, 0);
     }
 
     public void drawDebug(Box2DDebugRenderer debug) {
 
     }
+
+
 
 }
