@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.fourmen.actors.Box2DPlayer;
+import com.fourmen.actors.PlayerBounds;
 import com.fourmen.box2D.Walls;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.fourmen.utils.BodyEditorLoader;
@@ -31,6 +32,8 @@ public class Box2DRender extends ScreenAdapter {
     Box2DPlayer player;
     private float scale = 3000;
     private float BOUND_HEIGHT = scale * (3f/5f);
+
+    private PlayerBounds playerBounds = new PlayerBounds(scale,BOUND_HEIGHT);
 
     Box2DDebugRenderer debugRenderer;
 
@@ -68,6 +71,7 @@ public class Box2DRender extends ScreenAdapter {
         clearScreen();
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         player.act();
+        blockPlayerLeavingTheWorld();
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
         batch.begin();
@@ -105,6 +109,10 @@ public class Box2DRender extends ScreenAdapter {
         player.updateTimers(delta);
     }
 
+    private void blockPlayerLeavingTheWorld() {
+        player.setPosition(MathUtils.clamp(player.getX(),playerBounds.getW1(),playerBounds.getWidth()+ playerBounds.getW1() - player.getPlayerWidth()), MathUtils.clamp(player.getY(), playerBounds.getH2(), playerBounds.getHeight() + playerBounds.getH2() - player.getPlayerHeight()));
+        //enemy.setPosition(MathUtils.clamp(enemy.getX(),playerBounds.getW1(),playerBounds.getWidth()+ playerBounds.getW1() - enemy.getEnemyWidth()), MathUtils.clamp(enemy.getY(), playerBounds.getH2(), playerBounds.getHeight() + playerBounds.getH2() - enemy.getEnemyHeight()));
+    }
 
     public void drawDebug() {
 
