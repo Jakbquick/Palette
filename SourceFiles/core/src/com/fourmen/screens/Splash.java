@@ -18,6 +18,11 @@ public class Splash implements Screen {
     private Texture splashTexture;
     private SpriteBatch batch;
     private TweenManager tweenManager;
+    private int width,height;
+    public Splash(int width, int height){
+        this.width = width;
+        this.height = height;
+    }
 
     @Override
     public void show() {
@@ -33,7 +38,7 @@ public class Splash implements Screen {
         Tween.to(splash,SpriteAccessor.ALPHA,2).target(1).repeatYoyo(1, 2).setCallback(new TweenCallback() {
             @Override
             public void onEvent(int type, BaseTween<?> source) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu(width,height));
             }
         }).start(tweenManager);
     }

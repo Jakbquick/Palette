@@ -1,6 +1,7 @@
 package com.fourmen.screens;
 
 
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -27,9 +28,12 @@ public class MainMenu implements Screen {
     private Table table;
     private Texture buttonExit, playButton, background;
     private BitmapFont font;
+    private int width, height;
+    private static TweenManager tweenManager;
 
-
-    public MainMenu() {
+    public MainMenu(int width, int height) {
+        this.width = width;
+        this.height = height;
     }
 
 
@@ -57,7 +61,7 @@ public class MainMenu implements Screen {
         playbutt.addListener(new ClickListener()
         {
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(1500,(int)(1500 * (double)(9.0/16.0))));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Box2DRender(width,height));
 
                 event.stop();
 
