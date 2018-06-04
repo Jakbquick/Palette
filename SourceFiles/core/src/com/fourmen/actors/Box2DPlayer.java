@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.fourmen.box2D.CircleSlash;
 import com.fourmen.utils.Animator;
 
 import java.awt.*;
@@ -51,6 +52,8 @@ public class Box2DPlayer extends Entity{
 
     private PlayerBounds playerBounds;
 
+    private CircleSlash circleSlash;
+
     private double dashDurationTimer = 0;
     private double dashCooldownTimer = 0;
     private double standingCooldownTimer = 0;
@@ -59,13 +62,15 @@ public class Box2DPlayer extends Entity{
     public TextureRegion currentFrame;
     private Animation<TextureRegion> moving;
     private Animation<TextureRegion> idle;
+    private Animation<TextureRegion> dash;
+    private Animation<TextureRegion> empty;
 
     private int lastDirectionfaced;
     private int LEFT = 0;
     private int RIGHT = 1;
 
     //constructors
-    public Box2DPlayer(World world, PlayerBounds MyPlayerBounds) {
+    public Box2DPlayer(World world, PlayerBounds myPlayerBounds) {
         super();
         lastDirectionfaced = LEFT;
         direction = new Vector2(0, 0);
@@ -81,10 +86,14 @@ public class Box2DPlayer extends Entity{
 
         playerState = PlayerState.STANDING;
 
-        playerBounds = MyPlayerBounds;
+        playerBounds = myPlayerBounds;
+
+        circleSlash = new CircleSlash(world, position, PLAYER_SIZE);
 
         moving = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/spritemovesheet.png", 1, 4));
         idle = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/spriteidlesheet.png", 1, 5));
+        dash = new Animation<TextureRegion>(0.08f, Animator.setUpSpriteSheet("Images/spritedashsheet.png", 1, 5));
+        empty = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/emptyframe.png", 1, 1));
         currentFrame = moving.getKeyFrame(stateTime, true);
 
         BodyDef bodyDef = new BodyDef();
@@ -141,9 +150,13 @@ public class Box2DPlayer extends Entity{
         return body;
     }
 
+    public float getPlayerSize() {
+        return PLAYER_SIZE;
+    }
+
     public void act() {
         //System.out.println(currentSpeed + " " + playerState);
-        System.out.println(fixtureCollisions);
+        //System.out.println(fixtureCollisions);
         updateDirection();
         switch (playerState) {
             case STANDING:
@@ -163,6 +176,12 @@ public class Box2DPlayer extends Entity{
                     playerState = playerState.STANDING;
                 break;
             case DASHING:
+                currentFrame = dash.getKeyFrame(stateTime);
+                System.out.println(dash.isAnimationFinished(stateTime));
+                if(dash.isAnimationFinished(stateTime)) {
+                    //currentFrame = empty.getKeyFrame(stateTime);
+                }
+
                 dash();
                 if(dashDurationTimer <= 0) {
                     currentSpeed.x = tempSpeed.x;
@@ -171,6 +190,7 @@ public class Box2DPlayer extends Entity{
                 }
                 break;
         }
+        circleSlash.act();
         blockPlayerLeavingTheWorld();
         updatePosition();
     }
@@ -270,6 +290,7 @@ public class Box2DPlayer extends Entity{
 
     public void updatePosition() {
         body.setTransform(position, 0);
+        circleSlash.updatePosition(position);
     }
 
     public void updateCollisions(int collisions) {
