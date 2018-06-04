@@ -210,6 +210,10 @@ public class Box2DEnemy extends Entity {
         return ENEMY_HEIGHT;
     }
 
+    public Body getPlayerBody(){
+        return body;
+    }
+
     public void updatePosition() {
         body.setTransform(position, 0);
     }
