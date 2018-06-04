@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import javafx.scene.control.skin.TextInputControlSkin;
+//import javafx.scene.control.skin.TextInputControlSkin;
 
 import javax.swing.text.Position;
 import javax.xml.stream.Location;

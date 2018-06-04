@@ -1,16 +1,23 @@
 package com.fourmen.screens;
 
+
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class MainMenu implements Screen {
 
@@ -18,38 +25,54 @@ public class MainMenu implements Screen {
     private TextureAtlas atlas;
     private Skin skin;
     private Table table;
-    private TextButton buttonExit, buttonPlay;
-    private BitmapFont white;
-    private Label heading;
+    private Texture buttonExit, playButton, background;
+    private BitmapFont font;
+
+
+    public MainMenu() {
+    }
+
 
     @Override
     public void show() {
         stage = new Stage();
 
-        atlas = new TextureAtlas("ui/Button.atlas");
-        skin = new Skin(atlas);
+
+
+        skin = new Skin(Gdx.files.internal("ui/skinexport.json"));
 
         table = new Table(skin);
-        table.setBounds(0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture("Images/Titlescreen.png"))));
+        table.setFillParent(true);
+        //table.setDebug(true);
 
-        white = new BitmapFont(Gdx.files.internal("fonts/PixelFont.fnt"), false);
+        stage.addActor(table);
+        table.setBounds(0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = white;
-        textButtonStyle.up = skin.getDrawable("StartButtonUp");
-        textButtonStyle.down = skin.getDrawable("StartButtonDown");
-        textButtonStyle.pressedOffsetX = 1;
-        textButtonStyle.pressedOffsetY = -1;
-        textButtonStyle.fontColor = Color.BLACK;
+        ImageButton playbutt = new ImageButton(skin);
+
+        playbutt.setPosition(280, 300);
 
 
-        buttonExit = new TextButton("EXIT", textButtonStyle);
-        buttonExit.pad(20);
+        playbutt.addListener(new ClickListener()
+        {
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(1500,(int)(1500 * (double)(9.0/16.0))));
 
-        table.add(buttonExit);
+                event.stop();
+
+            }
+        });
+
+
+
+
+
         table.debug();
         stage.addActor(table);
-
+        stage.addActor(playbutt);
+        Gdx.input.setInputProcessor(stage);
+        table.setDebug(false);
     }
 
     @Override
@@ -59,10 +82,12 @@ public class MainMenu implements Screen {
 
         stage.act(delta);
         stage.draw();
+
     }
 
     @Override
     public void resize(int width, int height) {
+
 
     }
 
@@ -83,6 +108,7 @@ public class MainMenu implements Screen {
 
     @Override
     public void dispose() {
+
 
     }
 }
