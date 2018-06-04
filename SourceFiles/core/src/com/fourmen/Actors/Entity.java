@@ -1,10 +1,9 @@
-package com.fourmen.Actors;
+package com.fourmen.actors;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public abstract class Entity {
+public abstract class Entity extends Actor {
     //instance variables
     public int health;
     public Vector2 position;
@@ -12,7 +11,7 @@ public abstract class Entity {
     //constructors
     public Entity() {
         health = 100;
-        position = new Vector2(600, 300);
+        position = new Vector2(1500, 900);
     }
 
     public void setPosition(float x, float y) {

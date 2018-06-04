@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import javax.swing.text.Position;
 import javax.xml.stream.Location;
 
-public class Enemy extends Entity {
+public class Enemy extends com.fourmen.actors.Entity {
     //constants
     private static final double ACCELERATION_CONSTANT = 0.2;
     private static final double DECELERATION_CONSTANT = 0.2;

@@ -6,19 +6,17 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+//import com.fourmen.actors.Enemy;
 import com.fourmen.Actors.Enemy;
 import com.fourmen.Actors.Player;
-import com.fourmen.Actors.PlayerBounds;
+import com.fourmen.actors.PlayerBounds;
 import com.fourmen.utils.Animator;
 import com.fourmen.utils.CameraStyles;
 
@@ -57,7 +55,7 @@ public class GameScreen extends ScreenAdapter {
         camera.update();
         viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         shapeRenderer = new ShapeRenderer();
-        floor = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/FloorSprites.png", 1, 26));;
+        floor = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/FloorSprites.png", 1, 26));
         batch = new SpriteBatch();
         player = new Player();
         enemy = new Enemy();
@@ -143,7 +141,6 @@ public class GameScreen extends ScreenAdapter {
     }
 
     public void update(float delta){
-        //flower.drawDebug(shapeRenderer);
 
         // we should move this camera stuff to a new method
         float startX = camera.viewportWidth /2;

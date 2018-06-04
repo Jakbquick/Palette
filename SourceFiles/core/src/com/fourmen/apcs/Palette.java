@@ -25,7 +25,7 @@ public class Palette extends Game {
 		//setScreen(new Splash());
 		//setScreen(new GameScreen(screenWidth,screenHeight));
 		//setScreen(new Box2DRender());
-		setScreen(new MainMenu());
+        setScreen(new MainMenu());
 	}
 
 	@Override
