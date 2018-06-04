@@ -20,7 +20,7 @@ import java.awt.*;
 public class Box2DPlayer extends Entity{
     //instance variables
     private final static float PLAYER_SIZE = 1f;
-    private final static float BOX2D_SCALE = 1f;
+    private final static float BOX2D_SCALE = .5f;
     private final static float PLAYER_WIDTH = 163 * PLAYER_SIZE; //163    40
     private final static float PLAYER_HEIGHT = 251 * PLAYER_SIZE;
     private final static int MAX_SPEED = 700;
@@ -60,7 +60,7 @@ public class Box2DPlayer extends Entity{
 
     private int lastDirectionfaced;
     private int LEFT = 0;
-    private int RIGHT =1;
+    private int RIGHT = 1;
 
     //constructors
     public Box2DPlayer(World world, PlayerBounds MyPlayerBounds) {
@@ -91,17 +91,35 @@ public class Box2DPlayer extends Entity{
         body = world.createBody(bodyDef);
 
         PolygonShape square = new PolygonShape();
-        square.setAsBox(PLAYER_WIDTH * BOX2D_SCALE / 2f, PLAYER_HEIGHT * BOX2D_SCALE /2f);
+        square.setAsBox(PLAYER_WIDTH * BOX2D_SCALE, PLAYER_HEIGHT * BOX2D_SCALE);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = square;
-        fixtureDef.density = 0f;
-        fixtureDef.friction = 0f;
-        fixtureDef.restitution = 0f;
 
-        Fixture fixure = body.createFixture(fixtureDef);
+        body.createFixture(fixtureDef);
 
         square.dispose();
+
+        PolygonShape bodySquare = new PolygonShape();
+        bodySquare.setAsBox(PLAYER_WIDTH * BOX2D_SCALE, PLAYER_HEIGHT * BOX2D_SCALE);
+
+        fixtureDef = new FixtureDef();
+        fixtureDef.shape = bodySquare;
+
+        body.createFixture(fixtureDef);
+
+        bodySquare.dispose();
+
+        PolygonShape wingsSquare = new PolygonShape();
+        Vector2 wingCenter = new Vector2(1.5f * PLAYER_SIZE,12.5f * PLAYER_SIZE);
+        wingsSquare.setAsBox(137 * PLAYER_SIZE * BOX2D_SCALE, 107 * PLAYER_SIZE * BOX2D_SCALE, wingCenter, 0);
+
+        fixtureDef = new FixtureDef();
+        fixtureDef.shape = wingsSquare;
+
+        body.createFixture(fixtureDef);
+
+        wingsSquare.dispose();
     }
 
     //methods
@@ -204,14 +222,6 @@ public class Box2DPlayer extends Entity{
         setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());        // changes the y position of the entity
     }
 
-    private void bodyMove() {
-        Vector2 force = new Vector2(acceleration * direction.x,acceleration * direction.y);
-        applyForce(force);
-
-        setX(body.getPosition().x);
-        setY(body.getPosition().y);
-    }
-
     private void checkDash() {
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && !(direction.x == 0 && direction.y == 0)) {
             playerState = playerState.DASHING;
@@ -234,11 +244,6 @@ public class Box2DPlayer extends Entity{
 
         setX(getX() + currentSpeed.x * Gdx.graphics.getDeltaTime());
         setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());
-    }
-
-    private void applyForce(Vector2 force) {
-        Vector2 pos = body.getWorldCenter();
-        body.applyForce(force, pos, true);
     }
 
     public void draw(Batch batch) {
@@ -267,7 +272,6 @@ public class Box2DPlayer extends Entity{
     private void blockPlayerLeavingTheWorld() {
         setPosition(MathUtils.clamp(getX(),playerBounds.getW1()+ (.5f* PLAYER_WIDTH),playerBounds.getWidth()+ playerBounds.getW1() - PLAYER_WIDTH + (.5f * PLAYER_WIDTH)),
                 MathUtils.clamp(getY(), playerBounds.getH2() + (.5f *PLAYER_HEIGHT), playerBounds.getHeight() + playerBounds.getH2() - PLAYER_HEIGHT + (.5f *PLAYER_HEIGHT)));
-        //enemy.setPosition(MathUtils.clamp(enemy.getX(),playerBounds.getW1(),playerBounds.getWidth()+ playerBounds.getW1() - enemy.getEnemyWidth()), MathUtils.clamp(enemy.getY(), playerBounds.getH2(), playerBounds.getHeight() + playerBounds.getH2() - enemy.getEnemyHeight()));
     }
 
 

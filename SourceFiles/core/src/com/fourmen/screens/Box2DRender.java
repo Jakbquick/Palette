@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.fourmen.actors.Box2DEnemy;
 import com.fourmen.actors.Box2DPlayer;
 import com.fourmen.actors.PlayerBounds;
 import com.fourmen.box2D.Walls;
@@ -27,9 +28,11 @@ public class Box2DRender extends ScreenAdapter {
 
     SpriteBatch batch;
     World world;
+    ContactListener contactListener;
     Walls walls;
 
     Box2DPlayer player;
+    Box2DEnemy enemy;
     private float scale = 3000;
     private float BOUND_HEIGHT = scale * (3f/5f);
 
@@ -50,8 +53,35 @@ public class Box2DRender extends ScreenAdapter {
     public void show() {
         batch = new SpriteBatch();
         world = new World(new Vector2(0, 0), true);
+        contactListener = new ContactListener() {
+            @Override
+            public void beginContact(Contact contact) {
+                Fixture fixtureA = contact.getFixtureA();
+                Fixture fixtureB = contact.getFixtureB();
+                Gdx.app.log("beginContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
+            }
+
+            @Override
+            public void endContact(Contact contact) {
+                Fixture fixtureA = contact.getFixtureA();
+                Fixture fixtureB = contact.getFixtureB();
+                Gdx.app.log("endContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
+            }
+
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {
+
+            }
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {
+
+            }
+        };
+        world.setContactListener(contactListener);
         debugRenderer = new Box2DDebugRenderer();
         player = new Box2DPlayer(world, playerBounds);
+        enemy = new Box2DEnemy(world, player);
         walls = new Walls(world,0,0, scale);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
@@ -71,10 +101,11 @@ public class Box2DRender extends ScreenAdapter {
         clearScreen();
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         player.act();
+        enemy.act();
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
         batch.begin();
-        if(Gdx.input.isKeyPressed(Input.Keys.L)){
+        if(Gdx.input.isKeyPressed(Input.Keys.L)) {
             debugView();
         }
         else {
@@ -83,9 +114,10 @@ public class Box2DRender extends ScreenAdapter {
         }
         batch.end();
     }
-    private void debugView(){
+    private void debugView() {
             debugRenderer.render(world, camera.combined);
         }
+
     private void clearScreen() {
          Gdx.gl.glClearColor(com.badlogic.gdx.graphics.Color.BLACK.r, com.badlogic.gdx.graphics.Color.BLACK.g,
         com.badlogic.gdx.graphics.Color.BLACK.b, Color.BLACK.a);
@@ -106,11 +138,8 @@ public class Box2DRender extends ScreenAdapter {
                 BOUND_HEIGHT - (2 * startY));
         walls.updateAnimations(delta);
         player.updateTimers(delta);
-    }
+        enemy.updateTimers(delta);
 
-    private void blockPlayerLeavingTheWorld() {
-        player.setPosition(MathUtils.clamp(player.getX(),playerBounds.getW1(),playerBounds.getWidth()+ playerBounds.getW1() - player.getPlayerWidth()), MathUtils.clamp(player.getY(), playerBounds.getH2(), playerBounds.getHeight() + playerBounds.getH2() - player.getPlayerHeight()));
-        //enemy.setPosition(MathUtils.clamp(enemy.getX(),playerBounds.getW1(),playerBounds.getWidth()+ playerBounds.getW1() - enemy.getEnemyWidth()), MathUtils.clamp(enemy.getY(), playerBounds.getH2(), playerBounds.getHeight() + playerBounds.getH2() - enemy.getEnemyHeight()));
     }
 
     public void drawDebug() {
@@ -127,6 +156,10 @@ public class Box2DRender extends ScreenAdapter {
 
     private void cameraUpdate() {
         CameraStyles.lockOnTarget(camera, player);
+    }
+
+    private void checkCollisions() {
+
     }
 
     @Override
