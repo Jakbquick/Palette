@@ -58,14 +58,24 @@ public class Box2DRender extends ScreenAdapter {
             public void beginContact(Contact contact) {
                 Fixture fixtureA = contact.getFixtureA();
                 Fixture fixtureB = contact.getFixtureB();
-                Gdx.app.log("beginContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
+                //Gdx.app.log("beginContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
+
+                if ((fixtureA.getBody().equals(player.getPlayerBody()) && fixtureB.getBody().equals(enemy.getPlayerBody()))
+                        || (fixtureB.getBody().equals(player.getPlayerBody()) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
+                    player.updateCollisions(1);
+                }
             }
 
             @Override
             public void endContact(Contact contact) {
                 Fixture fixtureA = contact.getFixtureA();
                 Fixture fixtureB = contact.getFixtureB();
-                Gdx.app.log("endContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
+                //Gdx.app.log("endContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
+
+                if ((fixtureA.getBody().equals(player.getPlayerBody()) && fixtureB.getBody().equals(enemy.getPlayerBody()))
+                        || (fixtureB.getBody().equals(player.getPlayerBody()) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
+                    player.updateCollisions(-1);
+                }
             }
 
             @Override

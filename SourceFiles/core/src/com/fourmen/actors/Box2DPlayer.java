@@ -45,6 +45,8 @@ public class Box2DPlayer extends Entity{
 
     private Body body;
 
+    public int fixtureCollisions;
+
     private PlayerState playerState;
 
     private PlayerBounds playerBounds;
@@ -74,6 +76,8 @@ public class Box2DPlayer extends Entity{
 
         acceleration = ACCELERATION_CONSTANT * MAX_SPEED;
         deceleration = DECELERATION_CONSTANT * MAX_SPEED;
+
+        fixtureCollisions = 0;
 
         playerState = PlayerState.STANDING;
 
@@ -139,6 +143,7 @@ public class Box2DPlayer extends Entity{
 
     public void act() {
         //System.out.println(currentSpeed + " " + playerState);
+        System.out.println(fixtureCollisions);
         updateDirection();
         switch (playerState) {
             case STANDING:
@@ -265,6 +270,10 @@ public class Box2DPlayer extends Entity{
 
     public void updatePosition() {
         body.setTransform(position, 0);
+    }
+
+    public void updateCollisions(int collisions) {
+        fixtureCollisions += collisions;
     }
 
     public void drawDebug(Box2DDebugRenderer debug) {
