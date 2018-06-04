@@ -52,6 +52,9 @@ public class Box2DRender extends ScreenAdapter {
     private Viewport viewport;
     private float timeSinceStart;
 
+    private boolean debugMode;
+    private float tempTimer = 0;
+
     Texture fadedBlack = new Texture(Gdx.files.internal("Images/FadedBlack.png"));
     Texture pauseText = new Texture(Gdx.files.internal("Images/PauseText.png"));
 
@@ -125,7 +128,11 @@ public class Box2DRender extends ScreenAdapter {
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
         batch.begin();
-        if(Gdx.input.isKeyPressed(Input.Keys.L)) {
+        if(Gdx.input.isKeyPressed(Input.Keys.L) && timeSinceStart >= tempTimer) {
+            debugMode = !debugMode;
+            tempTimer = timeSinceStart + .1f;
+        }
+        if(debugMode) {
             debugView();
         }
         else {
