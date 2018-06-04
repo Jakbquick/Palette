@@ -90,6 +90,7 @@ public class Box2DPlayer extends Entity{
 
         body = world.createBody(bodyDef);
 
+        /*
         PolygonShape square = new PolygonShape();
         square.setAsBox(PLAYER_WIDTH * BOX2D_SCALE, PLAYER_HEIGHT * BOX2D_SCALE);
 
@@ -99,11 +100,12 @@ public class Box2DPlayer extends Entity{
         body.createFixture(fixtureDef);
 
         square.dispose();
+        */
 
         PolygonShape bodySquare = new PolygonShape();
-        bodySquare.setAsBox(PLAYER_WIDTH * BOX2D_SCALE, PLAYER_HEIGHT * BOX2D_SCALE);
+        bodySquare.setAsBox(40 * PLAYER_SIZE * BOX2D_SCALE, 251 * PLAYER_SIZE * BOX2D_SCALE);
 
-        fixtureDef = new FixtureDef();
+        FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = bodySquare;
 
         body.createFixture(fixtureDef);
