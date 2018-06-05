@@ -7,6 +7,7 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -19,6 +20,7 @@ public class Splash implements Screen {
     private SpriteBatch batch;
     private TweenManager tweenManager;
     private int width,height;
+    private Music music;
     public Splash(int width, int height){
         this.width = width;
         this.height = height;
@@ -29,6 +31,10 @@ public class Splash implements Screen {
         splashTexture = new Texture("images/Logo.jpg");
         splash = new Sprite(splashTexture);
 
+        music = Gdx.audio.newMusic(Gdx.files.internal("Music/LaurenPiano.mp3"));
+        music.setLooping(true);
+        music.play();
+
         batch = new SpriteBatch();
         tweenManager = new TweenManager();
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
@@ -38,14 +44,14 @@ public class Splash implements Screen {
         Tween.to(splash,SpriteAccessor.ALPHA,2).target(1).repeatYoyo(1, 2).setCallback(new TweenCallback() {
             @Override
             public void onEvent(int type, BaseTween<?> source) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu(width,height));
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu(width,height,music));
             }
         }).start(tweenManager);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(255,255,255,1);
+        Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         tweenManager.update(delta);

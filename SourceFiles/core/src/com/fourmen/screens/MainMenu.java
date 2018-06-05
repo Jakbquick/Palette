@@ -1,16 +1,18 @@
 package com.fourmen.screens;
 
 
+import aurelienribon.tweenengine.BaseTween;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -19,6 +21,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import com.fourmen.tween.SpriteAccessor;
 
 public class MainMenu implements Screen {
 
@@ -26,12 +31,18 @@ public class MainMenu implements Screen {
     private TextureAtlas atlas;
     private Skin skin;
     private Table table;
-    private Texture buttonExit, playButton, background;
+    private Texture buttonExit, playButton, background,blackScreenTexture;
     private BitmapFont font;
     private int width, height;
-    private static TweenManager tweenManager;
+    private TweenManager tweenManager;
+    private SpriteBatch batch;
+    private Sprite blackScreen;
+    private Viewport viewport;
+    private OrthographicCamera camera;
 
-    public MainMenu(int width, int height) {
+
+
+    public MainMenu(int width, int height, Music music) {
         this.width = width;
         this.height = height;
     }
@@ -39,14 +50,21 @@ public class MainMenu implements Screen {
 
     @Override
     public void show() {
-        stage = new Stage();
-
+        batch = new SpriteBatch();
+        camera = new OrthographicCamera();
+        camera.position.set(width / 2, height / 2, 0);
+        camera.update();
+        viewport = new ExtendViewport(width, height, camera);
+        stage = new Stage(viewport,batch);
+        blackScreenTexture = new Texture(Gdx.files.internal("Images/BlackScreen.jpg"));
+        blackScreen = new Sprite(blackScreenTexture);
+        setUpTweenManager();
 
 
         skin = new Skin(Gdx.files.internal("ui/skinexport.json"));
 
         table = new Table(skin);
-        table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture("Images/Titlescreen.png"))));
+        //table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture("Images/Titlescreen.png"))));
         table.setFillParent(true);
         //table.setDebug(true);
 
@@ -56,6 +74,7 @@ public class MainMenu implements Screen {
         ImageButton playbutt = new ImageButton(skin);
 
         playbutt.setPosition(280, 300);
+
 
 
         playbutt.addListener(new ClickListener()
@@ -84,9 +103,13 @@ public class MainMenu implements Screen {
         Gdx.gl.glClearColor(255,255,255,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        batch.begin();
+        blackScreen.draw(batch);
+
+        batch.end();
+
         stage.act(delta);
         stage.draw();
-
     }
 
     @Override
@@ -112,7 +135,21 @@ public class MainMenu implements Screen {
 
     @Override
     public void dispose() {
+        batch.dispose();
+        blackScreen.getTexture().dispose();
 
+    }
+    public void setUpTweenManager(){
+        tweenManager = new TweenManager();
+        Tween.registerAccessor(Sprite.class, new SpriteAccessor());
+        blackScreen.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+        Tween.set(blackScreen, SpriteAccessor.ALPHA).target(0).start(tweenManager);
+        Tween.to(blackScreen,SpriteAccessor.ALPHA,2).target(1).repeatYoyo(1, 2).setCallback(new TweenCallback() {
+            @Override
+            public void onEvent(int type, BaseTween<?> source) {
+
+            }
+        }).start(tweenManager);
     }
 }
