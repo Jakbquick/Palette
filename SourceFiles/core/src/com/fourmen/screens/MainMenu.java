@@ -24,6 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.fourmen.tween.SpriteAccessor;
+import com.fourmen.utils.AnimatedImage;
+import com.fourmen.utils.Animator;
 
 public class MainMenu implements Screen {
 
@@ -39,6 +41,10 @@ public class MainMenu implements Screen {
     private Sprite blackScreen;
     private Viewport viewport;
     private OrthographicCamera camera;
+    private TextureRegion bgstate;
+    private float timeSinceStart;
+    private Animation<TextureRegion> bg;
+    private AnimatedImage bgActor;
 
 
 
@@ -50,6 +56,11 @@ public class MainMenu implements Screen {
 
     @Override
     public void show() {
+        bg = new Animation<TextureRegion>(.03f, Animator.setUpSpriteSheet("Images/bgSpriteSheet.png",
+                1,12));
+        bgActor = new AnimatedImage(bg);
+
+        timeSinceStart = 0;
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
         camera.position.set(width / 2, height / 2, 0);
@@ -64,12 +75,15 @@ public class MainMenu implements Screen {
         skin = new Skin(Gdx.files.internal("ui/skinexport.json"));
 
         table = new Table(skin);
-        //table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture("Images/Titlescreen.png"))));
+        table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture("Images/Titlescreen.png"))));
         table.setFillParent(true);
-        //table.setDebug(true);
+        table.setDebug(true);
 
         stage.addActor(table);
         table.setBounds(0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+
+        stage.addActor(bgActor);
+        
 
         ImageButton playbutt = new ImageButton(skin);
 
@@ -94,21 +108,26 @@ public class MainMenu implements Screen {
         table.debug();
         stage.addActor(table);
         stage.addActor(playbutt);
+
         Gdx.input.setInputProcessor(stage);
         table.setDebug(false);
+
+        bg = new Animation<TextureRegion>(.03f, Animator.setUpSpriteSheet("Images/bgSpriteSheet.png",
+                1,12));
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(255,255,255,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        batch.begin();
-        blackScreen.draw(batch);
-
-        batch.end();
-
         stage.act(delta);
+
+        bgstate = bg.getKeyFrame(timeSinceStart,true);
+        stage.getBatch().begin();
+        //blackScreen.draw(batch);
+        stage.getBatch().draw(bgstate,width,height);
+        stage.getBatch().end();
+
         stage.draw();
     }
 
