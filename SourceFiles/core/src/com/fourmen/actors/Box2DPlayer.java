@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Timer;
 import com.fourmen.box2D.CircleSlash;
 import com.fourmen.utils.Animator;
 
@@ -25,11 +26,12 @@ public class Box2DPlayer extends Entity{
     private final static float PLAYER_WIDTH = 163 * PLAYER_SIZE; //163    40
     private final static float PLAYER_HEIGHT = 251 * PLAYER_SIZE;
     private final static int MAX_SPEED = 700;
-    private final static float DASH_SPEED = 2800;
+    private final static float DASH_SPEED = 800;
     private final static float ACCELERATION_CONSTANT = 1f;
     private final static float DECELERATION_CONSTANT = 1f;
-    private final static float DASH_COOLDOWN = .6f;
-    private final static float DASH_DURATION = .1f;
+    private final static float DASH_COOLDOWN = 2f;
+    private final static float DASH_DURATION = .35f;
+    private final static float DASH_END_LAG = .15f;
     private final static float STANDING_COOLDOWN = .25f;
     private enum PlayerState {
         STANDING, MOVING, DASHING
@@ -37,6 +39,7 @@ public class Box2DPlayer extends Entity{
 
     private Vector2 direction;
     private Vector2 dashDirection;
+    private Vector2 dashPosition;
     private Vector2 targetSpeed;        // contains a target speed for x and y
     private Vector2 currentSpeed;
     private Vector2 tempSpeed;
@@ -59,10 +62,13 @@ public class Box2DPlayer extends Entity{
     private double standingCooldownTimer = 0;
     private float stateTime = 0;
 
+    private Timer timer;
+
     public TextureRegion currentFrame;
     private Animation<TextureRegion> moving;
     private Animation<TextureRegion> idle;
     private Animation<TextureRegion> dash;
+    private Animation<TextureRegion> dashEnd;
     private Animation<TextureRegion> empty;
 
     private int lastDirectionfaced;
@@ -75,6 +81,7 @@ public class Box2DPlayer extends Entity{
         lastDirectionfaced = LEFT;
         direction = new Vector2(0, 0);
         dashDirection = new Vector2(0, 0);
+        dashPosition = new Vector2(0, 0);
         targetSpeed = new Vector2(0, 0);
         currentSpeed = new Vector2(0, 0);
         tempSpeed = new Vector2(0,0);
@@ -90,9 +97,12 @@ public class Box2DPlayer extends Entity{
 
         circleSlash = new CircleSlash(world, position, PLAYER_SIZE);
 
-        moving = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/spritemovesheet.png", 1, 4));
-        idle = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/spriteidlesheet.png", 1, 5));
-        dash = new Animation<TextureRegion>(0.08f, Animator.setUpSpriteSheet("Images/spritedashsheet.png", 1, 5));
+        timer = new Timer();
+
+        moving = new Animation<TextureRegion>(.25f, Animator.setUpSpriteSheet("Images/spritemovesheet.png", 1, 4));
+        idle = new Animation<TextureRegion>(.25f, Animator.setUpSpriteSheet("Images/spriteidlesheet.png", 1, 5));
+        dash = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/spritedashsheet.png", 1, 5));
+        dashEnd = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/spritedashendsheet.png", 1, 5));
         empty = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/emptyframe.png", 1, 1));
         currentFrame = moving.getKeyFrame(stateTime, true);
 
@@ -160,34 +170,90 @@ public class Box2DPlayer extends Entity{
         updateDirection();
         switch (playerState) {
             case STANDING:
-                currentFrame = idle.getKeyFrame(stateTime, true);
+                currentFrame = getFrame(idle);
+                //currentFrame = idle.getKeyFrame(stateTime, true);
                 move();
-                if(!direction.isZero())
+
+                if(!direction.isZero()) {
                     playerState = playerState.MOVING;
+                }
+
                 break;
             case MOVING:
-                currentFrame = moving.getKeyFrame(stateTime, true);
+                currentFrame = getFrame(moving);
+                //currentFrame = moving.getKeyFrame(stateTime, true);
                 move();
-                if(dashCooldownTimer <= 0)
+
+                if(dashCooldownTimer <= 0) {
                     checkDash();
-                if(!direction.isZero())
+                }
+
+                if(!direction.isZero()) {
                     standingCooldownTimer = STANDING_COOLDOWN;
-                if(standingCooldownTimer <= 0)
+                }
+
+                if(standingCooldownTimer <= 0) {
                     playerState = playerState.STANDING;
+                }
+
                 break;
             case DASHING:
-                currentFrame = dash.getKeyFrame(stateTime);
+                if(dashDurationTimer == 0) {
+                    stateTime = 0;
+                }
+
+                if(dashDurationTimer <= dash.getFrameDuration() * 5) {
+                    //currentFrame = getFrame(dash);
+                    dash();
+                    currentFrame = dash.getKeyFrame(stateTime, true);
+                    //System.out.println(dash.isAnimationFinished(stateTime));
+                    System.out.println("dash frame" + dash.getKeyFrameIndex(stateTime));
+
+                    if(dash.isAnimationFinished(stateTime)) {
+                        //currentFrame = getFrame(empty);
+                        //currentFrame = empty.getKeyFrame(stateTime);
+                    }
+                }
+                else if(dashDurationTimer <= DASH_DURATION) {
+                    stateTime = 0;
+                    System.out.println("empty frame" + dash.getKeyFrameIndex(stateTime));
+                    dash();
+                    currentFrame = empty.getKeyFrame(stateTime);
+                }
+                else if(dashDurationTimer <= DASH_DURATION + DASH_END_LAG) {
+                    dash();
+                    setX(dashPosition.x);
+                    setY(dashPosition.y);
+                    System.out.println("end frame" + dash.getKeyFrameIndex(stateTime));
+                    //currentFrame = getFrame(dashEnd);
+                    currentFrame = dashEnd.getKeyFrame(stateTime, false);
+                }
+                else {
+                    currentSpeed.x = tempSpeed.x;
+                    currentSpeed.y = tempSpeed.y;
+                    setX(dashPosition.x);
+                    setY(dashPosition.y);
+                    playerState = playerState.MOVING;
+                }
+
+                /*
+                currentFrame = dash.getKeyFrame(stateTime, true);
+                //getFrame(dash);
                 System.out.println(dash.isAnimationFinished(stateTime));
                 if(dash.isAnimationFinished(stateTime)) {
-                    //currentFrame = empty.getKeyFrame(stateTime);
+                    currentFrame = empty.getKeyFrame(stateTime);
                 }
 
                 dash();
+
+                /*
                 if(dashDurationTimer <= 0) {
                     currentSpeed.x = tempSpeed.x;
                     currentSpeed.y = tempSpeed.y;
                     playerState = playerState.MOVING;
                 }
+                */
+
                 break;
         }
         circleSlash.act();
@@ -259,9 +325,12 @@ public class Box2DPlayer extends Entity{
             tempSpeed.y = currentSpeed.y;
 
             currentSpeed = new Vector2(0,0);
+            dashPosition = new Vector2(position);
 
-            dashDurationTimer = DASH_DURATION;
+            dashDurationTimer = 0;
             dashCooldownTimer = DASH_COOLDOWN;
+
+            stateTime = 0;
         }
     }
 
@@ -269,8 +338,11 @@ public class Box2DPlayer extends Entity{
         currentSpeed.x = DASH_SPEED * dashDirection.x;
         currentSpeed.y = DASH_SPEED * dashDirection.y;
 
-        setX(getX() + currentSpeed.x * Gdx.graphics.getDeltaTime());
-        setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());
+        dashPosition.x += currentSpeed.x * Gdx.graphics.getDeltaTime();
+        dashPosition.y += currentSpeed.y * Gdx.graphics.getDeltaTime();
+
+        //setX(getX() + currentSpeed.x * Gdx.graphics.getDeltaTime());
+        //setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());
     }
 
     public void draw(Batch batch) {
@@ -281,8 +353,15 @@ public class Box2DPlayer extends Entity{
                 currentFrame.getRegionHeight()* PLAYER_SIZE);
     }
 
+    public TextureRegion getFrame(Animation<TextureRegion> frame) {
+        if(frame.isAnimationFinished(stateTime)) {
+            stateTime = 0;
+        }
+        return frame.getKeyFrame(stateTime, true);
+    }
+
     public void updateTimers(float delta) {
-        dashDurationTimer -= delta;
+        dashDurationTimer += delta;
         dashCooldownTimer -= delta;
         standingCooldownTimer -= delta;
         stateTime += delta;
