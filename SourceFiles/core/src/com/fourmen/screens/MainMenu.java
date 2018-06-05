@@ -15,10 +15,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -26,6 +23,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.fourmen.tween.SpriteAccessor;
 import com.fourmen.utils.AnimatedImage;
 import com.fourmen.utils.Animator;
+import com.fourmen.utils.ResizableImage;
+import com.fourmen.utils.TextureFadeImage;
 
 public class MainMenu implements Screen {
 
@@ -33,7 +32,7 @@ public class MainMenu implements Screen {
     private TextureAtlas atlas;
     private Skin skin;
     private Table table;
-    private Texture buttonExit, playButton, background,blackScreenTexture;
+    private Texture buttonExit, playButton, background,blackScreenTexture, mountains;
     private BitmapFont font;
     private int width, height;
     private TweenManager tweenManager;
@@ -43,23 +42,27 @@ public class MainMenu implements Screen {
     private OrthographicCamera camera;
     private TextureRegion bgstate;
     private float timeSinceStart;
-    private Animation<TextureRegion> bg;
-    private AnimatedImage bgActor;
+    private Animation<TextureRegion> bg, clouds;
+    private AnimatedImage bgActor, cloudActor;
+    private Music music;
+    private Image cliff,blackScreenImage;
+
 
 
 
     public MainMenu(int width, int height, Music music) {
         this.width = width;
         this.height = height;
+        this.music = music;
     }
 
 
     @Override
     public void show() {
-        bg = new Animation<TextureRegion>(.03f, Animator.setUpSpriteSheet("Images/bgSpriteSheet.png",
+        bg = new Animation<TextureRegion>(.3f, Animator.setUpSpriteSheet("Images/bgSpriteSheet.png",
                 1,12));
-        bgActor = new AnimatedImage(bg);
-
+        bgActor = new AnimatedImage(bg,width,height);
+        setUpAnimations();
         timeSinceStart = 0;
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
@@ -67,7 +70,6 @@ public class MainMenu implements Screen {
         camera.update();
         viewport = new ExtendViewport(width, height, camera);
         stage = new Stage(viewport,batch);
-        blackScreenTexture = new Texture(Gdx.files.internal("Images/BlackScreen.jpg"));
         blackScreen = new Sprite(blackScreenTexture);
         setUpTweenManager();
 
@@ -83,6 +85,8 @@ public class MainMenu implements Screen {
         table.setBounds(0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
         stage.addActor(bgActor);
+        stage.addActor(cloudActor);
+        stage.addActor(cliff);
         
 
         ImageButton playbutt = new ImageButton(skin);
@@ -94,6 +98,8 @@ public class MainMenu implements Screen {
         playbutt.addListener(new ClickListener()
         {
             public void clicked(InputEvent event, float x, float y) {
+                music.stop();
+                music.dispose();
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new Box2DRender(width,height));
 
                 event.stop();
@@ -108,12 +114,11 @@ public class MainMenu implements Screen {
         table.debug();
         stage.addActor(table);
         stage.addActor(playbutt);
-
+        stage.addActor(blackScreenImage);
         Gdx.input.setInputProcessor(stage);
         table.setDebug(false);
 
-        bg = new Animation<TextureRegion>(.03f, Animator.setUpSpriteSheet("Images/bgSpriteSheet.png",
-                1,12));
+
     }
 
     @Override
@@ -135,6 +140,16 @@ public class MainMenu implements Screen {
     public void resize(int width, int height) {
 
 
+    }
+
+    public void setUpAnimations(){
+        clouds = new Animation<TextureRegion>(.3f, Animator.setUpSpriteSheet("Images/cloudSheet.png",
+                1,25));
+        cloudActor = new AnimatedImage(clouds,width,height);
+        mountains = new Texture("Images/hedge2.png");
+        cliff = new ResizableImage(mountains,width,height);
+        blackScreenTexture = new Texture(Gdx.files.internal("Images/BlackScreen.jpg"));
+        blackScreenImage = new TextureFadeImage(blackScreenTexture,width,height);
     }
 
     @Override

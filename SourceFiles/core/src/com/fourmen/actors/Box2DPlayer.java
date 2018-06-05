@@ -393,7 +393,7 @@ public class Box2DPlayer extends Entity{
 
     public void updatePosition() {
         body.setTransform(position, 0);
-        circleSlash.updatePosition(position);
+        //circleSlash.updatePosition(position);
     }
 
     public void updateCollisions(int collisions) {
