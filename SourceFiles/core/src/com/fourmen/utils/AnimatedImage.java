@@ -12,7 +12,7 @@ public class AnimatedImage extends Image
     private float stateTime = 0;
     private TextureRegion current;
     private int width, height;
-    public AnimatedImage(Animation<TextureRegion> animation, int width, int height) {
+    public AnimatedImage(Animation<TextureRegion> animation, int width, int height, char loop) {
         super(animation.getKeyFrame(0));
         this.animation = animation;
         this.width = width;
@@ -31,5 +31,8 @@ public class AnimatedImage extends Image
     public void draw (Batch batch, float parentAlpha){
         current = animation.getKeyFrame(stateTime, true);
         batch.draw(current, 0,0,width,height);
+    }
+    public void setAnimation(Animation<TextureRegion> setAnim){
+        animation = setAnim;
     }
 }
