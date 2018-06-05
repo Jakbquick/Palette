@@ -26,15 +26,15 @@ public class Box2DPlayer extends Entity{
     private final static float PLAYER_WIDTH = 163 * PLAYER_SIZE; //163    40
     private final static float PLAYER_HEIGHT = 251 * PLAYER_SIZE;
     private final static int MAX_SPEED = 700;
-    private final static float DASH_SPEED = 800;
+    private final static float DASH_SPEED = 1000;
     private final static float ACCELERATION_CONSTANT = 1f;
     private final static float DECELERATION_CONSTANT = 1f;
     private final static float DASH_COOLDOWN = 2f;
-    private final static float DASH_DURATION = .35f;
+    private final static float DASH_DURATION = .25f;
     private final static float DASH_END_LAG = .15f;
     private final static float STANDING_COOLDOWN = .25f;
     private enum PlayerState {
-        STANDING, MOVING, DASHING
+        STANDING, MOVING, DASHING, ATTACKING
     }
 
     private Vector2 direction;
@@ -48,6 +48,7 @@ public class Box2DPlayer extends Entity{
     private float deceleration;
 
     private Body body;
+    private Body attackHitbox;
 
     public int fixtureCollisions;
 
@@ -70,6 +71,7 @@ public class Box2DPlayer extends Entity{
     private Animation<TextureRegion> dash;
     private Animation<TextureRegion> dashEnd;
     private Animation<TextureRegion> empty;
+    private Animation<TextureRegion> attackSide;
 
     private int lastDirectionfaced;
     private int LEFT = 0;
@@ -95,7 +97,7 @@ public class Box2DPlayer extends Entity{
 
         playerBounds = myPlayerBounds;
 
-        circleSlash = new CircleSlash(world, position, PLAYER_SIZE);
+        //circleSlash = new CircleSlash(world, position, PLAYER_SIZE);
 
         timer = new Timer();
 
@@ -104,6 +106,7 @@ public class Box2DPlayer extends Entity{
         dash = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/spritedashsheet.png", 1, 5));
         dashEnd = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/spritedashendsheet.png", 1, 5));
         empty = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/emptyframe.png", 1, 1));
+        attackSide = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/attacksheet.png", 1, 36));
         currentFrame = moving.getKeyFrame(stateTime, true);
 
         BodyDef bodyDef = new BodyDef();
@@ -145,6 +148,15 @@ public class Box2DPlayer extends Entity{
         body.createFixture(fixtureDef);
 
         wingsSquare.dispose();
+
+        bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(new Vector2(position));
+        bodyDef.fixedRotation = true;
+
+        attackHitbox = world.createBody(bodyDef);
+
+
     }
 
     //methods
@@ -195,6 +207,9 @@ public class Box2DPlayer extends Entity{
                 if(standingCooldownTimer <= 0) {
                     playerState = playerState.STANDING;
                 }
+
+                break;
+            case ATTACKING:
 
                 break;
             case DASHING:
@@ -256,7 +271,6 @@ public class Box2DPlayer extends Entity{
 
                 break;
         }
-        circleSlash.act();
         blockPlayerLeavingTheWorld();
         updatePosition();
     }
@@ -313,6 +327,16 @@ public class Box2DPlayer extends Entity{
 
         setX(getX() + currentSpeed.x * Gdx.graphics.getDeltaTime());        // changes the x position of the entity
         setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());        // changes the y position of the entity
+    }
+
+    private void checkAttack() {
+        //if () {}
+
+
+    }
+
+    private void attack() {
+
     }
 
     private void checkDash() {
