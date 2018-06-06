@@ -227,6 +227,7 @@ public class Box2DPlayer extends Entity{
                 break;
             case ATTACKING:
                 currentFrame = slash.getFrame();
+                move();
 
                 if(attackDurationTimer >= ATTACK_DURATION) {
                     playerState = playerState.MOVING;
