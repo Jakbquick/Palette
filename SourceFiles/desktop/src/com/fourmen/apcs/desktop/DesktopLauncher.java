@@ -1,5 +1,6 @@
 package com.fourmen.apcs.desktop;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.fourmen.apcs.Palette;
@@ -19,6 +20,9 @@ public class DesktopLauncher {
 		config.height = (int)(config.width * (double)(9.0/16.0));
 		config.useGL30 = false;			// runs without using openGl so Collin's baka computer can handle it
 		config.resizable = false;
+		config.addIcon("Images/macthumbnail.png",Files.FileType.Internal);
+		config.addIcon("Images/thumbnail.png",Files.FileType.Internal);
+		config.addIcon("Images/lowresthumbnail.png",Files.FileType.Internal);
 		//config.fullscreen = true;
 
 		new LwjglApplication(new Palette(config.width,config.height), config);
