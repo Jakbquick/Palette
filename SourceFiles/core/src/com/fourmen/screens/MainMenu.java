@@ -74,7 +74,7 @@ public class MainMenu implements Screen {
         fadeToBlack = false;
 
         gameStart = Gdx.audio.newSound(Gdx.files.internal("Music/GameStart.mp3"));
-        timerToFade = 4;
+        timerToFade = 3.6f;
         blankAnimation = new Animation<TextureRegion>(.1f, Animator.setUpSpriteSheet("Images/transparent.png",
                 1,16));
         bg = new Animation<TextureRegion>(.25f, Animator.setUpSpriteSheet("Images/bgSpriteSheet.png",
