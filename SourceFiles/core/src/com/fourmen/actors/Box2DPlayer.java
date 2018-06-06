@@ -2,6 +2,7 @@ package com.fourmen.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -70,6 +71,8 @@ public class Box2DPlayer extends Entity{
 
     private Timer timer;
 
+    private Sound glitch;
+
     public TextureRegion currentFrame;
     private Animation<TextureRegion> moving;
     private Animation<TextureRegion> idle;
@@ -112,6 +115,7 @@ public class Box2DPlayer extends Entity{
         dashEnd = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/spritedashendsheet.png", 1, 5));
         empty = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/emptyframe.png", 1, 1));
         currentFrame = moving.getKeyFrame(stateTime, true);
+        glitch = Gdx.audio.newSound(Gdx.files.internal("Music/glitch.mp3"));
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -214,6 +218,7 @@ public class Box2DPlayer extends Entity{
 
                 if(dashCooldownTimer <= 0 && checkDash()) {
                     playerState = playerState.DASHING;
+                    glitch.play();
                 }
 
                 if(!direction.isZero()) {
