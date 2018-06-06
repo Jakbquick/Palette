@@ -1,17 +1,19 @@
 package com.fourmen.tween;
 
+
 import aurelienribon.tweenengine.TweenAccessor;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.fourmen.utils.TextureFadeImage;
 
-public class FloatAccessor implements TweenAccessor<Float> {
+public class TextureOpAccessor implements TweenAccessor<TextureFadeImage> {
 
     public static final int ALPHA = 0;
 
     @Override
-    public int getValues(Float target, int tweenType, float[] returnValues) {
+    public int getValues(TextureFadeImage target, int tweenType, float[] returnValues) {
         switch (tweenType) {
             case ALPHA:
-                returnValues[0] = target;
+                returnValues[0] = target.getOpacity();
                 return 1;
             default:
                 assert false;
@@ -20,10 +22,10 @@ public class FloatAccessor implements TweenAccessor<Float> {
     }
 
     @Override
-    public void setValues(Float target, int tweenType, float[] newValues) {
+    public void setValues(TextureFadeImage target, int tweenType, float[] newValues) {
         switch (tweenType) {
             case ALPHA:
-                target = newValues[0];
+                target.setOpacity(newValues[0]);
                 break;
             default:
                 assert false;

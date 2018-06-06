@@ -65,7 +65,7 @@ public class MainMenu implements Screen {
     public void show() {
         blankAnimation = new Animation<TextureRegion>(.1f, Animator.setUpSpriteSheet("Images/transparent.png",
                 1,16));
-        bg = new Animation<TextureRegion>(.3f, Animator.setUpSpriteSheet("Images/bgSpriteSheet.png",
+        bg = new Animation<TextureRegion>(.25f, Animator.setUpSpriteSheet("Images/bgSpriteSheet.png",
                 1,12));
         bgActor = new AnimatedImage(bg,width,height,'y');
         setUpAnimations();
@@ -126,7 +126,7 @@ public class MainMenu implements Screen {
         stage.addActor(table);
         stage.addActor(playbutt);
 
-        //stage.addActor(blackScreenImage);
+        stage.addActor(blackScreenImage);
         Gdx.input.setInputProcessor(stage);
         table.setDebug(false);
 
@@ -170,8 +170,10 @@ public class MainMenu implements Screen {
         cloudActor = new AnimatedImage(clouds,width,height,'y');
         mountains = new Texture("Images/hedge2.png");
         cliff = new ResizableImage(mountains,width,height);
+
         blackScreenTexture = new Texture(Gdx.files.internal("Images/BlackScreen.jpg"));
         blackScreenImage = new TextureFadeImage(blackScreenTexture,width,height);
+
         cloud1 = new Animation<TextureRegion>(.1f, Animator.setUpSpriteSheet("Images/cloud1.png",
                 1,16));
 

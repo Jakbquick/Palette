@@ -1,22 +1,18 @@
 package com.fourmen.utils;
 
-import aurelienribon.tweenengine.BaseTween;
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenCallback;
-import aurelienribon.tweenengine.TweenManager;
-import com.badlogic.gdx.Gdx;
+import aurelienribon.tweenengine.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.fourmen.tween.FloatAccessor;
 import com.fourmen.tween.SpriteAccessor;
+import com.fourmen.tween.TextureOpAccessor;
 
 
 public class TextureFadeImage extends Image {
     private Texture texture;
     int width, height;
-    float opacity;
+    Float opacity;
     private Sprite sprite;
     private TweenManager tweenManager;
 
@@ -24,25 +20,22 @@ public class TextureFadeImage extends Image {
         this.texture = texture;
         this.width = width;
         this.height = height;
-        opacity = 1;
+        opacity = new Float(0f);
 
         tweenManager = new TweenManager();
-        Tween.registerAccessor(Float.class, new FloatAccessor());
+        Tween.registerAccessor(TextureFadeImage.class, new TextureOpAccessor());
+        Tween.setCombinedAttributesLimit(1);
         //blackScreen.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        Tween.set(opacity, FloatAccessor.ALPHA).target(0).start(tweenManager);
-        Tween.to(opacity,FloatAccessor.ALPHA,2).target(1).repeatYoyo(1, 2).setCallback(new TweenCallback() {
-            @Override
-            public void onEvent(int type, BaseTween<?> source) {
-
-            }
-        }).start(tweenManager);
+        Tween.set(this, SpriteAccessor.ALPHA).target(1).start(tweenManager);
+        Tween.to(this,SpriteAccessor.ALPHA,.8f).target(0).start(tweenManager);
     }
     public void draw (Batch batch, float parentAlpha){
         tweenManager.update(1/60f);
         //batch.draw(texture, 0,0,width,height);
         sprite = new Sprite(texture);
         sprite.setColor(0,0,0,opacity);
+        sprite.setSize(width,height);
         //if(opacity<=.06){
             //opacity = 0;
         //}
@@ -50,5 +43,12 @@ public class TextureFadeImage extends Image {
             //opacity -= .06;
         //}
         sprite.draw(batch);
+        //System.out.println(opacity + "\n");
+    }
+    public float getOpacity(){
+        return opacity;
+    }
+    public void setOpacity(float refreshOpacity){
+        opacity = refreshOpacity;
     }
 }
