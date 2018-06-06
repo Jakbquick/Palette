@@ -16,7 +16,7 @@ public class TextureFadeImage extends Image {
     private Sprite sprite;
     private TweenManager tweenManager;
 
-    public TextureFadeImage(Texture texture, int width, int height){
+    public TextureFadeImage(Texture texture, int width, int height) {
         this.texture = texture;
         this.width = width;
         this.height = height;
@@ -28,27 +28,40 @@ public class TextureFadeImage extends Image {
         //blackScreen.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         Tween.set(this, SpriteAccessor.ALPHA).target(1).start(tweenManager);
-        Tween.to(this,SpriteAccessor.ALPHA,.8f).target(0).start(tweenManager);
+        //Tween.to(this,SpriteAccessor.ALPHA,.8f).target(0).start(tweenManager);
     }
-    public void draw (Batch batch, float parentAlpha){
-        tweenManager.update(1/60f);
+
+    public void draw(Batch batch, float parentAlpha) {
+        tweenManager.update(1 / 60f);
         //batch.draw(texture, 0,0,width,height);
         sprite = new Sprite(texture);
-        sprite.setColor(0,0,0,opacity);
-        sprite.setSize(width,height);
+        sprite.setColor(0, 0, 0, opacity);
+        sprite.setSize(width, height);
         //if(opacity<=.06){
-            //opacity = 0;
+        //opacity = 0;
         //}
         //else if(opacity > 0) {
-            //opacity -= .06;
+        //opacity -= .06;
         //}
         sprite.draw(batch);
         //System.out.println(opacity + "\n");
     }
-    public float getOpacity(){
+
+    public float getOpacity() {
         return opacity;
     }
-    public void setOpacity(float refreshOpacity){
+
+    public void setOpacity(float refreshOpacity) {
         opacity = refreshOpacity;
+    }
+
+    public void fadeOut() {
+        Tween.to(this, SpriteAccessor.ALPHA, .8f).target(0f).start(tweenManager);
+    }
+
+    public void fadeIn() {
+        {
+            Tween.to(this, SpriteAccessor.ALPHA, 3f).target(1f).start(tweenManager);
+        }
     }
 }

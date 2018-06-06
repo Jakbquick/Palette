@@ -9,6 +9,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.fourmen.tween.MusicAccessor;
 import com.fourmen.tween.SpriteAccessor;
 import com.fourmen.utils.AnimatedImage;
 import com.fourmen.utils.Animator;
@@ -47,7 +49,11 @@ public class MainMenu implements Screen {
     private Animation<TextureRegion> bg, clouds, cloud1, hairBlow1,hairBlow2,blankAnimation,cloud2;
     private AnimatedImage bgActor, cloudActor,cloud1Image,hair1Image,hair2Image,cloud2Image;
     private Music music;
-    private Image cliff,blackScreenImage,hedgeImage;
+    private Image cliff,hedgeImage;
+    private float timerToFade;
+    private Sound gameStart;
+    private boolean startTimer, fadeOutMusic, fadeToBlack;
+    private TextureFadeImage blackScreenImage;
 
 
 
@@ -63,6 +69,12 @@ public class MainMenu implements Screen {
 
     @Override
     public void show() {
+        tweenManager = new TweenManager();
+        fadeOutMusic = false;
+        fadeToBlack = false;
+
+        gameStart = Gdx.audio.newSound(Gdx.files.internal("Music/GameStart.mp3"));
+        timerToFade = 4;
         blankAnimation = new Animation<TextureRegion>(.1f, Animator.setUpSpriteSheet("Images/transparent.png",
                 1,16));
         bg = new Animation<TextureRegion>(.25f, Animator.setUpSpriteSheet("Images/bgSpriteSheet.png",
@@ -109,10 +121,11 @@ public class MainMenu implements Screen {
         playbutt.addListener(new ClickListener()
         {
             public void clicked(InputEvent event, float x, float y) {
-                music.stop();
-                music.dispose();
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new Box2DRender(width,height));
-
+                startTimer = true;
+                gameStart.play();
+                fadeMusic();
+                fadeToBlack = true;
+                blackScreenImage.fadeIn();
                 event.stop();
 
             }
@@ -130,11 +143,22 @@ public class MainMenu implements Screen {
         Gdx.input.setInputProcessor(stage);
         table.setDebug(false);
 
-
+        blackScreenImage.fadeOut();
     }
 
     @Override
     public void render(float delta) {
+        tweenManager.update(delta);
+        if(fadeOutMusic){
+            fadeMusic();
+        }
+        if (timerToFade <= 0){
+            music.stop();
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new Box2DRender(width,height));
+        }
+        if(startTimer){
+            timerToFade -= delta;
+        }
         if(timeSinceStart >= cloudDuration-.30){
             cloud1Image.setAnimation(blankAnimation);
             cloud2Image.setAnimation(cloud2);
@@ -194,12 +218,6 @@ public class MainMenu implements Screen {
                 1,7));
         cloud2Image = new AnimatedImage(blankAnimation,width,height,'y');
     }
-    public void checkAnimations(){
-        SnapshotArray<Actor> actors = new SnapshotArray<Actor>(stage.getActors());
-        for(Actor actor : actors) {
-            actor.remove();
-        }
-    }
     @Override
     public void pause() {
 
@@ -219,19 +237,16 @@ public class MainMenu implements Screen {
     public void dispose() {
         batch.dispose();
         blackScreen.getTexture().dispose();
-
+        music.dispose();
+        gameStart.dispose();
     }
     public void setUpTweenManager(){
-        tweenManager = new TweenManager();
-        Tween.registerAccessor(Sprite.class, new SpriteAccessor());
-        blackScreen.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        Tween.set(blackScreen, SpriteAccessor.ALPHA).target(0).start(tweenManager);
-        Tween.to(blackScreen,SpriteAccessor.ALPHA,2).target(1).repeatYoyo(1, 2).setCallback(new TweenCallback() {
-            @Override
-            public void onEvent(int type, BaseTween<?> source) {
 
-            }
-        }).start(tweenManager);
+    }
+    public void fadeMusic(){
+        Tween.registerAccessor(Music.class, new MusicAccessor());
+        Tween.set(music, MusicAccessor.VOLUME).cast(Music.class).target(music.getVolume()).start(tweenManager);
+        Tween.to(music,0,3.5f).cast(Music.class).target(0).start(tweenManager);
     }
 }
