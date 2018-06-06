@@ -122,7 +122,9 @@ public class MainMenu implements Screen {
         playbutt.addListener(new ClickListener()
         {
             public void clicked(InputEvent event, float x, float y) {
-                startGame();
+                if(!gameStarted) {
+                    startGame();
+                }
                 event.stop();
 
             }
