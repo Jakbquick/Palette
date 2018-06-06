@@ -1,0 +1,15 @@
+{
+com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+	default: {
+		up: STARTUP
+		down: STARTUP
+		over: STARTDOWN
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
+	default: {
+		imageUp: STARTUP
+		imageOver: STARTDOWN
+	}
+}
+}

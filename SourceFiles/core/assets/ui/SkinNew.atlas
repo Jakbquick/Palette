@@ -1,0 +1,20 @@
+
+SkinNew.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+STARTDOWN
+  rotate: false
+  xy: 1, 1
+  size: 193, 185
+  orig: 193, 185
+  offset: 0, 0
+  index: -1
+STARTUP
+  rotate: false
+  xy: 1, 188
+  size: 193, 185
+  orig: 193, 185
+  offset: 0, 0
+  index: -1

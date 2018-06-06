@@ -92,7 +92,7 @@ public class MainMenu implements Screen {
         setUpTweenManager();
 
 
-        skin = new Skin(Gdx.files.internal("ui/skinexport.json"));
+        skin = new Skin(Gdx.files.internal("ui/SkinNew.json"));
 
         table = new Table(skin);
         table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture("Images/Titlescreen.png"))));
@@ -114,7 +114,7 @@ public class MainMenu implements Screen {
 
         ImageButton playbutt = new ImageButton(skin);
 
-        playbutt.setPosition(280, 300);
+        playbutt.setPosition(280, 250);
 
 
 
