@@ -61,7 +61,7 @@ public class Splash implements Screen {
 
         tweenManager.update(delta);
 
-        if(Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY) || Gdx.input.isTouched()){
             ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu(width,height,music,beach));
         }
         batch.begin();
