@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
-import com.fourmen.box2D.CircleSlash;
+import com.fourmen.box2D.SlashAttack;
 import com.fourmen.utils.Animator;
 
 import java.awt.*;
@@ -31,6 +31,8 @@ public class Box2DPlayer extends Entity{
     private final static float DECELERATION_CONSTANT = 1f;
     private final static float DASH_COOLDOWN = 2f;
     private final static float DASH_DURATION = .25f;
+    private final static float ATTACK_COOLDOWN = 2f;
+    private final static float ATTACK_DURATION = .76f;
     private final static float DASH_END_LAG = .15f;
     private final static float STANDING_COOLDOWN = .25f;
     private enum PlayerState {
@@ -38,6 +40,7 @@ public class Box2DPlayer extends Entity{
     }
 
     private Vector2 direction;
+    private Vector2 attackDirection;
     private Vector2 dashDirection;
     private Vector2 dashPosition;
     private Vector2 targetSpeed;        // contains a target speed for x and y
@@ -56,11 +59,13 @@ public class Box2DPlayer extends Entity{
 
     private PlayerBounds playerBounds;
 
-    private CircleSlash circleSlash;
+    private SlashAttack slash;
 
-    private double dashDurationTimer = 0;
-    private double dashCooldownTimer = 0;
-    private double standingCooldownTimer = 0;
+    private float dashDurationTimer = 0;
+    private float attackDurationTimer = 0;
+    private float dashCooldownTimer = 0;
+    private float attackCooldownTimer = 0;
+    private float standingCooldownTimer = 0;
     private float stateTime = 0;
 
     private Timer timer;
@@ -71,7 +76,6 @@ public class Box2DPlayer extends Entity{
     private Animation<TextureRegion> dash;
     private Animation<TextureRegion> dashEnd;
     private Animation<TextureRegion> empty;
-    private Animation<TextureRegion> attackSide;
 
     private int lastDirectionfaced;
     private int LEFT = 0;
@@ -82,6 +86,7 @@ public class Box2DPlayer extends Entity{
         super();
         lastDirectionfaced = LEFT;
         direction = new Vector2(0, 0);
+        attackDirection = new Vector2(0, 0);
         dashDirection = new Vector2(0, 0);
         dashPosition = new Vector2(0, 0);
         targetSpeed = new Vector2(0, 0);
@@ -97,7 +102,7 @@ public class Box2DPlayer extends Entity{
 
         playerBounds = myPlayerBounds;
 
-        //circleSlash = new CircleSlash(world, position, PLAYER_SIZE);
+        slash = new SlashAttack(world, position, PLAYER_SIZE);
 
         timer = new Timer();
 
@@ -106,7 +111,6 @@ public class Box2DPlayer extends Entity{
         dash = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/spritedashsheet.png", 1, 5));
         dashEnd = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/spritedashendsheet.png", 1, 5));
         empty = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/emptyframe.png", 1, 1));
-        attackSide = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/attacksheet.png", 1, 36));
         currentFrame = moving.getKeyFrame(stateTime, true);
 
         BodyDef bodyDef = new BodyDef();
@@ -182,9 +186,15 @@ public class Box2DPlayer extends Entity{
         updateDirection();
         switch (playerState) {
             case STANDING:
+                slash.updateAttackDirection();
                 currentFrame = getFrame(idle);
                 //currentFrame = idle.getKeyFrame(stateTime, true);
                 move();
+
+                if(attackCooldownTimer <= 0 && slash.checkAttack()) {
+                    attackDurationTimer = 0;
+                    playerState = playerState.ATTACKING;
+                }
 
                 if(!direction.isZero()) {
                     playerState = playerState.MOVING;
@@ -192,12 +202,18 @@ public class Box2DPlayer extends Entity{
 
                 break;
             case MOVING:
+                slash.updateAttackDirection();
                 currentFrame = getFrame(moving);
                 //currentFrame = moving.getKeyFrame(stateTime, true);
                 move();
 
-                if(dashCooldownTimer <= 0) {
-                    checkDash();
+                if(attackCooldownTimer <= 0 && slash.checkAttack()) {
+                    attackDurationTimer = 0;
+                    playerState = playerState.ATTACKING;
+                }
+
+                if(dashCooldownTimer <= 0 && checkDash()) {
+                    playerState = playerState.DASHING;
                 }
 
                 if(!direction.isZero()) {
@@ -210,6 +226,11 @@ public class Box2DPlayer extends Entity{
 
                 break;
             case ATTACKING:
+                currentFrame = slash.getFrame();
+
+                if(attackDurationTimer >= ATTACK_DURATION) {
+                    playerState = playerState.MOVING;
+                }
 
                 break;
             case DASHING:
@@ -250,25 +271,6 @@ public class Box2DPlayer extends Entity{
                     setY(dashPosition.y);
                     playerState = playerState.MOVING;
                 }
-
-                /*
-                currentFrame = dash.getKeyFrame(stateTime, true);
-                //getFrame(dash);
-                System.out.println(dash.isAnimationFinished(stateTime));
-                if(dash.isAnimationFinished(stateTime)) {
-                    currentFrame = empty.getKeyFrame(stateTime);
-                }
-
-                dash();
-
-                /*
-                if(dashDurationTimer <= 0) {
-                    currentSpeed.x = tempSpeed.x;
-                    currentSpeed.y = tempSpeed.y;
-                    playerState = playerState.MOVING;
-                }
-                */
-
                 break;
         }
         blockPlayerLeavingTheWorld();
@@ -329,19 +331,8 @@ public class Box2DPlayer extends Entity{
         setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());        // changes the y position of the entity
     }
 
-    private void checkAttack() {
-        //if () {}
-
-
-    }
-
-    private void attack() {
-
-    }
-
-    private void checkDash() {
+    private boolean checkDash() {
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && !(direction.x == 0 && direction.y == 0)) {
-            playerState = playerState.DASHING;
             dashDirection.x = direction.x;
             dashDirection.y = direction.y;
 
@@ -355,6 +346,11 @@ public class Box2DPlayer extends Entity{
             dashCooldownTimer = DASH_COOLDOWN;
 
             stateTime = 0;
+
+            return true;
+        }
+        else {
+            return false;
         }
     }
 
@@ -370,11 +366,16 @@ public class Box2DPlayer extends Entity{
     }
 
     public void draw(Batch batch) {
+        if(playerState == playerState.ATTACKING) {
+            lastDirectionfaced = slash.getLastAttack();
+        }
+
         boolean flip = (lastDirectionfaced == RIGHT);
         //batch.draw(currentFrame, getX() - 141.5f * PLAYER_SIZE, getY() - 146 * PLAYER_SIZE);
-        batch.draw(currentFrame, flip ? getX() - (16f * PLAYER_SIZE) - (141.5f * PLAYER_SIZE)+currentFrame.getRegionWidth()* PLAYER_SIZE : getX() - (141.5f * PLAYER_SIZE),
-                getY() - 146 * PLAYER_SIZE, flip ? -currentFrame.getRegionWidth()* PLAYER_SIZE: currentFrame.getRegionWidth()* PLAYER_SIZE,
-                currentFrame.getRegionHeight()* PLAYER_SIZE);
+        batch.draw(currentFrame, flip ? getX() - (16f * PLAYER_SIZE) - (141.5f * PLAYER_SIZE) + currentFrame.getRegionWidth() * PLAYER_SIZE : getX() - (141.5f * PLAYER_SIZE),
+                getY() - 146 * PLAYER_SIZE, flip ? -currentFrame.getRegionWidth() * PLAYER_SIZE : currentFrame.getRegionWidth() * PLAYER_SIZE,
+                currentFrame.getRegionHeight() * PLAYER_SIZE);
+
     }
 
     public TextureRegion getFrame(Animation<TextureRegion> frame) {
@@ -387,13 +388,16 @@ public class Box2DPlayer extends Entity{
     public void updateTimers(float delta) {
         dashDurationTimer += delta;
         dashCooldownTimer -= delta;
+        attackDurationTimer += delta;
+        attackCooldownTimer -= delta;
         standingCooldownTimer -= delta;
         stateTime += delta;
+        slash.update(delta);
     }
 
     public void updatePosition() {
         body.setTransform(position, 0);
-        //circleSlash.updatePosition(position);
+        slash.updatePosition(position);
     }
 
     public void updateCollisions(int collisions) {
