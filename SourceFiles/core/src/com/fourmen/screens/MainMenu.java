@@ -147,7 +147,7 @@ public class MainMenu implements Screen {
     @Override
     public void render(float delta) {
         tweenManager.update(delta);
-        if(Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)){
             startGame();
         }
         if(fadeOutMusic){
