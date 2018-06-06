@@ -6,6 +6,7 @@ import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
@@ -57,6 +58,9 @@ public class Splash implements Screen {
 
         tweenManager.update(delta);
 
+        if(Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)){
+            ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu(width,height,music));
+        }
         batch.begin();
         splash.draw(batch);
         batch.end();
