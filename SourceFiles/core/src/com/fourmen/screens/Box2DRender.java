@@ -1,9 +1,13 @@
 package com.fourmen.screens;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -18,11 +22,16 @@ import com.fourmen.actors.Box2DPlayer;
 import com.fourmen.actors.PlayerBounds;
 import com.fourmen.box2D.Walls;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.fourmen.tween.SpriteAccessor;
 import com.fourmen.utils.BodyEditorLoader;
 import com.fourmen.utils.CameraStyles;
 
 
 public class Box2DRender extends ScreenAdapter {
+    private Music caveMusic;
+    private Texture blackTexture;
+    private Sprite blackSprite;
+    private TweenManager tweenManager;
     private static float WORLD_WIDTH;
     private static float WORLD_HEIGHT;
     private boolean isPaused;
@@ -64,6 +73,10 @@ public class Box2DRender extends ScreenAdapter {
     }
 
     public void show() {
+        setUpTween();
+        caveMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/CaveMusic.mp3"));
+        caveMusic.setLooping(true);
+        caveMusic.play();       //future reminder to stop this music when boss spawns(step in circle)
         batch = new SpriteBatch();
         world = new World(new Vector2(0, 0), true);
         contactListener = new ContactListener() {
@@ -117,6 +130,7 @@ public class Box2DRender extends ScreenAdapter {
 
 
     public void render(float delta) {
+        tweenManager.update(delta);
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         cameraUpdate();
         timeSinceStart += delta;
@@ -140,6 +154,7 @@ public class Box2DRender extends ScreenAdapter {
             player.draw(batch);
         }
 
+        blackSprite.draw(batch);
         batch.end();
     }
     private void debugView() {
@@ -197,6 +212,17 @@ public class Box2DRender extends ScreenAdapter {
 
     public void pause(){
         Gdx.app.exit();
+    }
+
+    public void setUpTween(){
+        tweenManager = new TweenManager();
+        Tween.registerAccessor(Sprite.class, new SpriteAccessor());
+        blackTexture = new Texture("Images/BlackScreen.jpg");
+        blackSprite = new Sprite(blackTexture);
+        blackSprite.setPosition(0,0);
+        blackSprite.setSize(WORLD_WIDTH * 2f,WORLD_HEIGHT * 2f);
+        Tween.set(blackSprite, SpriteAccessor.ALPHA).target(1).start(tweenManager);
+        Tween.to(blackSprite,SpriteAccessor.ALPHA,1.7f).target(0).start(tweenManager);
     }
 }
 
