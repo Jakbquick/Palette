@@ -53,7 +53,7 @@ public class MainMenu implements Screen {
     private Image cliff,hedgeImage;
     private float timerToFade;
     private Sound gameStart;
-    private boolean startTimer, fadeOutMusic, fadeToBlack;
+    private boolean startTimer, gameStarted;
     private TextureFadeImage blackScreenImage;
 
 
@@ -72,8 +72,7 @@ public class MainMenu implements Screen {
     @Override
     public void show() {
         tweenManager = new TweenManager();
-        fadeOutMusic = false;
-        fadeToBlack = false;
+        gameStarted = false;
 
         gameStart = Gdx.audio.newSound(Gdx.files.internal("Music/GameStart.mp3"));
         timerToFade = 3.6f;
@@ -147,11 +146,8 @@ public class MainMenu implements Screen {
     @Override
     public void render(float delta) {
         tweenManager.update(delta);
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY) && !gameStarted && (timeSinceStart >= 1f)){
             startGame();
-        }
-        if(fadeOutMusic){
-            fadeMusic();
         }
         if (timerToFade <= 0){
             music.stop();
@@ -258,7 +254,7 @@ public class MainMenu implements Screen {
         startTimer = true;
         gameStart.play();
         fadeMusic();
-        fadeToBlack = true;
+        gameStarted = true;
         blackScreenImage.fadeIn();
 
     }
