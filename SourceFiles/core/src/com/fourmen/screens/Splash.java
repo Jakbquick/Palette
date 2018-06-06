@@ -21,7 +21,7 @@ public class Splash implements Screen {
     private SpriteBatch batch;
     private TweenManager tweenManager;
     private int width,height;
-    private Music music;
+    private Music music,beach;
     public Splash(int width, int height){
         this.width = width;
         this.height = height;
@@ -33,6 +33,9 @@ public class Splash implements Screen {
         splash = new Sprite(splashTexture);
 
         music = Gdx.audio.newMusic(Gdx.files.internal("Music/LaurenPiano.mp3"));
+        beach = Gdx.audio.newMusic(Gdx.files.internal("Music/BeachMusic.mp3"));
+        beach.setLooping(true);
+        beach.play();
         music.setLooping(true);
         music.play();
 
@@ -46,7 +49,7 @@ public class Splash implements Screen {
         Tween.to(splash,SpriteAccessor.ALPHA,1.8f).target(1).repeatYoyo(1, 2).setCallback(new TweenCallback() {
             @Override
             public void onEvent(int type, BaseTween<?> source) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu(width,height,music));
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu(width,height,music,beach));
             }
         }).start(tweenManager);
     }
@@ -59,7 +62,7 @@ public class Splash implements Screen {
         tweenManager.update(delta);
 
         if(Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)){
-            ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu(width,height,music));
+            ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu(width,height,music,beach));
         }
         batch.begin();
         splash.draw(batch);

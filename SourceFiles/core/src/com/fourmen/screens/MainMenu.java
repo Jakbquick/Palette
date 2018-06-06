@@ -7,6 +7,7 @@ import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -48,7 +49,7 @@ public class MainMenu implements Screen {
     private float timeSinceStart,cloudDuration,hairDuration;
     private Animation<TextureRegion> bg, clouds, cloud1, hairBlow1,hairBlow2,blankAnimation,cloud2;
     private AnimatedImage bgActor, cloudActor,cloud1Image,hair1Image,hair2Image,cloud2Image;
-    private Music music;
+    private Music music,beach;
     private Image cliff,hedgeImage;
     private float timerToFade;
     private Sound gameStart;
@@ -60,10 +61,11 @@ public class MainMenu implements Screen {
 
 
 
-    public MainMenu(int width, int height, Music music) {
+    public MainMenu(int width, int height, Music music,Music beach) {
         this.width = width;
         this.height = height;
         this.music = music;
+        this.beach = beach;
     }
 
 
@@ -121,11 +123,7 @@ public class MainMenu implements Screen {
         playbutt.addListener(new ClickListener()
         {
             public void clicked(InputEvent event, float x, float y) {
-                startTimer = true;
-                gameStart.play();
-                fadeMusic();
-                fadeToBlack = true;
-                blackScreenImage.fadeIn();
+                startGame();
                 event.stop();
 
             }
@@ -149,11 +147,15 @@ public class MainMenu implements Screen {
     @Override
     public void render(float delta) {
         tweenManager.update(delta);
+        if(Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)){
+            startGame();
+        }
         if(fadeOutMusic){
             fadeMusic();
         }
         if (timerToFade <= 0){
             music.stop();
+            beach.stop();
             ((Game) Gdx.app.getApplicationListener()).setScreen(new Box2DRender(width,height));
         }
         if(startTimer){
@@ -203,7 +205,7 @@ public class MainMenu implements Screen {
 
         cloud1Image = new AnimatedImage(cloud1, width, height,'n');
 
-        hairBlow1 = new Animation<TextureRegion>(.15f, Animator.setUpSpriteSheet("Images/hairBlowOnce.png",
+        hairBlow1 = new Animation<TextureRegion>(.15f, Animator.setUpSpriteSheet("Images/spriteWhitePix.png",
                 1,15));
         hair1Image = new AnimatedImage(hairBlow1, width, height,'n');
         hedgeImage = new ResizableImage(new Texture("Images/hedge.png"),width,height);
@@ -239,6 +241,7 @@ public class MainMenu implements Screen {
         blackScreen.getTexture().dispose();
         music.dispose();
         gameStart.dispose();
+        beach.dispose();
     }
     public void setUpTweenManager(){
 
@@ -248,5 +251,15 @@ public class MainMenu implements Screen {
         Tween.registerAccessor(Music.class, new MusicAccessor());
         Tween.set(music, MusicAccessor.VOLUME).cast(Music.class).target(music.getVolume()).start(tweenManager);
         Tween.to(music,0,3.5f).cast(Music.class).target(0).start(tweenManager);
+        Tween.set(beach, MusicAccessor.VOLUME).cast(Music.class).target(beach.getVolume()).start(tweenManager);
+        Tween.to(beach,0,3.5f).cast(Music.class).target(0).start(tweenManager);
+    }
+    public void startGame(){
+        startTimer = true;
+        gameStart.play();
+        fadeMusic();
+        fadeToBlack = true;
+        blackScreenImage.fadeIn();
+
     }
 }
