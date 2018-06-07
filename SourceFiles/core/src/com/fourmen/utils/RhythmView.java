@@ -43,7 +43,7 @@ public class RhythmView {
         clickTime = 0;
     }
     public void update(float delta){
-        if (clickTime == 3){
+        if (clickTime == 7){
             drawClick = false;
             clickTime = 0;
         }
@@ -60,7 +60,6 @@ public class RhythmView {
         if (drawClick){
             batch.draw(clicked,100,y + (.5f * bar.getHeight()) - (.5f * beatSize),
                     beatSize,beatSize);
-            drawClick = false;
             clickTime++;
         }
         else {
