@@ -23,7 +23,7 @@ public class Box2DEnemy extends Entity {
     private static final float DECELERATION_CONSTANT = 1f;
     private final int MAX_SPEED = 500;               // the max speed a player can move
     private final float DASH_SPEED = 1000;
-    private final float CHARGE_SPEED = 3000;
+    private final float CHARGE_SPEED = 2000;
     private final static float DASH_COOLDOWN = .6f;
     private final static float DASH_DURATION = .1f;
     private enum PlayerState {
@@ -75,7 +75,7 @@ public class Box2DEnemy extends Entity {
         enemyState = enemyState.MOVING;
         player = myPlayer;
 
-        moving = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/TempBoss.png", 1, 4));
+        moving = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/TempBoss.png", 1, 5));
         dash = new Animation<TextureRegion>(0.08f, Animator.setUpSpriteSheet("Images/TempBoss.png", 1, 5));
         charge = new Animation<TextureRegion>(0.08f, Animator.setUpSpriteSheet("Images/TempBoss.png", 1, 5));
         currentFrame = moving.getKeyFrame(stateTime, true);
@@ -120,7 +120,7 @@ public class Box2DEnemy extends Entity {
                 break;
             case ENDCHARGE:
                 currentFrame = getFrame(dash);
-                endcharge();
+                dash();
                 if (dashDurationTimer <= -0.3) {
                     enemyState = enemyState.MOVING;
                 }
@@ -153,7 +153,7 @@ public class Box2DEnemy extends Entity {
     private void updateDirection() {
         direction.x = 0;
         direction.y = 0;
-        if(distanceBetween(player, getX(), getY()) > 600) {
+        if(distanceBetween(player, getX(), getY()) > 700) {
             if (player.getX() > getX()) {
                 direction.x += 1;
                 lastDirectionfaced = RIGHT;
@@ -168,6 +168,22 @@ public class Box2DEnemy extends Entity {
                 direction.y -= 1;
 
             towardsPlayer = true;
+        }
+        else if(distanceBetween(player, getX(), getY()) < 300) {
+            if (player.getX() > getX()) {
+                direction.x -= 1;
+                lastDirectionfaced = RIGHT;
+            }
+            else if (player.getX() < getX()) {
+                direction.x += 1;
+                lastDirectionfaced = LEFT;
+            }
+            if (player.getY() > getY())
+                direction.y -= 1;
+            else if (player.getY() < getY())
+                direction.y += 1;
+
+            towardsPlayer = false;
         }
         else {
             direction.setToRandomDirection();
@@ -264,14 +280,6 @@ public class Box2DEnemy extends Entity {
         setPosition(player.getX(), player.getY());
     }
 
-    private void endcharge() {
-        currentSpeed.x = CHARGE_SPEED * dashDirection.x;
-        currentSpeed.y = CHARGE_SPEED * dashDirection.y;
-
-        setX(getX() + currentSpeed.x * Gdx.graphics.getDeltaTime());
-        setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());
-    }
-
     public void lookAt(Vector2 target) {
 
         float angle = (float) Math.atan2(target.y - this.position.y, target.x
@@ -318,5 +326,7 @@ public class Box2DEnemy extends Entity {
     public void updateTimers(float delta) {
         dashDurationTimer -= delta;
         dashCooldownTimer -= delta;
+        stateTime += delta;
+        //slash.update(delta);
     }
 }

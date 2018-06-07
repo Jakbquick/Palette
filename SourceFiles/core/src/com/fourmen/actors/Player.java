@@ -236,6 +236,8 @@ public class Player extends com.fourmen.actors.Entity {
     public float getPlayerHeight() {
         return playerHeight;
     }
+    public float getXDirection() { return direction.x;}
+    public float getYDirection() { return direction.y;}
 
     private void updateRectangle() {
         rectangle.setX(position.x);

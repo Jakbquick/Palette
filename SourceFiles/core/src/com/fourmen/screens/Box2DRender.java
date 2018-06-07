@@ -184,6 +184,7 @@ public class Box2DRender extends ScreenAdapter {
                 batch.draw(redRegion,1100,600,600,600);
             }
             player.draw(batch);
+            enemy.draw(batch);
         }
         blackSprite.draw(batch);
         batch.end();
