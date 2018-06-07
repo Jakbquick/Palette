@@ -32,12 +32,25 @@ public class RhythmView {
     private float velocity;
     private Music beatJams;
     private float timeBeforeSpawn;
-    private boolean musicStarted;
+    private boolean musicStarted,odd;
+    private double bpm;
+    private double timeToFillMap;
+    private double betweenNotes, songLength;
+    private int index;
+    private float timer;
+    private float stopWatch;
 
     public RhythmView(SpriteBatch spriteBatch){
+        stopWatch = 0f;
+        odd = false;
+        timeToFillMap = 0.0;
+        bpm = 135;
+        songLength = 164.0;
+        betweenNotes = (1.0/(bpm / 60.0));
         i = 0;
         this.batch = spriteBatch;
-        readMapValues();
+        //readMapValues();
+        createWithBPM();
         bar = new Texture("Images/BlackBar.png");
         y = Gdx.graphics.getHeight() - 115;
         whenButton = new Texture("Images/Beat/NoClick.png");
@@ -48,14 +61,25 @@ public class RhythmView {
         clickTime = 0;
         beatJams = Gdx.audio.newMusic(Gdx.files.internal("Music/song1.mp3"));
 
-        xDistance = Gdx.graphics.getWidth() + (.5f * beatWidth) -        //the first beatSize here is the size of the beat transitioning across the map (replace later)
-                100 - (.5f * beatWidth);
         centerWhen = new Vector2(100 + (beatWidth/2f), y + (.5f * bar.getHeight()));
+        xDistance = Gdx.graphics.getWidth() + (.5f * Beat.beatWidth) -         //the first beatSize here is the size of the beat transitioning across the map (replace later)
+                centerWhen.x;
         velocity = 220f / 60f;
-        timeBeforeSpawn = velocity / xDistance;
+        System.out.println(velocity + " " + Gdx.graphics.getWidth());
+        timeBeforeSpawn = xDistance / (velocity * 60f);
+        System.out.println(timeBeforeSpawn + "");
         beatList = new ArrayList<Beat>();
+        timer = timeBeforeSpawn;
     }
     public void update(float delta){
+        if(timer <= 0 && musicStarted){
+            beatJams.play();
+            musicStarted = false;
+        }
+        else if(musicStarted){
+            stopWatch+= delta;
+            timer -= delta;
+        }
         for(Beat b : beatList){
             b.update();
         }
@@ -76,7 +100,7 @@ public class RhythmView {
                 Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !drawClick){
             drawClick = true;
         }
-        if(i < mapValues.length && beatJams.getPosition() >= mapValues[i] + timeBeforeSpawn){
+        if(i < mapValues.length && stopWatch >= mapValues[i]){
             beatList.add(new Beat(velocity, Gdx.graphics.getWidth(),y + (.5f * bar.getHeight())));
             i++;
         }
@@ -109,8 +133,20 @@ public class RhythmView {
 
     }
     public void startMusic(){
-        beatJams.play();
         musicStarted = true;
     }
-
+    public void createWithBPM(){
+        mapValues = new float[(int)(songLength/betweenNotes) + 0];
+        while(index < mapValues.length){
+            if(odd && index >= 0){
+                mapValues[index -0] = ((float)(timeToFillMap - timeBeforeSpawn));
+                odd = !odd;
+            }
+            else{
+                odd = ! odd;
+            }
+            timeToFillMap += betweenNotes;
+            index++;
+        }
+    }
 }
