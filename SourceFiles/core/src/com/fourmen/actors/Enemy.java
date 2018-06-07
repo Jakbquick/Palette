@@ -1,23 +1,34 @@
 package com.fourmen.actors;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-//import javafx.scene.control.skin.TextInputControlSkin;
+import com.fourmen.actors.Entity;
+import com.fourmen.actors.Player;
+import javafx.scene.control.skin.TextInputControlSkin;
 
+import javax.swing.text.Position;
+import javax.xml.stream.Location;
 
 public class Enemy extends Entity {
     //constants
-    private static final double ACCELERATION_CONSTANT = 0.2;
-    private static final double DECELERATION_CONSTANT = 0.2;
-    private final static float enemyWidth = 30;
-    private final static float enemyHeight = 30;
+    private static final double ACCELERATION_CONSTANT = .7;
+    private static final double DECELERATION_CONSTANT = .3;
+    private static final float ENEMY_SIZE = .50f;
+    private final static float enemyWidth = 300 * ENEMY_SIZE; //163    40
+    private final static float enemyHeight = 300 * ENEMY_SIZE; //251
     private Player player = new Player();
 
     private enum PlayerState {
-        MOVING, DASHING
+        MOVING, CHARGING
     }
 
     //instance variables
@@ -28,12 +39,11 @@ public class Enemy extends Entity {
     private double acceleration;
     private double deceleration;
     private Vector2 direction;          // contains a x direction and y direction from -1 to 1
-    private Vector2 dashDirection;
-    private double dashSpeed;
-    private double dashCooldown;
-    private double dashDuration;
-    private double dashDurationTimer;
-    private double dashCooldownTimer;
+    private Vector2 chargeDirection;
+    private double chargeSpeed;
+    private double chargeDuration;
+    private double chargeDurationTimer;
+    private double chargeCooldownTimer;
     private PlayerState enemyState;
 
     //constructors
@@ -42,16 +52,15 @@ public class Enemy extends Entity {
         rectangle = new Rectangle(getX(), getY(), enemyWidth, enemyHeight);
         targetSpeed = new Vector2(0, 0);
         currentSpeed = new Vector2(0, 0);
-        maxSpeed = 500;
+        maxSpeed = 400;
         acceleration = ACCELERATION_CONSTANT * maxSpeed;
         deceleration = DECELERATION_CONSTANT * maxSpeed;
         direction = new Vector2(0, 0);
-        dashDirection = new Vector2(0, 0);
-        dashSpeed = 1000;
-        dashCooldown = 0;
-        dashDuration = .1;
-        dashDurationTimer = 0;
-        dashCooldownTimer = 0;
+        chargeDirection = new Vector2(0, 0);
+        chargeSpeed = 1000;
+        chargeDuration = .4;
+        chargeDurationTimer = 0;
+        chargeCooldownTimer = 0;
         enemyState = enemyState.MOVING;
 
     }
@@ -59,7 +68,8 @@ public class Enemy extends Entity {
     private void updateDirection() {
         direction.x = 0;
         direction.y = 0;
-        if(distanceBetween(player, getX(), getY()) > 800) {
+
+        if(distanceBetween(player, getX(), getY()) > 500) {
             if (player.getX() > getX())
                 direction.x += 1;
             else if (player.getX() < getX())
@@ -69,6 +79,7 @@ public class Enemy extends Entity {
                 direction.y += 1;
             else if (player.getY() < getY())
                 direction.y -= 1;
+
         }
         else {
             int directionFactor = MathUtils.random(7);
@@ -114,32 +125,29 @@ public class Enemy extends Entity {
         switch (enemyState) {
             case MOVING:
                 move();
-                if(dashCooldownTimer <= 0)
-                    checkDash();
+                if(chargeCooldownTimer <= 0)
+                    checkCharge();
                 //if(standingCooldownTimer <= 0)
                 //playerState = playerState.STANDING;
                 break;
-            case DASHING:
-                dash();
-                if(dashDurationTimer <= 0) {
+            case CHARGING:
+                charge();
+                if(chargeDurationTimer <= 0) {
                     enemyState = enemyState.MOVING;
                 }
                 break;
         }
     }
 
-    private void checkDash() {
+    private void checkCharge() {
+        if(distanceBetween(player, getX(), getY()) > 200 && distanceBetween(player, getX(), getY()) < 500) {
+                enemyState = enemyState.CHARGING;
+                chargeDirection.x = direction.x;
+                chargeDirection.y = direction.y;
 
-        int dashChance  = MathUtils.random(4);
-
-        if(dashChance == 3) {
-            enemyState = enemyState.DASHING;
-            dashDirection.x = direction.x;
-            dashDirection.y = direction.y;
-
-            currentSpeed = new Vector2(0,0);
-            dashDurationTimer = dashDuration;
-            dashCooldownTimer = dashCooldown;
+                currentSpeed = new Vector2(0, 0);
+                chargeDurationTimer = chargeDuration;
+                //chargeCooldownTimer = chargeCooldown;
         }
     }
 
@@ -171,9 +179,9 @@ public class Enemy extends Entity {
         setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());        // changes the y position of the entity
     }
 
-    private void dash() {
-        currentSpeed.x = (float) (dashSpeed * dashDirection.x);
-        currentSpeed.y = (float) (dashSpeed * dashDirection.y);
+    private void charge() {
+        currentSpeed.x = (float) (chargeSpeed * chargeDirection.x);
+        currentSpeed.y = (float) (chargeSpeed * chargeDirection.y);
 
         setX(getX() + currentSpeed.x * Gdx.graphics.getDeltaTime());
         setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());
@@ -201,15 +209,12 @@ public class Enemy extends Entity {
     }
 
     public void update(float delta) {
-        dashDurationTimer -= delta;
-        dashCooldownTimer -= delta;
+        chargeDurationTimer -= delta;
+        chargeCooldownTimer -= delta;
     }
 
     public void drawDebug(ShapeRenderer shapeRenderer) {
         updateRectangle();
         shapeRenderer.rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     }
-
-
-
 }
