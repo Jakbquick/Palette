@@ -241,10 +241,11 @@ public class MainMenu implements Screen {
         gameStart.dispose();
         beach.dispose();
     }
+
     public void setUpTweenManager(){
 
-
     }
+
     public void fadeMusic(){
         Tween.registerAccessor(Music.class, new MusicAccessor());
         Tween.set(music, MusicAccessor.VOLUME).cast(Music.class).target(music.getVolume()).start(tweenManager);

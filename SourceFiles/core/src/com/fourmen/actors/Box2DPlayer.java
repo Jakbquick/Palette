@@ -1,5 +1,7 @@
 package com.fourmen.actors;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
@@ -16,6 +18,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
 import com.fourmen.box2D.SlashAttack;
+import com.fourmen.tween.SpriteAccessor;
 import com.fourmen.utils.Animator;
 
 import java.awt.*;
@@ -32,11 +35,11 @@ public class Box2DPlayer extends Entity{
     private final static float DECELERATION_CONSTANT = 1f;
     private final static float DASH_COOLDOWN = 2f;
     private final static float DASH_DURATION = .25f;
-    private final static float ATTACK_COOLDOWN = 2f;
-    private final static float ATTACK_DURATION = .76f;
+    private final static float ATTACK_COOLDOWN = .06f;
+    private final static float ATTACK_DURATION = .57f;
     private final static float DASH_END_LAG = .15f;
     private final static float STANDING_COOLDOWN = .25f;
-    private enum PlayerState {
+    public enum PlayerState {
         STANDING, MOVING, DASHING, ATTACKING
     }
 
@@ -52,11 +55,10 @@ public class Box2DPlayer extends Entity{
     private float deceleration;
 
     private Body body;
-    private Body attackHitbox;
 
     public int fixtureCollisions;
 
-    private PlayerState playerState;
+    public PlayerState playerState;
 
     private PlayerBounds playerBounds;
 
@@ -157,15 +159,6 @@ public class Box2DPlayer extends Entity{
         body.createFixture(fixtureDef);
 
         wingsSquare.dispose();
-
-        bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(new Vector2(position));
-        bodyDef.fixedRotation = true;
-
-        attackHitbox = world.createBody(bodyDef);
-
-
     }
 
     //methods
@@ -191,12 +184,13 @@ public class Box2DPlayer extends Entity{
         updateDirection();
         switch (playerState) {
             case STANDING:
-                slash.updateAttackDirection();
+                //slash.updateAttackDirection();
                 currentFrame = getFrame(idle);
                 //currentFrame = idle.getKeyFrame(stateTime, true);
                 move();
 
                 if(attackCooldownTimer <= 0 && slash.checkAttack()) {
+                    slash.createHitbox();
                     attackDurationTimer = 0;
                     playerState = playerState.ATTACKING;
                 }
@@ -207,12 +201,13 @@ public class Box2DPlayer extends Entity{
 
                 break;
             case MOVING:
-                slash.updateAttackDirection();
+                //slash.updateAttackDirection();
                 currentFrame = getFrame(moving);
                 //currentFrame = moving.getKeyFrame(stateTime, true);
                 move();
 
                 if(attackCooldownTimer <= 0 && slash.checkAttack()) {
+                    slash.createHitbox();
                     attackDurationTimer = 0;
                     playerState = playerState.ATTACKING;
                 }
@@ -232,12 +227,46 @@ public class Box2DPlayer extends Entity{
 
                 break;
             case ATTACKING:
-                currentFrame = slash.getFrame();
+                //currentFrame = slash.getAttackFrame();
                 move();
 
-                if(attackDurationTimer >= ATTACK_DURATION) {
+                if (attackDurationTimer <= slash.attackSideStart.getFrameDuration() * 13) {
+                    currentFrame = slash.getAttackStartFrame();
+                    if (attackDurationTimer == slash.attackSideStart.getFrameDuration() * 13) {
+                        slash.setStateTime(0);
+                    }
+                }
+                else if (attackDurationTimer <= slash.attackSideStart.getFrameDuration() * 13 + slash.attackSideMid.getFrameDuration() * 16) {
+                    currentFrame = slash.getAttackMidFrame();
+                    if (slash.checkAttack()) {
+                        attackDurationTimer = slash.attackSideStart.getFrameDuration() * 13;
+                    }
+                    if (attackDurationTimer == slash.attackSideStart.getFrameDuration() * 13 + slash.attackSideMid.getFrameDuration() * 16) {
+                        slash.setStateTime(0);
+                    }
+                }
+                else if (attackDurationTimer <= slash.attackSideStart.getFrameDuration() * 13 + slash.attackSideMid.getFrameDuration() * 16 + slash.attackSideEnd.getFrameDuration() * 9) {
+                    if(dashCooldownTimer <= 0 && checkDash()) {
+                        playerState = playerState.DASHING;
+                        glitch.play();
+                    }
+
+                    if (slash.checkAttack()) {
+                        attackDurationTimer = slash.attackSideStart.getFrameDuration() * 13;
+                    }
+                    currentFrame = slash.getAttackEndFrame();
+                }
+                else {
                     playerState = playerState.MOVING;
                 }
+
+                /*
+                if(attackDurationTimer >= ATTACK_DURATION) {
+                    attackCooldownTimer = ATTACK_COOLDOWN;
+                    slash.destroyHitbox(slash.body);
+                    playerState = playerState.MOVING;
+                }
+                */
 
                 break;
             case DASHING:
@@ -250,7 +279,7 @@ public class Box2DPlayer extends Entity{
                     dash();
                     currentFrame = dash.getKeyFrame(stateTime, true);
                     //System.out.println(dash.isAnimationFinished(stateTime));
-                    System.out.println("dash frame" + dash.getKeyFrameIndex(stateTime));
+                    //System.out.println("dash frame" + dash.getKeyFrameIndex(stateTime));
 
                     if(dash.isAnimationFinished(stateTime)) {
                         //currentFrame = getFrame(empty);
@@ -259,7 +288,7 @@ public class Box2DPlayer extends Entity{
                 }
                 else if(dashDurationTimer <= DASH_DURATION) {
                     stateTime = 0;
-                    System.out.println("empty frame" + dash.getKeyFrameIndex(stateTime));
+                    //System.out.println("empty frame" + dash.getKeyFrameIndex(stateTime));
                     dash();
                     currentFrame = empty.getKeyFrame(stateTime);
                 }
@@ -267,7 +296,7 @@ public class Box2DPlayer extends Entity{
                     dash();
                     setX(dashPosition.x);
                     setY(dashPosition.y);
-                    System.out.println("end frame" + dash.getKeyFrameIndex(stateTime));
+                    //System.out.println("end frame" + dash.getKeyFrameIndex(stateTime));
                     //currentFrame = getFrame(dashEnd);
                     currentFrame = dashEnd.getKeyFrame(stateTime, false);
                 }
@@ -383,6 +412,32 @@ public class Box2DPlayer extends Entity{
                 getY() - 146 * PLAYER_SIZE, flip ? -currentFrame.getRegionWidth() * PLAYER_SIZE : currentFrame.getRegionWidth() * PLAYER_SIZE,
                 currentFrame.getRegionHeight() * PLAYER_SIZE);
 
+
+        if (playerState == playerState.ATTACKING) {
+            /*
+            Color color = batch.getColor();//get current Color, you can't modify directly
+            float oldAlpha = color.a; //save its alpha
+
+            float scale = .8f - slash.slashSide.getKeyFrameIndex(slash.stateTime) * .2f;
+            System.out.println(scale);
+            color.a = oldAlpha*scale; //ex. scale = 0.5 will make alpha halved
+            batch.setColor(color); //set it
+            */
+
+            //batch.draw(slash.getSlashFrame(), flip ? getX() - 260 / 1.2f: getX() + 260 / 1.2f, getY() - 100 / 2f, flip ? slash.getSlashFrame().getRegionWidth() / 1.2f : -slash.getSlashFrame().getRegionWidth() / 1.2f, slash.getSlashFrame().getRegionHeight() / 2f);
+            /*
+            batch.draw(slash.getSlashFrame(), flip ? getX() - (16f * PLAYER_SIZE) - (241.5f * PLAYER_SIZE) + slash.getSlashFrame().getRegionWidth() * PLAYER_SIZE : getX() - (41.5f * PLAYER_SIZE),
+                    getY() - 146 * PLAYER_SIZE, flip ? -slash.getSlashFrame().getRegionWidth() * PLAYER_SIZE : slash.getSlashFrame().getRegionWidth() * PLAYER_SIZE,
+                    slash.getSlashFrame().getRegionHeight() * PLAYER_SIZE);
+                    */
+
+            /*
+            color.a = oldAlpha;
+            batch.setColor(color);
+            */
+        }
+
+
     }
 
     public TextureRegion getFrame(Animation<TextureRegion> frame) {
@@ -419,7 +474,5 @@ public class Box2DPlayer extends Entity{
         setPosition(MathUtils.clamp(getX(),playerBounds.getW1()+ (.5f* PLAYER_WIDTH),playerBounds.getWidth()+ playerBounds.getW1() - PLAYER_WIDTH + (.5f * PLAYER_WIDTH)),
                 MathUtils.clamp(getY(), playerBounds.getH2() + (.5f *PLAYER_HEIGHT), playerBounds.getHeight() + playerBounds.getH2() - PLAYER_HEIGHT + (.5f *PLAYER_HEIGHT)));
     }
-
-
 
 }

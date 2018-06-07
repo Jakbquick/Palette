@@ -92,6 +92,10 @@ public class Box2DRender extends ScreenAdapter {
                         || (fixtureB.getBody().equals(player.getPlayerBody()) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
                     player.updateCollisions(1);
                 }
+
+                if (player.playerState == player.playerState.ATTACKING) {
+                    
+                }
             }
 
             @Override
@@ -152,19 +156,21 @@ public class Box2DRender extends ScreenAdapter {
         enemy.act();
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
-        batch.begin();
+
         if(Gdx.input.isKeyPressed(Input.Keys.L) && timeSinceStart >= tempTimer) {
             debugMode = !debugMode;
             tempTimer = timeSinceStart + .1f;
         }
+
         if(debugMode) {
             debugView();
         }
-        else {
+
+        batch.begin();
+        if (!debugMode){
             walls.draw(batch);
             player.draw(batch);
         }
-
         blackSprite.draw(batch);
         batch.end();
         //code to render the ui
