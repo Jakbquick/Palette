@@ -134,7 +134,7 @@ public class Box2DRender extends ScreenAdapter {
         uiViewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, uiCamera);
         timeSinceStart = 0;
 
-        rhythmView = new RhythmView(batch,viewport);
+        rhythmView = new RhythmView(batch);
     }
 
 

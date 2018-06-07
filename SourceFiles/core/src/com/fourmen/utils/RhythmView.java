@@ -20,29 +20,53 @@ public class RhythmView {
     private String values;
     private Texture bar;
     private float x,y;
-    private Viewport viewport;
     private Texture whenButton,clicked;
     private Vector2 centerWhen;
     //private File
-    private Array<Beat> beatList;
+    private ArrayList<Beat> beatList;
     private float[] mapValues;
-    private float beatSize;
+    private float beatHeight, beatWidth;
     private boolean drawClick;
-    private int clickTime;
+    private int clickTime,i;
+    private float xDistance;
+    private float velocity;
+    private Music beatJams;
+    private float timeBeforeSpawn;
+    private boolean musicStarted;
 
-    public RhythmView(SpriteBatch spriteBatch, Viewport viewport){
-        this.viewport = viewport;
+    public RhythmView(SpriteBatch spriteBatch){
+        i = 0;
         this.batch = spriteBatch;
         readMapValues();
         bar = new Texture("Images/BlackBar.png");
         y = Gdx.graphics.getHeight() - 115;
         whenButton = new Texture("Images/Beat/NoClick.png");
         clicked = new Texture("Images/Beat/Click.png");
-        beatSize = 75;
+        beatHeight = 75;
+        beatWidth = 75;
         drawClick = false;
         clickTime = 0;
+        beatJams = Gdx.audio.newMusic(Gdx.files.internal("Music/song1.mp3"));
+
+        xDistance = Gdx.graphics.getWidth() + (.5f * beatWidth) -        //the first beatSize here is the size of the beat transitioning across the map (replace later)
+                100 - (.5f * beatWidth);
+        startMusic();           //change this later to when you step in the circle
+        centerWhen = new Vector2(100 + (beatWidth/2f), y + (.5f * bar.getHeight()));
+        velocity = 300f / 60f;
+        timeBeforeSpawn = velocity / xDistance;
+        beatList = new ArrayList<Beat>();
     }
     public void update(float delta){
+        for(Beat b : beatList){
+            b.update();
+        }
+        for(int j = 0; j < beatList.size(); j++){
+            beatList.get(j).update();
+            if(beatList.get(j).getXPosition() < -Beat.beatWidth){
+                beatList.get(j).dispose();
+                beatList.remove(j);
+            }
+        }
         if (clickTime == 7){
             drawClick = false;
             clickTime = 0;
@@ -53,18 +77,26 @@ public class RhythmView {
                 Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !drawClick){
             drawClick = true;
         }
+        if(beatJams.getPosition() >= mapValues[i] + timeBeforeSpawn){
+            beatList.add(new Beat(velocity, Gdx.graphics.getWidth(),y + (.5f * bar.getHeight())));
+            i++;
+        }
+
 
     }
     public void draw(){
-        batch.draw(bar,0,y,viewport.getScreenWidth(),bar.getHeight());
+        batch.draw(bar,0,y,Gdx.graphics.getWidth(),bar.getHeight());
         if (drawClick){
-            batch.draw(clicked,100,y + (.5f * bar.getHeight()) - (.5f * beatSize),
-                    beatSize,beatSize);
+            batch.draw(clicked,100,y + (.5f * bar.getHeight()) - (.5f * beatHeight),
+                    beatHeight,beatWidth);
             clickTime++;
         }
         else {
-            batch.draw(whenButton, 100, y + (.5f * bar.getHeight()) - (.5f * beatSize),
-                    beatSize, beatSize);
+            batch.draw(whenButton, 100, y + (.5f * bar.getHeight()) - (.5f * beatHeight),
+                    beatHeight, beatWidth);
+        }
+        for(Beat b : beatList){
+            b.draw(batch);
         }
     }
     public void readMapValues(){
@@ -76,6 +108,10 @@ public class RhythmView {
             mapValues[i] = (Float.valueOf(stringValues[i]));
         }
 
+    }
+    public void startMusic(){
+        beatJams.play();
+        musicStarted = true;
     }
 
 }
