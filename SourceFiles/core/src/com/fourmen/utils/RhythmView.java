@@ -77,7 +77,7 @@ public class RhythmView {
                 Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !drawClick){
             drawClick = true;
         }
-        if(beatJams.getPosition() >= mapValues[i] + timeBeforeSpawn){
+        if(i < mapValues.length && beatJams.getPosition() >= mapValues[i] + timeBeforeSpawn){
             beatList.add(new Beat(velocity, Gdx.graphics.getWidth(),y + (.5f * bar.getHeight())));
             i++;
         }
