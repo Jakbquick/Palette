@@ -8,8 +8,10 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -24,6 +26,7 @@ import com.fourmen.actors.PlayerBounds;
 import com.fourmen.box2D.Walls;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.fourmen.tween.SpriteAccessor;
+import com.fourmen.utils.Animator;
 import com.fourmen.utils.BodyEditorLoader;
 import com.fourmen.utils.CameraStyles;
 import com.fourmen.utils.RhythmView;
@@ -37,6 +40,7 @@ public class Box2DRender extends ScreenAdapter {
     private static float WORLD_WIDTH;
     private static float WORLD_HEIGHT;
     private boolean isPaused;
+    private boolean steppedOn = false;
     public enum State
     {
         PAUSE,
@@ -44,7 +48,7 @@ public class Box2DRender extends ScreenAdapter {
         RESUME,
         STOPPED
     }
-
+    private TextureRegion redRegion;
     SpriteBatch batch;
     World world;
     ContactListener contactListener;
@@ -66,8 +70,7 @@ public class Box2DRender extends ScreenAdapter {
     private boolean debugMode;
     private float tempTimer = 0;
 
-    Texture fadedBlack = new Texture(Gdx.files.internal("Images/FadedBlack.png"));
-    Texture pauseText = new Texture(Gdx.files.internal("Images/PauseText.png"));
+    private Animation<TextureRegion> redCircle;
 
     public Box2DRender(int width, int height){
         WORLD_WIDTH = width;
@@ -75,6 +78,9 @@ public class Box2DRender extends ScreenAdapter {
     }
 
     public void show() {
+        redCircle = new Animation<TextureRegion>(.10f, Animator.setUpSpriteSheet("Images/summoncircle.png",
+                1,120));
+
         setUpTween();
         caveMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/CaveMusic.mp3"));
         caveMusic.setLooping(true);
@@ -169,10 +175,17 @@ public class Box2DRender extends ScreenAdapter {
         batch.begin();
         if (!debugMode){
             walls.draw(batch);
+            if(!steppedOn){
+                redRegion = redCircle.getKeyFrame(0, true);
+                batch.draw(redRegion,1100,600,600,600);
+            }
             player.draw(batch);
         }
         blackSprite.draw(batch);
         batch.end();
+
+
+
         //code to render the ui
         batch.setProjectionMatrix(uiCamera.projection);
         batch.setTransformMatrix(uiCamera.view);
