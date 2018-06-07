@@ -52,7 +52,7 @@ public class RhythmView {
                 100 - (.5f * beatWidth);
         startMusic();           //change this later to when you step in the circle
         centerWhen = new Vector2(100 + (beatWidth/2f), y + (.5f * bar.getHeight()));
-        velocity = 300f / 60f;
+        velocity = 220f / 60f;
         timeBeforeSpawn = velocity / xDistance;
         beatList = new ArrayList<Beat>();
     }
