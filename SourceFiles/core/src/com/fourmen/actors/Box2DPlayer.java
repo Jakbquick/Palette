@@ -238,7 +238,7 @@ public class Box2DPlayer extends Entity{
                 }
                 else if (attackDurationTimer <= slash.attackSideStart.getFrameDuration() * 13 + slash.attackSideMid.getFrameDuration() * 16) {
                     currentFrame = slash.getAttackMidFrame();
-                    if (slash.checkAttack()) {
+                    if (slash.checkAttack()) {          //add the check for beat number and if it's -1 then you can't attack
                         attackDurationTimer = slash.attackSideStart.getFrameDuration() * 13;
                     }
                     if (attackDurationTimer == slash.attackSideStart.getFrameDuration() * 13 + slash.attackSideMid.getFrameDuration() * 16) {
