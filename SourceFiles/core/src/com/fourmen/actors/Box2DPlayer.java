@@ -116,6 +116,7 @@ public class Box2DPlayer extends Entity{
         empty = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/emptyframe.png", 1, 1));
         currentFrame = moving.getKeyFrame(stateTime, true);
         glitch = Gdx.audio.newSound(Gdx.files.internal("Music/glitch.mp3"));
+        glitch.setVolume(1,.6f);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;

@@ -14,6 +14,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = Palette.TITLE + " v " + Palette.VERSION;
+		//config.fullscreen = true;
 		config.vSyncEnabled = true;
 		config.useGL30 = true;
 		config.width = 1500;

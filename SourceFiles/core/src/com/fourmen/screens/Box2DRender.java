@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,6 +26,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.fourmen.tween.SpriteAccessor;
 import com.fourmen.utils.BodyEditorLoader;
 import com.fourmen.utils.CameraStyles;
+import com.fourmen.utils.RhythmView;
 
 
 public class Box2DRender extends ScreenAdapter {
@@ -57,10 +59,10 @@ public class Box2DRender extends ScreenAdapter {
 
     Box2DDebugRenderer debugRenderer;
 
-    private OrthographicCamera camera;
-    private Viewport viewport;
+    private OrthographicCamera camera,uiCamera;
+    private Viewport viewport, uiViewport;
     private float timeSinceStart;
-
+    private RhythmView rhythmView;
     private boolean debugMode;
     private float tempTimer = 0;
 
@@ -122,17 +124,26 @@ public class Box2DRender extends ScreenAdapter {
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(player.getX(), player.getY(), 0);
         camera.update();
+        uiCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        uiCamera.position.set(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f, 0);
+        uiCamera.update();
+
         //viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
-        viewport = new ExtendViewport(camera.viewportWidth / 2f, camera.viewportHeight / 2f, camera);
+        //viewport = new ExtendViewport(camera.viewportWidth / 2f, camera.viewportHeight / 2f, camera);
         viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        uiViewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, uiCamera);
         timeSinceStart = 0;
+
+        rhythmView = new RhythmView(batch,viewport);
     }
 
 
     public void render(float delta) {
         tweenManager.update(delta);
+        rhythmView.update(delta);
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         cameraUpdate();
+        uiCamera.update();
         timeSinceStart += delta;
         update(delta);
         clearScreen();
@@ -155,6 +166,12 @@ public class Box2DRender extends ScreenAdapter {
         }
 
         blackSprite.draw(batch);
+        batch.end();
+        //code to render the ui
+        batch.setProjectionMatrix(uiCamera.projection);
+        batch.setTransformMatrix(uiCamera.view);
+        batch.begin();
+        rhythmView.draw();
         batch.end();
     }
     private void debugView() {
