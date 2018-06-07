@@ -50,7 +50,6 @@ public class RhythmView {
 
         xDistance = Gdx.graphics.getWidth() + (.5f * beatWidth) -        //the first beatSize here is the size of the beat transitioning across the map (replace later)
                 100 - (.5f * beatWidth);
-        startMusic();           //change this later to when you step in the circle
         centerWhen = new Vector2(100 + (beatWidth/2f), y + (.5f * bar.getHeight()));
         velocity = 220f / 60f;
         timeBeforeSpawn = velocity / xDistance;

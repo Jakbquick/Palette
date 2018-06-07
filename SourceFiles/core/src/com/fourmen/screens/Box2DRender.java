@@ -69,7 +69,7 @@ public class Box2DRender extends ScreenAdapter {
     private RhythmView rhythmView;
     private boolean debugMode;
     private float tempTimer = 0;
-
+    private Vector2 circlePosition = new Vector2(1400,900);
     private Animation<TextureRegion> redCircle;
 
     public Box2DRender(int width, int height){
@@ -78,8 +78,8 @@ public class Box2DRender extends ScreenAdapter {
     }
 
     public void show() {
-        redCircle = new Animation<TextureRegion>(.10f, Animator.setUpSpriteSheet("Images/summoncircle.png",
-                1,120));
+        redCircle = new Animation<TextureRegion>(.03f, Animator.setUpSpriteSheet("Images/summoncircle2.png",
+                1,60));
 
         setUpTween();
         caveMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/CaveMusic.mp3"));
@@ -149,6 +149,10 @@ public class Box2DRender extends ScreenAdapter {
 
 
     public void render(float delta) {
+        if(player.getPosition().dst(circlePosition) < 300){
+            steppedOn = true;
+            rhythmView.startMusic();
+        }
         tweenManager.update(delta);
         rhythmView.update(delta);
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
@@ -176,7 +180,7 @@ public class Box2DRender extends ScreenAdapter {
         if (!debugMode){
             walls.draw(batch);
             if(!steppedOn){
-                redRegion = redCircle.getKeyFrame(0, true);
+                redRegion = redCircle.getKeyFrame(timeSinceStart, true);
                 batch.draw(redRegion,1100,600,600,600);
             }
             player.draw(batch);

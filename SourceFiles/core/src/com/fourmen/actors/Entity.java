@@ -46,4 +46,7 @@ public abstract class Entity extends Actor {
         position.y = myY;
     }
 
+    public Vector2 getPosition(){
+        return position;
+    }
 }
