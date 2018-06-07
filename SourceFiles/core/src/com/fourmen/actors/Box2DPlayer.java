@@ -189,7 +189,7 @@ public class Box2DPlayer extends Entity{
                 //currentFrame = idle.getKeyFrame(stateTime, true);
                 move();
 
-                if(attackCooldownTimer <= 0 && slash.checkAttack()) {
+                if(attackCooldownTimer < 0 && slash.checkAttack()) {
                     slash.createHitbox();
                     attackDurationTimer = 0;
                     playerState = playerState.ATTACKING;
@@ -455,6 +455,10 @@ public class Box2DPlayer extends Entity{
         standingCooldownTimer -= delta;
         stateTime += delta;
         slash.update(delta);
+    }
+
+    public void getHitValue(int value) {
+        slash.getHitValue(value);
     }
 
     public void updatePosition() {
