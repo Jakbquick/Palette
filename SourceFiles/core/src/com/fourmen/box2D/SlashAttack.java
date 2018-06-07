@@ -20,6 +20,8 @@ public class SlashAttack {
     private Vector2 position;
     private float playerSize;
 
+    private int hitValue;
+
     public float stateTime = 0;
 
     public Animation<TextureRegion> attackSide;
@@ -37,6 +39,8 @@ public class SlashAttack {
         lastAttackDirection = new Vector2(0, 0);
         playerSize = size;
         position = new Vector2(bodyPosition);
+
+        hitValue = -1;
 
         attackSide = new Animation<TextureRegion>(0.015f, Animator.setUpSpriteSheet("Images/attacksheet.png", 1, 38));
         attackSideStart = new Animation<TextureRegion>(0.015f, Animator.setUpSpriteSheet("Images/attackstartupsheet.png", 1, 13));
@@ -94,7 +98,7 @@ public class SlashAttack {
 
     public boolean checkAttack() {
         updateAttackDirection();
-        if(!direction.isZero() && Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
+        if(!direction.isZero() && Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY) && hitValue > -1) {
             stateTime = 0;
             return true;
         }
@@ -174,6 +178,10 @@ public class SlashAttack {
 
     public TextureRegion getAttackEndFrame() {
         return attackSideEnd.getKeyFrame(stateTime, true);
+    }
+
+    public void getHitValue(int value) {
+        hitValue = value;
     }
 
     public void update(float delta) {
