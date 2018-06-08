@@ -72,6 +72,7 @@ public class Box2DRender extends ScreenAdapter {
     private Animation<TextureRegion> redCircle;
     private PlayerHealth playerHealth;
     private Music gameMusic;
+    private BossHealth bossHealth;
 
     public Box2DRender(int width, int height){
         WORLD_WIDTH = width;
@@ -176,7 +177,11 @@ public class Box2DRender extends ScreenAdapter {
 
     public void render(float delta) {
         if(player.getHealth() <= 0 || (rhythmView.getSongLength() + 1 < rhythmView.getSongPosition())){
-            caveMusic.stop();
+            //caveMusic.stop();
+            rhythmView.getBeatJams().stop();
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOver());
+        }
+        if(steppedOn && enemy.health < 0){
             rhythmView.getBeatJams().stop();
             ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOver());
         }
@@ -187,6 +192,7 @@ public class Box2DRender extends ScreenAdapter {
         if(player.getPosition().dst(circlePosition) < 300){
             if (!steppedOn) {
                 enemy = new Box2DEnemy(world, playerBounds, player);
+                bossHealth = new BossHealth(batch,enemy.health);
             }
             steppedOn = true;
             rhythmView.startMusic();
@@ -195,6 +201,9 @@ public class Box2DRender extends ScreenAdapter {
         tweenManager.update(delta);
         rhythmView.update(delta);
         playerHealth.update(player.health,delta);
+        if(steppedOn){
+            bossHealth.update(enemy.health,delta);
+        }
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         cameraUpdate();
         uiCamera.update();
@@ -242,6 +251,9 @@ public class Box2DRender extends ScreenAdapter {
         batch.begin();
         rhythmView.draw();
         playerHealth.draw();
+        if(steppedOn) {
+            bossHealth.draw();
+        }
         batch.end();
     }
     private void debugView() {
