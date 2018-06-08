@@ -227,9 +227,9 @@ public class Box2DEnemy extends Entity {
 
     private void checkCharge() {
 
-        int chargeChance  = MathUtils.random(50);
+        int chargeChance  = MathUtils.random(90);
 
-        if(chargeChance == 0 && distanceBetween(player, getX(), getY()) <= 600 && distanceBetween(player, getX(), getY()) >= 400) {
+        if(chargeChance == 0 && distanceBetween(player, getX(), getY()) <= 700 && distanceBetween(player, getX(), getY()) >= 400) {
             enemyState = enemyState.CHARGING;
             generateChargeDirection();
             dashDirection.x = direction.x;
