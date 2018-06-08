@@ -78,7 +78,7 @@ public class Box2DRender extends ScreenAdapter {
     }
 
     public void show() {
-        redCircle = new Animation<TextureRegion>(.03f, Animator.setUpSpriteSheet("Images/summoncircle2.png",
+        redCircle = new Animation<TextureRegion>(.03f, Animator.setUpSpriteSheet("Images/summoncircle.png",
                 1,60));
 
         setUpTween();
@@ -184,6 +184,7 @@ public class Box2DRender extends ScreenAdapter {
                 batch.draw(redRegion,1100,600,600,600);
             }
             player.draw(batch);
+            enemy.draw(batch);
         }
         blackSprite.draw(batch);
         batch.end();
@@ -251,7 +252,7 @@ public class Box2DRender extends ScreenAdapter {
     }
 
     public void pause(){
-        Gdx.app.exit();
+        //Gdx.app.exit();
     }
 
     public void setUpTween(){

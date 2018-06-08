@@ -33,11 +33,20 @@ public class RhythmView {
     private Music beatJams;
     private float timeBeforeSpawn;
     private boolean musicStarted;
+    private double timeBetweenNotes;
+    private double songLength = 164.0;
+    int index = 0;
+    private double timeToFillMap;
+    private double remainder;
+    private double bpm, offset;
 
     public RhythmView(SpriteBatch spriteBatch){
+        bpm = 134.18;
+        timeBetweenNotes = (60.0)/ bpm;
         i = 0;
+        offset = .35;
         this.batch = spriteBatch;
-        readMapValues();
+        createWithBPM();
         bar = new Texture("Images/BlackBar.png");
         y = Gdx.graphics.getHeight() - 115;
         whenButton = new Texture("Images/Beat/NoClick.png");
@@ -46,21 +55,23 @@ public class RhythmView {
         beatWidth = 75;
         drawClick = false;
         clickTime = 0;
-        beatJams = Gdx.audio.newMusic(Gdx.files.internal("Music/song1.mp3"));
+        beatJams = Gdx.audio.newMusic(Gdx.files.internal("Music/song2.mp3"));
 
         xDistance = Gdx.graphics.getWidth() + (.5f * beatWidth) -        //the first beatSize here is the size of the beat transitioning across the map (replace later)
                 100 - (.5f * beatWidth);
         centerWhen = new Vector2(100 + (beatWidth/2f), y + (.5f * bar.getHeight()));
-        velocity = 220f / 60f;
-        timeBeforeSpawn = velocity / xDistance;
+        velocity = 350f / 60f;
+        timeBeforeSpawn = (velocity * 60f) / xDistance;
+        remainder = timeBetweenNotes - (timeBeforeSpawn % timeBetweenNotes);
+        timeToFillMap = timeBeforeSpawn + remainder + offset;
         beatList = new ArrayList<Beat>();
     }
     public void update(float delta){
         for(Beat b : beatList){
-            b.update();
+            b.update(delta);
         }
         for(int j = 0; j < beatList.size(); j++){
-            beatList.get(j).update();
+            beatList.get(j).update(delta);
             if(beatList.get(j).getXPosition() < -Beat.beatWidth){
                 beatList.get(j).dispose();
                 beatList.remove(j);
@@ -112,5 +123,16 @@ public class RhythmView {
         beatJams.play();
         musicStarted = true;
     }
-
+    public void createWithBPM(){
+        mapValues = new float[(int)(songLength/timeBetweenNotes)];
+        System.out.println(mapValues.length + "");
+        while(index < mapValues.length){
+            mapValues[index] = ((float)(timeToFillMap));
+            timeToFillMap += timeBetweenNotes;
+            index++;
+        }
+        for(float f : mapValues){
+            System.out.println(f + "");
+        }
+    }
 }

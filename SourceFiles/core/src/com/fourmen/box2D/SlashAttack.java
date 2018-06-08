@@ -40,7 +40,7 @@ public class SlashAttack {
         playerSize = size;
         position = new Vector2(bodyPosition);
 
-        hitValue = -1;
+        hitValue = 0;
 
         attackSide = new Animation<TextureRegion>(0.015f, Animator.setUpSpriteSheet("Images/attacksheet.png", 1, 38));
         attackSideStart = new Animation<TextureRegion>(0.015f, Animator.setUpSpriteSheet("Images/attackstartupsheet.png", 1, 13));
@@ -74,17 +74,17 @@ public class SlashAttack {
         direction.x = 0;
         direction.y = 0;
 
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
             direction.x -= 1;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
             direction.x += 1;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             //direction.y = 0;
             //direction.y += 1;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
             //direction.y = 0;
             //direction.y -= 1;
         }
@@ -98,7 +98,7 @@ public class SlashAttack {
 
     public boolean checkAttack() {
         updateAttackDirection();
-        if(!direction.isZero() && Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY) && hitValue > -1) {
+        if(!direction.isZero() && hitValue > -1) {
             stateTime = 0;
             return true;
         }
@@ -131,10 +131,10 @@ public class SlashAttack {
         hitbox.dispose();
     }
 
-    public void destroyHitbox(Body myBody) {
-        int fixtureCount = myBody.getFixtureList().size;
+    public void destroyHitbox() {
+        int fixtureCount = body.getFixtureList().size;
         for(int i=0;i<fixtureCount;i++){
-            myBody.destroyFixture(myBody.getFixtureList().get(0));
+            body.destroyFixture(body.getFixtureList().get(0));
         }
     }
 
@@ -178,6 +178,10 @@ public class SlashAttack {
 
     public TextureRegion getAttackEndFrame() {
         return attackSideEnd.getKeyFrame(stateTime, true);
+    }
+
+    public Vector2 getDirection() {
+        return direction;
     }
 
     public void getHitValue(int value) {

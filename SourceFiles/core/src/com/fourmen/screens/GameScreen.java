@@ -149,6 +149,7 @@ public class GameScreen extends ScreenAdapter {
                 BOUND_HEIGHT - (2 * startY));
 
         player.update(delta);
+        enemy.update(delta);
     }
 
     public void updateAnimations(SpriteBatch batch) {
