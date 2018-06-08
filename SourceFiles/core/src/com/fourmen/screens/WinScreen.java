@@ -32,7 +32,7 @@ public class WinScreen extends ScreenAdapter {
     private Viewport viewport;
 
     public WinScreen() {
-
+        
     }
 
     public void show(){
@@ -49,8 +49,8 @@ public class WinScreen extends ScreenAdapter {
 
     public void render(float delta){
         batch.begin();
-        batch.draw(winScreenTexture,(Gdx.graphics.getWidth() * .5f) - winScreenTexture.getWidth() * .5f,
-                Gdx.graphics.getHeight() - 500f,(float)winScreenTexture.getWidth() * 2f,(float)winScreenTexture.getHeight() * 2f);
+        batch.draw(winScreenTexture,Gdx.graphics.getWidth() - 1500f,
+                Gdx.graphics.getHeight() - 900f,(float)winScreenTexture.getWidth() * .5f,(float)winScreenTexture.getHeight() * .6f);
         batch.end();
     }
 }
