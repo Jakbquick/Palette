@@ -47,7 +47,7 @@ public class Enemy extends Entity {
 
     //constructors
     public Enemy() {
-        super(0, null, 0, 0);
+        super(0, null, 0, 0, null);
         rectangle = new Rectangle(getX(), getY(), enemyWidth, enemyHeight);
         targetSpeed = new Vector2(0, 0);
         currentSpeed = new Vector2(0, 0);

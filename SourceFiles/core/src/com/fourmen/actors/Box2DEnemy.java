@@ -24,12 +24,12 @@ public class Box2DEnemy extends Entity {
     private static final float ACCELERATION_CONSTANT = 1f;
     private static final float DECELERATION_CONSTANT = 1f;
     private final int MAX_SPEED = 500;               // the max speed a player can move
-    private final float DASH_SPEED = 500;
+    private final float DASH_SPEED = 1000;
     private final float CHARGE_SPEED = 2000;
     private final static float DASH_COOLDOWN = .6f;
     private final static float DASH_DURATION = .2f;
     private final static float CHARGE_COOLDOWN = .6f;
-    private final static float CHARGE_DURATION = 1f;
+    private final static float CHARGE_DURATION = 1.5f;
     private enum PlayerState {
         MOVING, DASHING, CHARGING, ENDCHARGE;
     }
@@ -70,7 +70,7 @@ public class Box2DEnemy extends Entity {
 
     //constructors
     public Box2DEnemy(World world, PlayerBounds myPlayerBounds, Box2DPlayer myPlayer) {
-        super(1000, myPlayerBounds, ENEMY_WIDTH, ENEMY_HEIGHT);
+        super(1000, myPlayerBounds, ENEMY_WIDTH, ENEMY_HEIGHT, new Vector2(1500, 900));
         lastDirectionfaced = LEFT;
         direction = new Vector2(0, 0);
         dashDirection = new Vector2(0, 0);
