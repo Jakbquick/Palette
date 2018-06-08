@@ -130,6 +130,8 @@ public class Box2DEnemy extends Entity {
                     enemyState = enemyState.MOVING;
                 }
         }
+        blockLeavingTheWorld();
+        updateHealth();
         updatePosition();
     }
 
