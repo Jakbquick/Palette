@@ -183,7 +183,7 @@ public class Box2DRender extends ScreenAdapter {
         }
         if(steppedOn && enemy.health < 0){
             rhythmView.getBeatJams().stop();
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOver());
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new WinScreen());
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
             player.subractHealth(30);
