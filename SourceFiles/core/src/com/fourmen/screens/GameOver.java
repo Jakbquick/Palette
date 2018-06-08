@@ -27,7 +27,7 @@ public class GameOver extends ScreenAdapter {
     private Stage stage;
     private TweenManager tweenManager;
     private float timerToFade,timeSinceStart;
-    private Texture blackScreenTexture;
+    private Texture blackScreenTexture,palTex;
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private float width = Gdx.graphics.getWidth();
@@ -40,6 +40,7 @@ public class GameOver extends ScreenAdapter {
     private boolean gameStarted = false;
     private boolean startTimer = false;
     private Music music = Gdx.audio.newMusic(Gdx.files.internal("Music/SadPiano.mp3"));
+    Texture palette = new Texture("ui/PaletteSad.png");
 
     public void show(){
         tweenManager = new TweenManager();
@@ -95,13 +96,14 @@ public class GameOver extends ScreenAdapter {
 
             }
         });
-        paletteSad.fadeIn();
+
         stage.addActor(paletteSad);
         stage.addActor(playButton);
         stage.addActor(exitButton);
         stage.addActor(blackScreenImage);
         Gdx.input.setInputProcessor(stage);
         blackScreenImage.fadeOut();
+        paletteSad.fadeIn();
     }
 
     public void render(float delta){
@@ -121,6 +123,10 @@ public class GameOver extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.draw();
+        batch.begin();
+        batch.draw(palette,(Gdx.graphics.getWidth() * .5f) - palette.getWidth() * .5f,
+                Gdx.graphics.getHeight() - 500f,(float)palette.getWidth() * 2f,(float)palette.getHeight() * 2f);
+        batch.end();
     }
     public void fadeMusic(){
         Tween.registerAccessor(Music.class, new MusicAccessor());
