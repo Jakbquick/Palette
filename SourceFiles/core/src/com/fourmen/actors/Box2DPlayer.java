@@ -56,6 +56,8 @@ public class Box2DPlayer extends Entity{
     private float acceleration;
     private float deceleration;
 
+    private int hitValue;
+
     private World myWorld;
     private Body body;
 
@@ -103,6 +105,8 @@ public class Box2DPlayer extends Entity{
 
         acceleration = ACCELERATION_CONSTANT * MAX_SPEED;
         deceleration = DECELERATION_CONSTANT * MAX_SPEED;
+
+        hitValue = -1;
 
         playerState = PlayerState.STANDING;
 
@@ -159,7 +163,9 @@ public class Box2DPlayer extends Entity{
 
         wingsSquare.dispose();
 
-        beams = new ArrayList<Beam>(0);
+        body.setUserData(this);
+
+        beams = new ArrayList<Beam>();
     }
 
     //methods
@@ -181,6 +187,10 @@ public class Box2DPlayer extends Entity{
 
     public float getDashCooldownTimer() {
         return dashCooldownTimer;
+    }
+
+    public ArrayList<Beam> getBeams() {
+        return beams;
     }
 
     public void act() {
@@ -317,6 +327,7 @@ public class Box2DPlayer extends Entity{
         }
         blockLeavingTheWorld();
         moveBeams();
+        removeBeams();
         updateHealth();
         updatePosition();
     }
@@ -447,7 +458,7 @@ public class Box2DPlayer extends Entity{
     }
 
     private void createBeam() {
-        beams.add(new Beam(myWorld, position, slash.getDirection().x, PLAYER_SIZE));
+        beams.add(new Beam(myWorld, position, slash.getDirection().x, PLAYER_SIZE, hitValue));
     }
 
     private void moveBeams() {
@@ -456,11 +467,18 @@ public class Box2DPlayer extends Entity{
         }
     }
 
-    public void setHitValue(int value) {
-        slash.setHitValue(value);
-        for (Beam beam : beams) {
-            beam.setHitValue(value);
+    private void removeBeams() {
+        for (int n = 0; n < beams.size(); n++) {
+            if (beams.get(n).checkRemoveFromWorld()) {
+                beams.remove(n);
+                n--;
+            }
         }
+    }
+
+    public void setHitValue(int value) {
+        hitValue = value;
+        slash.setHitValue(value);
     }
 
     public void updatePosition() {

@@ -94,19 +94,28 @@ public class Box2DRender extends ScreenAdapter {
                 Fixture fixtureB = contact.getFixtureB();
                 //Gdx.app.log("beginContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
 
-                if ((fixtureA.getBody().equals(Beam.body) && fixtureB.getBody().equals(enemy.getPlayerBody()))
-                        || (fixtureB.getBody().equals(Beam.body) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
-                    enemy.updateCollisions(1);
-                    /*
-                    if (fixtureA.getBody().equals(Beam.body)) {
-                        Beam colBeam = (Beam) fixtureA.getBody().getUserData();
-                        enemy.damage += colBeam.getHitValue();
+                for(Beam beam : player.getBeams()) {
+
+                    if ((fixtureA.getBody().equals(beam.body) && fixtureB.getBody().equals(enemy.getPlayerBody()))
+                            || (fixtureB.getBody().equals(beam.body) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
+                        enemy.updateCollisions(1);
+
+                        enemy.updateDamage(beam.getHitValue());
+                        System.out.println(beam.getHitValue());
+
+                        /*
+                        if (fixtureA.getBody().equals(beam.body)) {
+                            Beam colBeam = (Beam) fixtureA.getBody().getUserData();
+                            enemy.damage += colBeam.getHitValue();
+                            System.out.println(colBeam.getHitValue());
+                        }
+                        if (fixtureB.getBody().equals(beam.body)) {
+                            Beam colBeam = (Beam) fixtureB.getBody().getUserData();
+                            enemy.damage += colBeam.getHitValue();
+                            System.out.println(colBeam.getHitValue());
+                        }
+                        */
                     }
-                    if (fixtureB.getBody().equals(Beam.body)) {
-                        Beam colBeam = (Beam) fixtureB.getBody().getUserData();
-                        enemy.damage += colBeam.getHitValue();
-                    }
-                    */
                 }
 
                 if ((fixtureA.getBody().equals(player.getPlayerBody()) && fixtureB.getBody().equals(enemy.getPlayerBody()))
@@ -121,19 +130,26 @@ public class Box2DRender extends ScreenAdapter {
                 Fixture fixtureB = contact.getFixtureB();
                 //Gdx.app.log("endContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
 
-                if ((fixtureA.getBody().equals(Beam.body) && fixtureB.getBody().equals(enemy.getPlayerBody()))
-                        || (fixtureB.getBody().equals(Beam.body) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
-                    enemy.updateCollisions(-1);
-                    /*
-                    if (fixtureA.getBody().equals(Beam.body)) {
-                        Beam colBeam = (Beam) fixtureA.getBody().getUserData();
-                        enemy.damage += colBeam.getHitValue();
+                for(Beam beam : player.getBeams()) {
+
+                    if ((fixtureA.getBody().equals(beam.body) && fixtureB.getBody().equals(enemy.getPlayerBody()))
+                            || (fixtureB.getBody().equals(beam.body) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
+                        enemy.updateCollisions(-1);
+
+                        enemy.updateDamage(-beam.getHitValue());
+                        System.out.println(-beam.getHitValue());
+
+                        /*
+                        if (fixtureA.getBody().equals(beam.body)) {
+                            Beam colBeam = (Beam) fixtureA.getBody().getUserData();
+                            enemy.damage -= colBeam.getHitValue();
+                        }
+                        if (fixtureB.getBody().equals(beam.body)) {
+                            Beam colBeam = (Beam) fixtureB.getBody().getUserData();
+                            enemy.damage -= colBeam.getHitValue();
+                        }
+                        */
                     }
-                    if (fixtureB.getBody().equals(Beam.body)) {
-                        Beam colBeam = (Beam) fixtureB.getBody().getUserData();
-                        enemy.damage -= colBeam.getHitValue();
-                    }
-                    */
                 }
 
                 if ((fixtureA.getBody().equals(player.getPlayerBody()) && fixtureB.getBody().equals(enemy.getPlayerBody()))
@@ -189,7 +205,7 @@ public class Box2DRender extends ScreenAdapter {
         update(delta);
         clearScreen();
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
-        player.setHitValue(2);
+        player.setHitValue(rhythmView.getScore());
         player.act();
         enemy.act();
         batch.setProjectionMatrix(camera.projection);
