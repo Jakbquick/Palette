@@ -1,0 +1,13 @@
+
+PlayAgain2.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+playAgain
+  rotate: false
+  xy: 1, 169
+  size: 195, 27
+  orig: 195, 27
+  offset: 0, 0
+  index: -1

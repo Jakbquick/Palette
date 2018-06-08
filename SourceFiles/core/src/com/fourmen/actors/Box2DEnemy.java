@@ -114,7 +114,7 @@ public class Box2DEnemy extends Entity {
         //if(dirChance == 1) {
         //updateDirection();
         //System.out.println(dashDirection);
-        System.out.println("Enemy Health: " + health + " " + damage);
+        //System.out.println("Enemy Health: " + health + " " + damage);
         switch (enemyState) {
             case MOVING:
                 currentFrame = getFrame(moving);

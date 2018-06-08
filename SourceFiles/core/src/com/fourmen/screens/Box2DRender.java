@@ -27,10 +27,7 @@ import com.fourmen.box2D.Beam;
 import com.fourmen.box2D.Walls;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.fourmen.tween.SpriteAccessor;
-import com.fourmen.utils.Animator;
-import com.fourmen.utils.BodyEditorLoader;
-import com.fourmen.utils.CameraStyles;
-import com.fourmen.utils.RhythmView;
+import com.fourmen.utils.*;
 
 
 public class Box2DRender extends ScreenAdapter {
@@ -72,6 +69,7 @@ public class Box2DRender extends ScreenAdapter {
     private float tempTimer = 0;
     private Vector2 circlePosition = new Vector2(1400,900);
     private Animation<TextureRegion> redCircle;
+    private PlayerHealth playerHealth;
 
     public Box2DRender(int width, int height){
         WORLD_WIDTH = width;
@@ -171,10 +169,18 @@ public class Box2DRender extends ScreenAdapter {
         timeSinceStart = 0;
 
         rhythmView = new RhythmView(batch);
+        playerHealth = new PlayerHealth(batch,player.health);
     }
 
 
     public void render(float delta) {
+        if(player.getHealth() <= 0 || (rhythmView.getSongLength() + 1 < rhythmView.getSongPosition())){
+
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
+            player.subractHealth(30);
+            System.out.println(player.getHealth());
+        }
         if(player.getPosition().dst(circlePosition) < 300){
             steppedOn = true;
             rhythmView.startMusic();
@@ -182,6 +188,7 @@ public class Box2DRender extends ScreenAdapter {
         }
         tweenManager.update(delta);
         rhythmView.update(delta);
+        playerHealth.update(player.health,delta);
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         cameraUpdate();
         uiCamera.update();
@@ -224,6 +231,7 @@ public class Box2DRender extends ScreenAdapter {
         batch.setTransformMatrix(uiCamera.view);
         batch.begin();
         rhythmView.draw();
+        playerHealth.draw();
         batch.end();
     }
     private void debugView() {
@@ -265,6 +273,7 @@ public class Box2DRender extends ScreenAdapter {
         walls.dispose();
         world.destroyBody(walls.getBody());
         player.dispose();
+        playerHealth.dispose();
     }
 
     private void cameraUpdate() {
