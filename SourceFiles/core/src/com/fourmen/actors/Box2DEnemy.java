@@ -53,6 +53,8 @@ public class Box2DEnemy extends Entity {
 
     private boolean dead;
 
+    public boolean end;
+
     public TextureRegion currentFrame;
     private Animation<TextureRegion> moving;
     private Animation<TextureRegion> dash;
@@ -84,6 +86,7 @@ public class Box2DEnemy extends Entity {
         enemyState = enemyState.MOVING;
         player = myPlayer;
         dead = false;
+        end = false;
 
         moving = new Animation<TextureRegion>(0.06f, Animator.setUpSpriteSheet("Images/EnemyMove.png", 1, 18));
         dash = new Animation<TextureRegion>(0.05f, Animator.setUpSpriteSheet("Images/EnemyMove.png", 1, 18));
@@ -138,6 +141,9 @@ public class Box2DEnemy extends Entity {
                 }
             case DYING:
                 currentFrame = dying.getKeyFrame(stateTime);
+                if (dying.getKeyFrameIndex(stateTime) == 19) {
+                    end = true;
+                }
                 break;
         }
         blockLeavingTheWorld();

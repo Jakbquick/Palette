@@ -181,7 +181,7 @@ public class Box2DRender extends ScreenAdapter {
             rhythmView.getBeatJams().stop();
             ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOver());
         }
-        if(steppedOn && enemy.health < 0){
+        if(steppedOn && enemy.end){
             rhythmView.getBeatJams().stop();
             ((Game) Gdx.app.getApplicationListener()).setScreen(new WinScreen());
         }
