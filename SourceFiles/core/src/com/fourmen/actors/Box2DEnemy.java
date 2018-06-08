@@ -52,7 +52,7 @@ public class Box2DEnemy extends Entity {
     private double chargeCooldownTimer = 0;
     private float stateTime = 0;
 
-    public int damage;
+    private int damage;
 
     public TextureRegion currentFrame;
     private Animation<TextureRegion> moving;
@@ -70,7 +70,7 @@ public class Box2DEnemy extends Entity {
 
     //constructors
     public Box2DEnemy(World world, PlayerBounds myPlayerBounds, Box2DPlayer myPlayer) {
-        super(100, myPlayerBounds, ENEMY_WIDTH, ENEMY_HEIGHT);
+        super(1000, myPlayerBounds, ENEMY_WIDTH, ENEMY_HEIGHT);
         lastDirectionfaced = LEFT;
         direction = new Vector2(0, 0);
         dashDirection = new Vector2(0, 0);
@@ -106,6 +106,8 @@ public class Box2DEnemy extends Entity {
         body.createFixture(fixtureDef);
 
         bodySquare.dispose();
+
+        body.setUserData(this);
     }
 
     //methods
@@ -114,7 +116,7 @@ public class Box2DEnemy extends Entity {
         //if(dirChance == 1) {
         //updateDirection();
         //System.out.println(dashDirection);
-        //System.out.println("Enemy Health: " + health + " " + damage);
+        System.out.println("Enemy Health: " + health + " " + damage + " " + fixtureCollisions);
         switch (enemyState) {
             case MOVING:
                 currentFrame = getFrame(moving);
@@ -333,9 +335,13 @@ public class Box2DEnemy extends Entity {
 
     protected void updateHealth() {
         if (fixtureCollisions > 0 && !invincible && invTimer <= 0) {
-            health -= 10;
+            health -= 10 * damage;
             invTimer = INV_COOLDOWN;
         }
+    }
+
+    public void updateDamage(int hitValue) {
+        damage += hitValue;
     }
 
     public float getEnemyWidth(){
