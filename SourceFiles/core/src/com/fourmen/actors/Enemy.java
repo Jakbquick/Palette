@@ -13,7 +13,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.fourmen.actors.Entity;
 import com.fourmen.actors.Player;
-import javafx.scene.control.skin.TextInputControlSkin;
 
 import javax.swing.text.Position;
 import javax.xml.stream.Location;

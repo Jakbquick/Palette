@@ -20,7 +20,7 @@ public class Beat {
         batch.draw(beatTexture, position.x - (.5f * beatWidth),
                 position.y - (.5f * beatHeight), beatWidth, beatHeight);
     }
-    public void update(){
+    public void update(float delta){
         position.x -= velocity;
     }
     public float getXPosition(){

@@ -252,7 +252,7 @@ public class Box2DRender extends ScreenAdapter {
     }
 
     public void pause(){
-        Gdx.app.exit();
+        //Gdx.app.exit();
     }
 
     public void setUpTween(){

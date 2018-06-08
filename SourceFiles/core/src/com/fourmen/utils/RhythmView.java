@@ -32,24 +32,16 @@ public class RhythmView {
     private float velocity;
     private Music beatJams;
     private float timeBeforeSpawn;
-    private boolean musicStarted,odd;
-    private double bpm;
+    private boolean musicStarted;
+    private double timeBetweenNotes = .44444444444444;
+    private double songLength = 164.0;
+    int index = 0;
     private double timeToFillMap;
-    private double betweenNotes, songLength;
-    private int index;
-    private float timer;
-    private float stopWatch;
+    private double remainder;
 
     public RhythmView(SpriteBatch spriteBatch){
-        stopWatch = 0f;
-        odd = false;
-        timeToFillMap = 0.0;
-        bpm = 135;
-        songLength = 164.0;
-        betweenNotes = (1.0/(bpm / 60.0));
         i = 0;
         this.batch = spriteBatch;
-        //readMapValues();
         createWithBPM();
         bar = new Texture("Images/BlackBar.png");
         y = Gdx.graphics.getHeight() - 115;
@@ -59,32 +51,23 @@ public class RhythmView {
         beatWidth = 75;
         drawClick = false;
         clickTime = 0;
-        beatJams = Gdx.audio.newMusic(Gdx.files.internal("Music/song1.mp3"));
+        beatJams = Gdx.audio.newMusic(Gdx.files.internal("Music/song2.mp3"));
 
+        xDistance = Gdx.graphics.getWidth() + (.5f * beatWidth) -        //the first beatSize here is the size of the beat transitioning across the map (replace later)
+                100 - (.5f * beatWidth);
         centerWhen = new Vector2(100 + (beatWidth/2f), y + (.5f * bar.getHeight()));
-        xDistance = Gdx.graphics.getWidth() + (.5f * Beat.beatWidth) -         //the first beatSize here is the size of the beat transitioning across the map (replace later)
-                centerWhen.x;
-        velocity = 220f / 60f;
-        System.out.println(velocity + " " + Gdx.graphics.getWidth());
-        timeBeforeSpawn = xDistance / (velocity * 60f);
-        System.out.println(timeBeforeSpawn + "");
+        velocity = 300f / 60f;
+        timeBeforeSpawn = (velocity * 60f) / xDistance;
+        remainder = timeBetweenNotes - (timeBeforeSpawn % timeBetweenNotes);
+        timeToFillMap = timeBeforeSpawn + remainder;
         beatList = new ArrayList<Beat>();
-        timer = timeBeforeSpawn;
     }
     public void update(float delta){
-        if(timer <= 0 && musicStarted){
-            beatJams.play();
-            musicStarted = false;
-        }
-        else if(musicStarted){
-            stopWatch+= delta;
-            timer -= delta;
-        }
         for(Beat b : beatList){
-            b.update();
+            b.update(delta);
         }
         for(int j = 0; j < beatList.size(); j++){
-            beatList.get(j).update();
+            beatList.get(j).update(delta);
             if(beatList.get(j).getXPosition() < -Beat.beatWidth){
                 beatList.get(j).dispose();
                 beatList.remove(j);
@@ -100,7 +83,7 @@ public class RhythmView {
                 Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !drawClick){
             drawClick = true;
         }
-        if(i < mapValues.length && stopWatch >= mapValues[i]){
+        if(i < mapValues.length && beatJams.getPosition() >= mapValues[i] + timeBeforeSpawn){
             beatList.add(new Beat(velocity, Gdx.graphics.getWidth(),y + (.5f * bar.getHeight())));
             i++;
         }
@@ -133,20 +116,19 @@ public class RhythmView {
 
     }
     public void startMusic(){
+        beatJams.play();
         musicStarted = true;
     }
     public void createWithBPM(){
-        mapValues = new float[(int)(songLength/betweenNotes) + 0];
+        mapValues = new float[(int)(songLength/timeBetweenNotes)];
+        System.out.println(mapValues.length + "");
         while(index < mapValues.length){
-            if(odd && index >= 0){
-                mapValues[index -0] = ((float)(timeToFillMap - timeBeforeSpawn));
-                odd = !odd;
-            }
-            else{
-                odd = ! odd;
-            }
-            timeToFillMap += betweenNotes;
+            mapValues[index] = ((float)(timeToFillMap));
+            timeToFillMap += timeBetweenNotes;
             index++;
+        }
+        for(float f : mapValues){
+            System.out.println(f + "");
         }
     }
 }
