@@ -33,14 +33,18 @@ public class RhythmView {
     private Music beatJams;
     private float timeBeforeSpawn;
     private boolean musicStarted;
-    private double timeBetweenNotes = .44444444444444;
+    private double timeBetweenNotes;
     private double songLength = 164.0;
     int index = 0;
     private double timeToFillMap;
     private double remainder;
+    private double bpm, offset;
 
     public RhythmView(SpriteBatch spriteBatch){
+        bpm = 134.18;
+        timeBetweenNotes = (60.0)/ bpm;
         i = 0;
+        offset = .35;
         this.batch = spriteBatch;
         createWithBPM();
         bar = new Texture("Images/BlackBar.png");
@@ -56,10 +60,10 @@ public class RhythmView {
         xDistance = Gdx.graphics.getWidth() + (.5f * beatWidth) -        //the first beatSize here is the size of the beat transitioning across the map (replace later)
                 100 - (.5f * beatWidth);
         centerWhen = new Vector2(100 + (beatWidth/2f), y + (.5f * bar.getHeight()));
-        velocity = 300f / 60f;
+        velocity = 350f / 60f;
         timeBeforeSpawn = (velocity * 60f) / xDistance;
         remainder = timeBetweenNotes - (timeBeforeSpawn % timeBetweenNotes);
-        timeToFillMap = timeBeforeSpawn + remainder;
+        timeToFillMap = timeBeforeSpawn + remainder + offset;
         beatList = new ArrayList<Beat>();
     }
     public void update(float delta){
