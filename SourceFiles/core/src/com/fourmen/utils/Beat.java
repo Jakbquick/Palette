@@ -12,7 +12,7 @@ public class Beat {
     public static float beatWidth = 75;
     public Beat(float velocity, float x, float y){
         this.velocity = velocity;
-        beatTexture = new Texture("Images/Beat/Beat.png");
+        beatTexture = new Texture("Images/Beat/hitbeat.png");
 
         position = new Vector2(x,y);
     }

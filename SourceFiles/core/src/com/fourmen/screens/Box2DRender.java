@@ -152,6 +152,7 @@ public class Box2DRender extends ScreenAdapter {
         if(player.getPosition().dst(circlePosition) < 300){
             steppedOn = true;
             rhythmView.startMusic();
+            caveMusic.stop();
         }
         tweenManager.update(delta);
         rhythmView.update(delta);

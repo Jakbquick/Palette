@@ -20,7 +20,7 @@ public class RhythmView {
     private String values;
     private Texture bar;
     private float x,y;
-    private Texture whenButton,clicked;
+    private Texture whenButton,clicked,perfectButton,goodButton,missButton;
     private Vector2 centerWhen;
     //private File
     private ArrayList<Beat> beatList;
@@ -39,20 +39,26 @@ public class RhythmView {
     private double timeToFillMap;
     private double remainder;
     private double bpm, offset;
+    int score;
 
     public RhythmView(SpriteBatch spriteBatch){
-        bpm = 134.18;
+        int score = -1;
+        bpm = 135;
         timeBetweenNotes = (60.0)/ bpm;
         i = 0;
-        offset = .35;
+        //offset = .43;
+        offset = .30;
         this.batch = spriteBatch;
         createWithBPM();
-        bar = new Texture("Images/BlackBar.png");
+        bar = new Texture("Images/Beat/rhythmBar.png");
         y = Gdx.graphics.getHeight() - 115;
-        whenButton = new Texture("Images/Beat/NoClick.png");
-        clicked = new Texture("Images/Beat/Click.png");
-        beatHeight = 75;
-        beatWidth = 75;
+        whenButton = new Texture("Images/Beat/hitarea.png");
+        perfectButton = new Texture("Images/Beat/perfect.png");
+        goodButton = new Texture("Images/Beat/good.png");
+        missButton = new Texture("Images/Beat/miss.png");
+        clicked = goodButton;
+        beatHeight = 150;
+        beatWidth = 150;
         drawClick = false;
         clickTime = 0;
         beatJams = Gdx.audio.newMusic(Gdx.files.internal("Music/song2.mp3"));
@@ -60,7 +66,7 @@ public class RhythmView {
         xDistance = Gdx.graphics.getWidth() + (.5f * beatWidth) -        //the first beatSize here is the size of the beat transitioning across the map (replace later)
                 100 - (.5f * beatWidth);
         centerWhen = new Vector2(100 + (beatWidth/2f), y + (.5f * bar.getHeight()));
-        velocity = 300f / 60f;
+        velocity = 350f / 60f;
         timeBeforeSpawn = (velocity * 60f) / xDistance;
         remainder = timeBetweenNotes - (timeBeforeSpawn % timeBetweenNotes);
         timeToFillMap = timeBeforeSpawn + remainder + offset;
@@ -86,6 +92,21 @@ public class RhythmView {
                 Gdx.input.isKeyJustPressed(Input.Keys.LEFT) ||
                 Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !drawClick){
             drawClick = true;
+            if(beatList.size() > 0) {
+                if (centerWhen.dst(beatList.get(0).getXPosition(), centerWhen.y) < 300) {
+                    float distance = centerWhen.dst(beatList.remove(0).getXPosition(), centerWhen.y);
+                    if (distance > 200) {
+                        clicked = missButton;
+                        score = -1;
+                    } else if (distance > 100) {
+                        clicked = goodButton;
+                        score = 1;
+                    } else {
+                        clicked = perfectButton;
+                        score = 2;
+                    }
+                }
+            }
         }
         if(i < mapValues.length && beatJams.getPosition() >= mapValues[i] + timeBeforeSpawn){
             beatList.add(new Beat(velocity, Gdx.graphics.getWidth(),y + (.5f * bar.getHeight())));
@@ -93,6 +114,10 @@ public class RhythmView {
         }
 
 
+    }
+
+    public int getScore(){
+        return score;
     }
     public void draw(){
         batch.draw(bar,0,y,Gdx.graphics.getWidth(),bar.getHeight());
