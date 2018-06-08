@@ -19,11 +19,11 @@ public class Palette extends Game {
 	@Override
 	public void create () {
 
-		//setScreen(new Splash(screenWidth, screenHeight));
+		setScreen(new Splash(screenWidth, screenHeight));
 		//setScreen(new GameScreen(screenWidth,screenHeight));
 		//setScreen(new Box2DRender(screenWidth,screenHeight));
         //setScreen(new Splash(screenWidth,screenHeight));
-        setScreen(new WinScreen());
+        //setScreen(new WinScreen());
 	}
 
 	@Override

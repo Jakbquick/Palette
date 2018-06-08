@@ -24,7 +24,7 @@ public class DesktopLauncher {
 		config.addIcon("Images/macthumbnail.png",Files.FileType.Internal);
 		config.addIcon("Images/thumbnail.png",Files.FileType.Internal);
 		config.addIcon("Images/lowresthumbnail.png",Files.FileType.Internal);
-		//config.fullscreen = true;
+		config.fullscreen = true;
 
 		new LwjglApplication(new Palette(config.width,config.height), config);
 	}
