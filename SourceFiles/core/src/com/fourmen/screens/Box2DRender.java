@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.fourmen.actors.Box2DEnemy;
 import com.fourmen.actors.Box2DPlayer;
 import com.fourmen.actors.PlayerBounds;
+import com.fourmen.box2D.Beam;
 import com.fourmen.box2D.Walls;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.fourmen.tween.SpriteAccessor;
@@ -78,8 +79,7 @@ public class Box2DRender extends ScreenAdapter {
     }
 
     public void show() {
-        redCircle = new Animation<TextureRegion>(.03f, Animator.setUpSpriteSheet("Images/summoncircle.png",
-                1,60));
+        redCircle = new Animation<TextureRegion>(.03f, Animator.setUpSpriteSheet("Images/circle.png", 1,71));
 
         setUpTween();
         caveMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/CaveMusic.mp3"));
@@ -94,13 +94,24 @@ public class Box2DRender extends ScreenAdapter {
                 Fixture fixtureB = contact.getFixtureB();
                 //Gdx.app.log("beginContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
 
+                if ((fixtureA.getBody().equals(Beam.body) && fixtureB.getBody().equals(enemy.getPlayerBody()))
+                        || (fixtureB.getBody().equals(Beam.body) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
+                    enemy.updateCollisions(1);
+                    /*
+                    if (fixtureA.getBody().equals(Beam.body)) {
+                        Beam colBeam = (Beam) fixtureA.getBody().getUserData();
+                        enemy.damage += colBeam.getHitValue();
+                    }
+                    if (fixtureB.getBody().equals(Beam.body)) {
+                        Beam colBeam = (Beam) fixtureB.getBody().getUserData();
+                        enemy.damage += colBeam.getHitValue();
+                    }
+                    */
+                }
+
                 if ((fixtureA.getBody().equals(player.getPlayerBody()) && fixtureB.getBody().equals(enemy.getPlayerBody()))
                         || (fixtureB.getBody().equals(player.getPlayerBody()) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
                     player.updateCollisions(1);
-                }
-
-                if (player.playerState == player.playerState.ATTACKING) {
-                    
                 }
             }
 
@@ -109,6 +120,21 @@ public class Box2DRender extends ScreenAdapter {
                 Fixture fixtureA = contact.getFixtureA();
                 Fixture fixtureB = contact.getFixtureB();
                 //Gdx.app.log("endContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
+
+                if ((fixtureA.getBody().equals(Beam.body) && fixtureB.getBody().equals(enemy.getPlayerBody()))
+                        || (fixtureB.getBody().equals(Beam.body) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
+                    enemy.updateCollisions(-1);
+                    /*
+                    if (fixtureA.getBody().equals(Beam.body)) {
+                        Beam colBeam = (Beam) fixtureA.getBody().getUserData();
+                        enemy.damage += colBeam.getHitValue();
+                    }
+                    if (fixtureB.getBody().equals(Beam.body)) {
+                        Beam colBeam = (Beam) fixtureB.getBody().getUserData();
+                        enemy.damage -= colBeam.getHitValue();
+                    }
+                    */
+                }
 
                 if ((fixtureA.getBody().equals(player.getPlayerBody()) && fixtureB.getBody().equals(enemy.getPlayerBody()))
                         || (fixtureB.getBody().equals(player.getPlayerBody()) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
@@ -129,7 +155,7 @@ public class Box2DRender extends ScreenAdapter {
         world.setContactListener(contactListener);
         debugRenderer = new Box2DDebugRenderer();
         player = new Box2DPlayer(world, playerBounds);
-        enemy = new Box2DEnemy(world, player);
+        enemy = new Box2DEnemy(world, playerBounds, player);
         walls = new Walls(world,0,0, scale);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(player.getX(), player.getY(), 0);
@@ -162,6 +188,7 @@ public class Box2DRender extends ScreenAdapter {
         update(delta);
         clearScreen();
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
+        player.setHitValue(2);
         player.act();
         enemy.act();
         batch.setProjectionMatrix(camera.projection);
@@ -221,8 +248,8 @@ public class Box2DRender extends ScreenAdapter {
         CameraStyles.boundary(camera, startX, startY, scale - (2 * startX),
                 BOUND_HEIGHT - (2 * startY));
         walls.updateAnimations(delta);
-        player.updateTimers(delta);
-        enemy.updateTimers(delta);
+        player.update(delta);
+        enemy.update(delta);
 
     }
 
@@ -236,6 +263,7 @@ public class Box2DRender extends ScreenAdapter {
         debugRenderer.dispose();
         walls.dispose();
         world.destroyBody(walls.getBody());
+        player.dispose();
     }
 
     private void cameraUpdate() {

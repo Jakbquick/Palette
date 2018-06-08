@@ -64,10 +64,6 @@ public class SlashAttack {
     }
 
     //methods
-    public void act() {
-
-    }
-
     public void updateAttackDirection() {
         //Vector2 tempDir = new Vector2(direction.x, direction.y);
 
@@ -184,7 +180,7 @@ public class SlashAttack {
         return direction;
     }
 
-    public void getHitValue(int value) {
+    public void setHitValue(int value) {
         hitValue = value;
     }
 

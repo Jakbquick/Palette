@@ -16,17 +16,21 @@ public class Beam {
     private float direction;
     private float size;
 
+    private int hitValue;
+
     private float stateTime;
 
     Animation<TextureRegion> beamShot;
 
-    private Body body;
+    public static Body body;
 
     //constructors
     public Beam(World world, Vector2 playerPosition, float shotDirection, float playerSize) {
         position = new Vector2(playerPosition.x + (200 * shotDirection * playerSize), playerPosition.y);
         direction = shotDirection;
         size = playerSize;
+
+        hitValue = 0;
 
         beamShot = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/beamsheet.png", 1, 2));
 
@@ -63,5 +67,17 @@ public class Beam {
 
     public void update(float delta) {
         stateTime += delta;
+    }
+
+    public void setHitValue(int value) {
+        hitValue = value;
+    }
+
+    public int getHitValue() {
+        return hitValue;
+    }
+
+    public void dispose() {
+
     }
 }

@@ -58,7 +58,7 @@ public class Player extends com.fourmen.actors.Entity {
 
     //constructors
     public Player() {
-        super();
+        super(0, null, 0, 0);
         rectangle = new Rectangle(getX(), getY(), playerWidth, playerHeight);
         attackRange = new Circle(getX(), getY(), playerHeight / 1.5f);
         attack = new Circle(getX(), getY(), 25);

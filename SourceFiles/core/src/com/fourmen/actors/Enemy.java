@@ -47,7 +47,7 @@ public class Enemy extends Entity {
 
     //constructors
     public Enemy() {
-        super();
+        super(0, null, 0, 0);
         rectangle = new Rectangle(getX(), getY(), enemyWidth, enemyHeight);
         targetSpeed = new Vector2(0, 0);
         currentSpeed = new Vector2(0, 0);
@@ -216,4 +216,5 @@ public class Enemy extends Entity {
         updateRectangle();
         shapeRenderer.rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     }
+
 }

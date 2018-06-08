@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.fourmen.utils.Animator;
 
+import javax.swing.*;
+
 
 public class Box2DEnemy extends Entity {
     //constants
@@ -22,10 +24,12 @@ public class Box2DEnemy extends Entity {
     private static final float ACCELERATION_CONSTANT = 1f;
     private static final float DECELERATION_CONSTANT = 1f;
     private final int MAX_SPEED = 500;               // the max speed a player can move
-    private final float DASH_SPEED = 1000;
+    private final float DASH_SPEED = 500;
     private final float CHARGE_SPEED = 2000;
     private final static float DASH_COOLDOWN = .6f;
-    private final static float DASH_DURATION = .1f;
+    private final static float DASH_DURATION = .2f;
+    private final static float CHARGE_COOLDOWN = .6f;
+    private final static float CHARGE_DURATION = 1f;
     private enum PlayerState {
         MOVING, DASHING, CHARGING, ENDCHARGE;
     }
@@ -44,7 +48,11 @@ public class Box2DEnemy extends Entity {
 
     private double dashDurationTimer = 0;
     private double dashCooldownTimer = 0;
+    private double chargeDurationTimer = 0;
+    private double chargeCooldownTimer = 0;
     private float stateTime = 0;
+
+    public int damage;
 
     public TextureRegion currentFrame;
     private Animation<TextureRegion> moving;
@@ -61,8 +69,8 @@ public class Box2DEnemy extends Entity {
     private boolean towardsPlayer;
 
     //constructors
-    public Box2DEnemy(World world, Box2DPlayer myPlayer) {
-        super();
+    public Box2DEnemy(World world, PlayerBounds myPlayerBounds, Box2DPlayer myPlayer) {
+        super(100, myPlayerBounds, ENEMY_WIDTH, ENEMY_HEIGHT);
         lastDirectionfaced = LEFT;
         direction = new Vector2(0, 0);
         dashDirection = new Vector2(0, 0);
@@ -74,6 +82,8 @@ public class Box2DEnemy extends Entity {
         towardsPlayer = false;
         enemyState = enemyState.MOVING;
         player = myPlayer;
+
+        damage = 0;
 
         moving = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/TempBoss.png", 1, 5));
         dash = new Animation<TextureRegion>(0.08f, Animator.setUpSpriteSheet("Images/TempBoss.png", 1, 5));
@@ -101,23 +111,26 @@ public class Box2DEnemy extends Entity {
     //methods
     public void act() {
         int dirChance = MathUtils.random(10);
-        if(dirChance == 1) {
-        updateDirection();
+        //if(dirChance == 1) {
+        //updateDirection();
+        //System.out.println(dashDirection);
+        System.out.println("Enemy Health: " + health + " " + damage);
         switch (enemyState) {
             case MOVING:
                 currentFrame = getFrame(moving);
-                move();
+                //move();
                 if (dashCooldownTimer <= 0)
                     checkDash();
                 checkCharge();
                 break;
             case DASHING:
                 currentFrame = getFrame(dash);
-                dash();
+                //dash();
                 if (dashDurationTimer <= 0) {
                     enemyState = enemyState.MOVING;
                 }
                 break;
+                /*
             case ENDCHARGE:
                 currentFrame = getFrame(dash);
                 dash();
@@ -125,12 +138,16 @@ public class Box2DEnemy extends Entity {
                     enemyState = enemyState.MOVING;
                 }
                 break;
+                */
             case CHARGING:
                 currentFrame = getFrame(charge);
-                charge();
-                enemyState = enemyState.ENDCHARGE;
+                dash();
+                if(chargeDurationTimer <= 0) {
+                    enemyState = enemyState.MOVING;
+                }
         }
-        }
+        //}
+        /*
         else{
             if(direction.x >= 0)
                 direction.x++;
@@ -140,8 +157,11 @@ public class Box2DEnemy extends Entity {
                 direction.y++;
             else if(direction.y < 0)
                 direction.y--;
-            move();
+            //move();
         }
+        */
+        blockLeavingTheWorld();
+        updateHealth();
         updatePosition();
     }
 
@@ -240,6 +260,8 @@ public class Box2DEnemy extends Entity {
         int dashChance  = MathUtils.random(4);
 
         if(dashChance == 3) {
+
+            chargePos = new Vector2(player.position);
             enemyState = enemyState.DASHING;
             dashDirection.x = direction.x;
             dashDirection.y = direction.y;
@@ -254,14 +276,16 @@ public class Box2DEnemy extends Entity {
 
         int chargeChance  = MathUtils.random(0);
 
-        if(distanceBetween(player, getX(), getY()) <= 500 && distanceBetween(player, getX(), getY()) >= 400 && chargeChance == 0) {
+        if(chargeChance == 0) {
             enemyState = enemyState.CHARGING;
-            dashDirection.x = direction.x;
-            dashDirection.y = direction.y;
+            dashDirection.x = player.position.x - position.x;
+            dashDirection.y = player.position.y - position.y;
+
+            dashDirection.nor();
 
             currentSpeed = new Vector2(0,0);
-            dashDurationTimer = DASH_DURATION;
-            dashCooldownTimer = DASH_COOLDOWN;
+            chargeDurationTimer = CHARGE_DURATION;
+            chargeCooldownTimer = CHARGE_COOLDOWN;
         }
     }
 
@@ -307,6 +331,13 @@ public class Box2DEnemy extends Entity {
         return frame.getKeyFrame(stateTime, true);
     }
 
+    protected void updateHealth() {
+        if (fixtureCollisions > 0 && !invincible && invTimer <= 0) {
+            health -= 10;
+            invTimer = INV_COOLDOWN;
+        }
+    }
+
     public float getEnemyWidth(){
         return ENEMY_WIDTH;
     }
@@ -323,10 +354,16 @@ public class Box2DEnemy extends Entity {
         body.setTransform(position, 0);
     }
 
-    public void updateTimers(float delta) {
+    public void update(float delta) {
+        super.update(delta);
         dashDurationTimer -= delta;
         dashCooldownTimer -= delta;
+        chargeDurationTimer -= delta;
+        chargeCooldownTimer -= delta;
         stateTime += delta;
-        //slash.update(delta);
+    }
+
+    public void dispose() {
+
     }
 }

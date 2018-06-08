@@ -1,17 +1,33 @@
 package com.fourmen.actors;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public abstract class Entity extends Actor {
     //instance variables
+    protected final static float INV_COOLDOWN = .05f;
+
     public int health;
     public Vector2 position;
+    private float width;
+    private float height;
+    protected int fixtureCollisions;
+    protected boolean invincible;
+    protected float invTimer;
+
+    private PlayerBounds playerBounds;
 
     //constructors
-    public Entity() {
-        health = 100;
+    public Entity(int hp, PlayerBounds myPlayerBounds, float myWidth, float myHeight) {
+        health = hp;
         position = new Vector2(400, 400);
+        playerBounds = myPlayerBounds;
+        width = myWidth;
+        height = myHeight;
+        fixtureCollisions = 0;
+        invincible = false;
+        invTimer = 0;
     }
 
     public void setPosition(float x, float y) {
@@ -49,4 +65,27 @@ public abstract class Entity extends Actor {
     public Vector2 getPosition(){
         return position;
     }
+
+    protected void updateHealth() {
+        if (fixtureCollisions > 0 && !invincible && invTimer <= 0) {
+            health -= 10;
+            invTimer = INV_COOLDOWN;
+        }
+    }
+
+    public void update(float delta) {
+        invTimer -= delta;
+    }
+
+    public void updateCollisions(int collisions) {
+        fixtureCollisions += collisions;
+    }
+
+    protected void blockLeavingTheWorld() {
+        setPosition(MathUtils.clamp(getX(),playerBounds.getW1()+ (.5f* width),playerBounds.getWidth()+ playerBounds.getW1() - width + (.5f * width)),
+                MathUtils.clamp(getY(), playerBounds.getH2() + (.5f * height), playerBounds.getHeight() + playerBounds.getH2() - height + (.5f *height)));
+    }
+
+    //public abstract void dispose() ;
+
 }

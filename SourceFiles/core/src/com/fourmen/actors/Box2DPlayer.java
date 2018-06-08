@@ -59,11 +59,7 @@ public class Box2DPlayer extends Entity{
     private World myWorld;
     private Body body;
 
-    public int fixtureCollisions;
-
     public PlayerState playerState;
-
-    private PlayerBounds playerBounds;
 
     private SlashAttack slash;
 
@@ -93,7 +89,7 @@ public class Box2DPlayer extends Entity{
 
     //constructors
     public Box2DPlayer(World world, PlayerBounds myPlayerBounds) {
-        super();
+        super(100, myPlayerBounds, PLAYER_WIDTH, PLAYER_HEIGHT);
         myWorld = world;
 
         lastDirectionfaced = LEFT;
@@ -108,11 +104,7 @@ public class Box2DPlayer extends Entity{
         acceleration = ACCELERATION_CONSTANT * MAX_SPEED;
         deceleration = DECELERATION_CONSTANT * MAX_SPEED;
 
-        fixtureCollisions = 0;
-
         playerState = PlayerState.STANDING;
-
-        playerBounds = myPlayerBounds;
 
         slash = new SlashAttack(world, position, PLAYER_SIZE);
 
@@ -187,9 +179,14 @@ public class Box2DPlayer extends Entity{
         return PLAYER_SIZE;
     }
 
+    public float getDashCooldownTimer() {
+        return dashCooldownTimer;
+    }
+
     public void act() {
         //System.out.println(currentSpeed + " " + playerState);
         //System.out.println(fixtureCollisions);
+        //System.out.println("Player Health: " + health + " " + fixtureCollisions + " " + invincible);
         updateDirection();
         switch (playerState) {
             case STANDING:
@@ -281,10 +278,7 @@ public class Box2DPlayer extends Entity{
 
                 break;
             case DASHING:
-                if(dashDurationTimer == 0) {
-                    stateTime = 0;
-                }
-
+                invincible = true;
                 if(dashDurationTimer <= dash.getFrameDuration() * 5) {
                     //currentFrame = getFrame(dash);
                     dash();
@@ -316,12 +310,14 @@ public class Box2DPlayer extends Entity{
                     currentSpeed.y = tempSpeed.y;
                     setX(dashPosition.x);
                     setY(dashPosition.y);
+                    invincible = false;
                     playerState = playerState.MOVING;
                 }
                 break;
         }
-        blockPlayerLeavingTheWorld();
+        blockLeavingTheWorld();
         moveBeams();
+        updateHealth();
         updatePosition();
     }
 
@@ -436,7 +432,8 @@ public class Box2DPlayer extends Entity{
         return frame.getKeyFrame(stateTime, true);
     }
 
-    public void updateTimers(float delta) {
+    public void update(float delta) {
+        super.update(delta);
         dashDurationTimer += delta;
         dashCooldownTimer -= delta;
         attackDurationTimer += delta;
@@ -459,8 +456,11 @@ public class Box2DPlayer extends Entity{
         }
     }
 
-    public void getHitValue(int value) {
-        slash.getHitValue(value);
+    public void setHitValue(int value) {
+        slash.setHitValue(value);
+        for (Beam beam : beams) {
+            beam.setHitValue(value);
+        }
     }
 
     public void updatePosition() {
@@ -468,17 +468,11 @@ public class Box2DPlayer extends Entity{
         slash.updatePosition(position);
     }
 
-    public void updateCollisions(int collisions) {
-        fixtureCollisions += collisions;
-    }
-
     public void drawDebug(Box2DDebugRenderer debug) {
 
     }
 
-    private void blockPlayerLeavingTheWorld() {
-        setPosition(MathUtils.clamp(getX(),playerBounds.getW1()+ (.5f* PLAYER_WIDTH),playerBounds.getWidth()+ playerBounds.getW1() - PLAYER_WIDTH + (.5f * PLAYER_WIDTH)),
-                MathUtils.clamp(getY(), playerBounds.getH2() + (.5f *PLAYER_HEIGHT), playerBounds.getHeight() + playerBounds.getH2() - PLAYER_HEIGHT + (.5f *PLAYER_HEIGHT)));
+    public void dispose() {
+        glitch.dispose();
     }
-
 }
