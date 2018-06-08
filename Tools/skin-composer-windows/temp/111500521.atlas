@@ -1,0 +1,13 @@
+
+111500521.png
+size: 128,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+exit
+  rotate: false
+  xy: 1, 63
+  size: 89, 27
+  orig: 89, 27
+  offset: 0, 0
+  index: -1

@@ -34,20 +34,23 @@ public class RhythmView {
     private float timeBeforeSpawn;
     private boolean musicStarted;
     private double timeBetweenNotes;
-    private double songLength = 164.0;
+    private double songLength;
     int index = 0;
     private double timeToFillMap;
     private double remainder;
     private double bpm, offset;
     int score;
 
-    public RhythmView(SpriteBatch spriteBatch){
+    public RhythmView(SpriteBatch spriteBatch, Music beatJams, double songLength,double bpm,
+                      double offset){
         int score = -1;
-        bpm = 135;
+        //bpm = 135;
         timeBetweenNotes = (60.0)/ bpm;
+        this.songLength = songLength;
+        this.bpm = bpm;
         i = 0;
-        //offset = .43;
-        offset = .35;
+        this.offset = offset;
+        //offset = .35;
         this.batch = spriteBatch;
         createWithBPM();
         bar = new Texture("Images/Beat/rhythmBar.png");
@@ -61,7 +64,8 @@ public class RhythmView {
         beatWidth = 150;
         drawClick = false;
         clickTime = 0;
-        beatJams = Gdx.audio.newMusic(Gdx.files.internal("Music/song2.mp3"));
+        //beatJams = Gdx.audio.newMusic(Gdx.files.internal("Music/song2.mp3"));
+        this.beatJams = beatJams;
 
         xDistance = Gdx.graphics.getWidth() + (.5f * beatWidth) -        //the first beatSize here is the size of the beat transitioning across the map (replace later)
                 100 - (.5f * beatWidth);
@@ -166,5 +170,8 @@ public class RhythmView {
     }
     public float getSongLength(){
         return (float)songLength;
+    }
+    public Music getBeatJams(){
+        return beatJams;
     }
 }

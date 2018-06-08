@@ -2,6 +2,7 @@ package com.fourmen.screens;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -70,6 +71,7 @@ public class Box2DRender extends ScreenAdapter {
     private Vector2 circlePosition = new Vector2(1400,900);
     private Animation<TextureRegion> redCircle;
     private PlayerHealth playerHealth;
+    private Music gameMusic;
 
     public Box2DRender(int width, int height){
         WORLD_WIDTH = width;
@@ -166,15 +168,17 @@ public class Box2DRender extends ScreenAdapter {
         viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         uiViewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, uiCamera);
         timeSinceStart = 0;
-
-        rhythmView = new RhythmView(batch);
+        gameMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/copyrightFree.mp3"));
+        rhythmView = new RhythmView(batch,gameMusic,294.0,128.0,.15);
         playerHealth = new PlayerHealth(batch,player.health);
     }
 
 
     public void render(float delta) {
         if(player.getHealth() <= 0 || (rhythmView.getSongLength() + 1 < rhythmView.getSongPosition())){
-
+            caveMusic.stop();
+            rhythmView.getBeatJams().stop();
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOver());
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
             player.subractHealth(30);

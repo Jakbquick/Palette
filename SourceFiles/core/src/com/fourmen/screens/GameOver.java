@@ -41,7 +41,6 @@ public class GameOver extends ScreenAdapter {
     private boolean startTimer = false;
     private Music music = Gdx.audio.newMusic(Gdx.files.internal("Music/SadPiano.mp3"));
 
-
     public void show(){
         tweenManager = new TweenManager();
         timerToFade = 3.6f;
@@ -50,7 +49,6 @@ public class GameOver extends ScreenAdapter {
                 Gdx.graphics.getHeight());
         Texture palette = new Texture("ui/PaletteSad.png");
         paletteSad = new TextureFadeImage(palette,palette.getWidth(),palette.getHeight());
-
 
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
@@ -101,6 +99,7 @@ public class GameOver extends ScreenAdapter {
         stage.addActor(paletteSad);
         stage.addActor(playButton);
         stage.addActor(exitButton);
+        stage.addActor(blackScreenImage);
         Gdx.input.setInputProcessor(stage);
         blackScreenImage.fadeOut();
     }
@@ -108,9 +107,6 @@ public class GameOver extends ScreenAdapter {
     public void render(float delta){
         tweenManager.update(delta);
         tweenManager.update(delta);
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY) && !gameStarted && (timeSinceStart >= 1f)){
-            startGame();
-        }
         if (timerToFade <= 0){
             music.stop();
             ((Game) Gdx.app.getApplicationListener()).setScreen(new Box2DRender(Gdx.graphics.getWidth(),

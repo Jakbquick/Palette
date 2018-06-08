@@ -64,7 +64,7 @@ public class TextureFadeImage extends Image {
             Tween.to(this, SpriteAccessor.ALPHA, 3f).target(1f).start(tweenManager);
         }
     }
-    public void setPostion(float x, float y){
+    public void setPosition(float x, float y){
         sprite.setPosition(x,y);
     }
 }

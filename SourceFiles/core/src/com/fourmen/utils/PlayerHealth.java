@@ -30,6 +30,7 @@ public class PlayerHealth {
      */
     public void update(float current,float delta){
         this.current = current;
+        /*
         if(current == previous){
 
         }
@@ -37,6 +38,8 @@ public class PlayerHealth {
             Tween.set(previous,0).target(previous).start(tweenManager);
             Tween.to(previous,0,.2f).target(current).start(tweenManager);
         }
+        */
+        previous = current;
         tweenManager.update(delta);
     }
     public void draw(){
