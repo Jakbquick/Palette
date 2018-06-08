@@ -29,10 +29,11 @@ public class Box2DEnemy extends Entity {
     private final static float DASH_COOLDOWN = .6f;
     private final static float DASH_DURATION = .1f;
     private enum PlayerState {
-        MOVING, DASHING, CHARGING, ENDCHARGE;
+        MOVING, DASHING, CHARGING, ENDCHARGE, DYING
     }
 
     //instance variables
+    private World world;
 
     private Vector2 direction;          // contains a x direction and y direction from -1 to 1
     private Vector2 dashDirection;
@@ -50,10 +51,13 @@ public class Box2DEnemy extends Entity {
 
     private int damage;
 
+    private boolean dead;
+
     public TextureRegion currentFrame;
     private Animation<TextureRegion> moving;
     private Animation<TextureRegion> dash;
     private Animation<TextureRegion> charge;
+    private Animation<TextureRegion> dying;
 
     private int lastDirectionfaced;
     private int LEFT = 0;
@@ -67,6 +71,7 @@ public class Box2DEnemy extends Entity {
     //constructors
     public Box2DEnemy(World world, PlayerBounds myPlayerBounds, Box2DPlayer myPlayer) {
         super(1000, myPlayerBounds, ENEMY_WIDTH, ENEMY_HEIGHT, new Vector2(1500, 900));
+        this.world = world;
         lastDirectionfaced = LEFT;
         direction = new Vector2(0, 0);
         dashDirection = new Vector2(0, 0);
@@ -78,10 +83,12 @@ public class Box2DEnemy extends Entity {
         towardsPlayer = false;
         enemyState = enemyState.MOVING;
         player = myPlayer;
+        dead = false;
 
         moving = new Animation<TextureRegion>(0.06f, Animator.setUpSpriteSheet("Images/EnemyMove.png", 1, 18));
         dash = new Animation<TextureRegion>(0.05f, Animator.setUpSpriteSheet("Images/EnemyMove.png", 1, 18));
         charge = new Animation<TextureRegion>(0.05f, Animator.setUpSpriteSheet("Images/EnemyAttack.png", 1, 7));
+        dying = new Animation<TextureRegion>(0.05f, Animator.setUpSpriteSheet("Images/bossdeathsheet.png", 1, 20));
         currentFrame = moving.getKeyFrame(stateTime, true);
 
         BodyDef bodyDef = new BodyDef();
@@ -92,7 +99,7 @@ public class Box2DEnemy extends Entity {
         body = world.createBody(bodyDef);
 
         PolygonShape bodySquare = new PolygonShape();
-        bodySquare.setAsBox(50 * ENEMY_SIZE * BOX2D_SCALE, 50 * ENEMY_SIZE * BOX2D_SCALE);
+        bodySquare.setAsBox(150 * ENEMY_SIZE * BOX2D_SCALE, 150 * ENEMY_SIZE * BOX2D_SCALE);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = bodySquare;
@@ -129,6 +136,9 @@ public class Box2DEnemy extends Entity {
                 if (position.equals(player.position) || dashDurationTimer <= -0.1) {
                     enemyState = enemyState.MOVING;
                 }
+            case DYING:
+                currentFrame = dying.getKeyFrame(stateTime);
+                break;
         }
         blockLeavingTheWorld();
         updateHealth();
@@ -451,6 +461,11 @@ public class Box2DEnemy extends Entity {
             health -= 10 * damage;
             invTimer = INV_COOLDOWN;
         }
+        if (health <= 0 && !dead) {
+            enemyState = enemyState.DYING;
+            dead = true;
+            stateTime = 0;
+        }
     }
 
     public void updateDamage(int hitValue) {
@@ -467,6 +482,10 @@ public class Box2DEnemy extends Entity {
 
     public Body getPlayerBody(){
         return body;
+    }
+
+    public boolean isDead() {
+        return dead;
     }
 
     public void updatePosition() {

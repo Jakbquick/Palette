@@ -71,7 +71,7 @@ public abstract class Entity extends Actor {
     }
     protected void updateHealth() {
         if (fixtureCollisions > 0 && !invincible && invTimer <= 0) {
-            health -= 5;
+            health -= 10;
             invTimer = INV_COOLDOWN;
         }
     }
