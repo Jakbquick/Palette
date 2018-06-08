@@ -189,7 +189,7 @@ public class Box2DRender extends ScreenAdapter {
         update(delta);
         clearScreen();
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
-        player.setHitValue(2);
+        player.setHitValue(rhythmView.getScore());
         player.act();
         enemy.act();
         batch.setProjectionMatrix(camera.projection);
