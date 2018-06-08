@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.fourmen.utils.Animator;
 
+import javax.swing.*;
+
 
 public class Box2DEnemy extends Entity {
     //constants
@@ -46,6 +48,8 @@ public class Box2DEnemy extends Entity {
     private double dashCooldownTimer = 0;
     private float stateTime = 0;
 
+    private int damage;
+
     public TextureRegion currentFrame;
     private Animation<TextureRegion> moving;
     private Animation<TextureRegion> dash;
@@ -61,8 +65,8 @@ public class Box2DEnemy extends Entity {
     private boolean towardsPlayer;
 
     //constructors
-    public Box2DEnemy(World world, Box2DPlayer myPlayer) {
-        super();
+    public Box2DEnemy(World world, PlayerBounds myPlayerBounds, Box2DPlayer myPlayer) {
+        super(1000, myPlayerBounds, ENEMY_WIDTH, ENEMY_HEIGHT, new Vector2(1500, 900));
         lastDirectionfaced = LEFT;
         direction = new Vector2(0, 0);
         dashDirection = new Vector2(0, 0);
@@ -96,6 +100,8 @@ public class Box2DEnemy extends Entity {
         body.createFixture(fixtureDef);
 
         bodySquare.dispose();
+
+        body.setUserData(this);
     }
 
     //methods
@@ -438,6 +444,17 @@ public class Box2DEnemy extends Entity {
         return frame.getKeyFrame(stateTime, true);
     }
 
+    protected void updateHealth() {
+        if (fixtureCollisions > 0 && !invincible && invTimer <= 0) {
+            health -= 10 * damage;
+            invTimer = INV_COOLDOWN;
+        }
+    }
+
+    public void updateDamage(int hitValue) {
+        damage += hitValue;
+    }
+
     public float getEnemyWidth(){
         return ENEMY_WIDTH;
     }
@@ -454,10 +471,14 @@ public class Box2DEnemy extends Entity {
         body.setTransform(position, 0);
     }
 
-    public void updateTimers(float delta) {
+    public void update(float delta) {
+        super.update(delta);
         dashDurationTimer -= delta;
         dashCooldownTimer -= delta;
         stateTime += delta;
-        //slash.update(delta);
+    }
+
+    public void dispose() {
+
     }
 }

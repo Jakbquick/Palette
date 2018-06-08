@@ -47,7 +47,7 @@ public class RhythmView {
         timeBetweenNotes = (60.0)/ bpm;
         i = 0;
         //offset = .43;
-        offset = .30;
+        offset = .35;
         this.batch = spriteBatch;
         createWithBPM();
         bar = new Texture("Images/Beat/rhythmBar.png");
@@ -79,7 +79,6 @@ public class RhythmView {
         for(int j = 0; j < beatList.size(); j++){
             beatList.get(j).update(delta);
             if(beatList.get(j).getXPosition() < -Beat.beatWidth){
-                beatList.get(j).dispose();
                 beatList.remove(j);
             }
         }
@@ -87,9 +86,11 @@ public class RhythmView {
             drawClick = false;
             clickTime = 0;
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP) ||
-                Gdx.input.isKeyJustPressed(Input.Keys.DOWN) ||
-                Gdx.input.isKeyJustPressed(Input.Keys.LEFT) ||
+        //if (Gdx.input.isKeyJustPressed(Input.Keys.UP) ||
+          //      Gdx.input.isKeyJustPressed(Input.Keys.DOWN) ||
+            //    Gdx.input.isKeyJustPressed(Input.Keys.LEFT) ||
+              //  Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !drawClick){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) ||
                 Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !drawClick){
             drawClick = true;
             if(beatList.size() > 0) {
@@ -159,5 +160,11 @@ public class RhythmView {
         for(float f : mapValues){
             System.out.println(f + "");
         }
+    }
+    public float getSongPosition(){
+        return beatJams.getPosition();
+    }
+    public float getSongLength(){
+        return (float)songLength;
     }
 }

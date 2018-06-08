@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c082a885-8d32-41d4-82e7-c7bcacb3ab66" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SourceFiles/core/src/com/fourmen/Actors/Enemy.java" beforeDir="false" afterPath="$PROJECT_DIR$/SourceFiles/core/src/com/fourmen/Actors/Enemy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SourceFiles/core/src/com/fourmen/Actors/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/SourceFiles/core/src/com/fourmen/Actors/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SourceFiles/desktop/src/com/fourmen/apcs/desktop/DesktopLauncher.java" beforeDir="false" afterPath="$PROJECT_DIR$/SourceFiles/desktop/src/com/fourmen/apcs/desktop/DesktopLauncher.java" afterDir="false" />
+    <list default="true" id="f5e78c4f-8289-496c-9182-9f511561baed" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/SourceFiles/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" afterPath="$PROJECT_DIR$/SourceFiles/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SourceFiles/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/SourceFiles/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SourceFiles/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/SourceFiles/gradlew" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SourceFiles/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/SourceFiles/gradlew.bat" afterDir="false" />
     </list>
+    <ignored path="$PROJECT_DIR$/.gradle/" />
+    <ignored path="$PROJECT_DIR$/build/" />
+    <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,18 +19,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SourceFiles/desktop/build.gradle">
+      <file leaf-file-name="DesktopLauncher.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/SourceFiles/desktop/src/com/fourmen/apcs/desktop/DesktopLauncher.java">
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file leaf-file-name="DesktopLauncher.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/SourceFiles/desktop/src/com/fourmen/apcs/desktop/DesktopLauncher.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="11" column="30" selection-start-line="11" selection-start-column="30" selection-end-line="11" selection-end-column="30" />
-            </state>
-          </provider>
+      <file leaf-file-name="Enemy.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/SourceFiles/core/src/com/fourmen/Actors/Enemy.java">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
@@ -39,220 +37,89 @@
   <component name="GradleLocalSettings">
     <option name="projectSyncType">
       <map>
-        <entry key="$PROJECT_DIR$/../Palette-masteR Best/Palette-master/SourceFiles" value="PREVIEW" />
-        <entry key="$PROJECT_DIR$/../Palette-master/Palette-master/SourceFiles" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../Flappy Bird/FlappeeBird" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/SourceFiles" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../libGDX" value="PREVIEW" />
       </map>
     </option>
   </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/SourceFiles/desktop/src/com/fourmen/apcs/desktop/DesktopLauncher.java" />
-      </list>
-    </option>
-  </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1140" />
-    <option name="y" value="-43" />
-    <option name="width" value="1630" />
-    <option name="height" value="1715" />
+  <component name="ProjectFrameBounds">
+    <option name="y" value="22" />
+    <option name="width" value="1680" />
+    <option name="height" value="1024" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="AndroidView" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="PaletteHeHe" type="b2602c69:ProjectViewProjectNode" />
-              <item name="PaletteHeHe" type="462c0819:PsiDirectoryNode" />
+              <item name="Palette" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Palette" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="PaletteHeHe" type="b2602c69:ProjectViewProjectNode" />
-              <item name="PaletteHeHe" type="462c0819:PsiDirectoryNode" />
+              <item name="Palette" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Palette" type="462c0819:PsiDirectoryNode" />
               <item name="SourceFiles" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="PaletteHeHe" type="b2602c69:ProjectViewProjectNode" />
-              <item name="PaletteHeHe" type="462c0819:PsiDirectoryNode" />
+              <item name="Palette" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Palette" type="462c0819:PsiDirectoryNode" />
               <item name="SourceFiles" type="462c0819:PsiDirectoryNode" />
-              <item name="desktop" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="PaletteHeHe" type="b2602c69:ProjectViewProjectNode" />
-              <item name="PaletteHeHe" type="462c0819:PsiDirectoryNode" />
+              <item name="Palette" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Palette" type="462c0819:PsiDirectoryNode" />
               <item name="SourceFiles" type="462c0819:PsiDirectoryNode" />
-              <item name="desktop" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
+              <item name="assets" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Palette" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Palette" type="462c0819:PsiDirectoryNode" />
+              <item name="SourceFiles" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="PaletteHeHe" type="b2602c69:ProjectViewProjectNode" />
-              <item name="PaletteHeHe" type="462c0819:PsiDirectoryNode" />
+              <item name="Palette" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Palette" type="462c0819:PsiDirectoryNode" />
               <item name="SourceFiles" type="462c0819:PsiDirectoryNode" />
-              <item name="desktop" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="com" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="PaletteHeHe" type="b2602c69:ProjectViewProjectNode" />
-              <item name="PaletteHeHe" type="462c0819:PsiDirectoryNode" />
+              <item name="Palette" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Palette" type="462c0819:PsiDirectoryNode" />
               <item name="SourceFiles" type="462c0819:PsiDirectoryNode" />
-              <item name="desktop" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="fourmen" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="PaletteHeHe" type="b2602c69:ProjectViewProjectNode" />
-              <item name="PaletteHeHe" type="462c0819:PsiDirectoryNode" />
-              <item name="SourceFiles" type="462c0819:PsiDirectoryNode" />
-              <item name="desktop" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="com" type="462c0819:PsiDirectoryNode" />
               <item name="fourmen" type="462c0819:PsiDirectoryNode" />
-              <item name="apcs" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="PaletteHeHe" type="b2602c69:ProjectViewProjectNode" />
-              <item name="PaletteHeHe" type="462c0819:PsiDirectoryNode" />
+              <item name="Palette" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Palette" type="462c0819:PsiDirectoryNode" />
               <item name="SourceFiles" type="462c0819:PsiDirectoryNode" />
-              <item name="desktop" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="com" type="462c0819:PsiDirectoryNode" />
               <item name="fourmen" type="462c0819:PsiDirectoryNode" />
-              <item name="apcs" type="462c0819:PsiDirectoryNode" />
-              <item name="desktop" type="462c0819:PsiDirectoryNode" />
+              <item name="Actors" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="AndroidView" />
       <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
-  </component>
-  <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/SourceFiles/build.gradle" />
-    <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.build" />
-  </component>
-  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
-    <UpdatedFiles>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Updated from server" />
-        <option name="myStatusName" value="Changed on server" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="CHANGED_ON_SERVER" />
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated" />
-          <option name="myStatusName" value="Changed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UPDATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/SourceFiles/core/src/com/fourmen/Actors/Entity.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/SourceFiles/core/src/com/fourmen/Actors/Player.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/SourceFiles/core/src/com/fourmen/screens/GameScreen.java</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Created" />
-          <option name="myStatusName" value="Created" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CREATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/SourceFiles/core/src/com/fourmen/utils/Animator.java</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Deleted" />
-          <option name="myStatusName" value="Deleted" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="true" />
-          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Restored" />
-          <option name="myStatusName" value="Will be restored" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="RESTORED" />
-        </FILE-GROUP>
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Modified" />
-        <option name="myStatusName" value="Modified" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MODIFIED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Skipped" />
-        <option name="myStatusName" value="Skipped" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SKIPPED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with conflicts" />
-        <option name="myStatusName" value="Will be merged with conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_CONFLICTS" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with tree conflicts" />
-        <option name="myStatusName" value="Merged with tree conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with property conflicts" />
-        <option name="myStatusName" value="Will be merged with property conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged" />
-        <option name="myStatusName" value="Will be merged" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Not in repository" />
-        <option name="myStatusName" value="Not in repository" />
-        <option name="mySupportsDeletion" value="true" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="UNKNOWN" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally added" />
-        <option name="myStatusName" value="Locally added" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_ADDED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally removed" />
-        <option name="myStatusName" value="Locally removed" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_REMOVED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Switched" />
-        <option name="myStatusName" value="Switched" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SWITCHED" />
-      </FILE-GROUP>
-    </UpdatedFiles>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -267,10 +134,6 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration name="Desktop" type="Application" factoryName="Application">
-      <module name="PaletteHeHe" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/SourceFiles/core/assets" />
-    </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     </configuration>
@@ -318,32 +181,30 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="c082a885-8d32-41d4-82e7-c7bcacb3ab66" name="Default" comment="" />
-      <created>1527790098450</created>
+      <changelist id="f5e78c4f-8289-496c-9182-9f511561baed" name="Default" comment="" />
+      <created>1527989126366</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1527790098450</updated>
+      <updated>1527989126366</updated>
     </task>
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-6" y="-6" width="1293" height="693" extended-state="6" />
+    <frame x="0" y="22" width="1680" height="1024" extended-state="0" />
     <layout>
       <window_info anchor="right" id="Palette" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Messages" />
       <window_info anchor="right" id="Palette&#9;" />
       <window_info id="Image Layers" />
       <window_info anchor="right" id="Capture Analysis" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="right" id="Maven Projects" />
-      <window_info active="true" anchor="bottom" id="Version Control" visible="true" weight="0.3298969" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.3298969" />
+      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Terminal" />
       <window_info id="Capture Tool" />
       <window_info id="Designer" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24980484" />
-      <window_info id="Learn" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24969475" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" />
@@ -362,93 +223,18 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/SourceFiles/desktop/build.gradle">
+    <entry file="file://$PROJECT_DIR$/SourceFiles/desktop/src/com/fourmen/apcs/desktop/DesktopLauncher.java">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/SourceFiles/desktop/src/com/fourmen/apcs/desktop/DesktopLauncher.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="11" column="30" selection-start-line="11" selection-start-column="30" selection-end-line="11" selection-end-column="30" />
-        </state>
-      </provider>
+    <entry file="file://$PROJECT_DIR$/SourceFiles/core/src/com/fourmen/Actors/Enemy.java">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
   </component>
   <component name="masterDetails">
     <states>
-      <state key="ArtifactsStructureConfigurable.UI">
-        <settings>
-          <artifact-editor />
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="FacetStructureConfigurable.UI">
-        <settings>
-          <last-edited>No facets are configured</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="GlobalLibrariesConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="JdkListConfigurable.UI">
-        <settings>
-          <last-edited>9</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ModuleStructureConfigurable.UI">
-        <settings>
-          <last-edited>PaletteHeHe</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-                <option value="0.6" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
       <state key="ProjectJDKs.UI">
         <settings>
-          <last-edited>9</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectLibrariesConfigurable.UI">
-        <settings>
+          <last-edited>1.8</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

@@ -35,7 +35,7 @@ public class Box2DPlayer extends Entity{
     private final static float DASH_SPEED = 1000;
     private final static float ACCELERATION_CONSTANT = .8f;
     private final static float DECELERATION_CONSTANT = .2f;
-    private final static float DASH_COOLDOWN = 0f;
+    private final static float DASH_COOLDOWN = 1.2f;
     private final static float DASH_DURATION = .25f;
     private final static float ATTACK_COOLDOWN = 0f;
     private final static float ATTACK_DURATION = .72f;
@@ -91,7 +91,7 @@ public class Box2DPlayer extends Entity{
 
     //constructors
     public Box2DPlayer(World world, PlayerBounds myPlayerBounds) {
-        super(100, myPlayerBounds, PLAYER_WIDTH, PLAYER_HEIGHT);
+        super(100, myPlayerBounds, PLAYER_WIDTH, PLAYER_HEIGHT, new Vector2(400, 400));
         myWorld = world;
 
         lastDirectionfaced = LEFT;
@@ -326,8 +326,8 @@ public class Box2DPlayer extends Entity{
                 break;
         }
         blockLeavingTheWorld();
-        moveBeams();
         removeBeams();
+        moveBeams();
         updateHealth();
         updatePosition();
     }
@@ -470,6 +470,7 @@ public class Box2DPlayer extends Entity{
     private void removeBeams() {
         for (int n = 0; n < beams.size(); n++) {
             if (beams.get(n).checkRemoveFromWorld()) {
+                myWorld.destroyBody(beams.get(n).body);
                 beams.remove(n);
                 n--;
             }

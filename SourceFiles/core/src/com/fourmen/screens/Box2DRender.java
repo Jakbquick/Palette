@@ -27,10 +27,7 @@ import com.fourmen.box2D.Beam;
 import com.fourmen.box2D.Walls;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.fourmen.tween.SpriteAccessor;
-import com.fourmen.utils.Animator;
-import com.fourmen.utils.BodyEditorLoader;
-import com.fourmen.utils.CameraStyles;
-import com.fourmen.utils.RhythmView;
+import com.fourmen.utils.*;
 
 
 public class Box2DRender extends ScreenAdapter {
@@ -72,6 +69,7 @@ public class Box2DRender extends ScreenAdapter {
     private float tempTimer = 0;
     private Vector2 circlePosition = new Vector2(1400,900);
     private Animation<TextureRegion> redCircle;
+    private PlayerHealth playerHealth;
 
     public Box2DRender(int width, int height){
         WORLD_WIDTH = width;
@@ -94,33 +92,22 @@ public class Box2DRender extends ScreenAdapter {
                 Fixture fixtureB = contact.getFixtureB();
                 //Gdx.app.log("beginContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
 
-                for(Beam beam : player.getBeams()) {
+                if (steppedOn) {
+                    for (Beam beam : player.getBeams()) {
 
-                    if ((fixtureA.getBody().equals(beam.body) && fixtureB.getBody().equals(enemy.getPlayerBody()))
-                            || (fixtureB.getBody().equals(beam.body) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
-                        enemy.updateCollisions(1);
+                        if ((fixtureA.getBody().equals(beam.body) && fixtureB.getBody().equals(enemy.getPlayerBody()))
+                                || (fixtureB.getBody().equals(beam.body) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
+                            enemy.updateCollisions(1);
 
-                        enemy.updateDamage(beam.getHitValue());
-                        System.out.println(beam.getHitValue());
-
-                        /*
-                        if (fixtureA.getBody().equals(beam.body)) {
-                            Beam colBeam = (Beam) fixtureA.getBody().getUserData();
-                            enemy.damage += colBeam.getHitValue();
-                            System.out.println(colBeam.getHitValue());
+                            enemy.updateDamage(beam.getHitValue());
                         }
-                        if (fixtureB.getBody().equals(beam.body)) {
-                            Beam colBeam = (Beam) fixtureB.getBody().getUserData();
-                            enemy.damage += colBeam.getHitValue();
-                            System.out.println(colBeam.getHitValue());
-                        }
-                        */
                     }
-                }
 
-                if ((fixtureA.getBody().equals(player.getPlayerBody()) && fixtureB.getBody().equals(enemy.getPlayerBody()))
-                        || (fixtureB.getBody().equals(player.getPlayerBody()) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
-                    player.updateCollisions(1);
+
+                    if ((fixtureA.getBody().equals(player.getPlayerBody()) && fixtureB.getBody().equals(enemy.getPlayerBody()))
+                            || (fixtureB.getBody().equals(player.getPlayerBody()) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
+                        player.updateCollisions(1);
+                    }
                 }
             }
 
@@ -130,31 +117,24 @@ public class Box2DRender extends ScreenAdapter {
                 Fixture fixtureB = contact.getFixtureB();
                 //Gdx.app.log("endContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
 
-                for(Beam beam : player.getBeams()) {
+                if (steppedOn) {
+                    for (Beam beam : player.getBeams()) {
 
-                    if ((fixtureA.getBody().equals(beam.body) && fixtureB.getBody().equals(enemy.getPlayerBody()))
-                            || (fixtureB.getBody().equals(beam.body) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
-                        enemy.updateCollisions(-1);
+                        if ((fixtureA.getBody().equals(beam.body) && fixtureB.getBody().equals(enemy.getPlayerBody()))
+                                || (fixtureB.getBody().equals(beam.body) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
+                            enemy.updateCollisions(-1);
 
-                        enemy.updateDamage(-beam.getHitValue());
-                        System.out.println(-beam.getHitValue());
+                            enemy.updateDamage(-beam.getHitValue());
 
-                        /*
-                        if (fixtureA.getBody().equals(beam.body)) {
-                            Beam colBeam = (Beam) fixtureA.getBody().getUserData();
-                            enemy.damage -= colBeam.getHitValue();
+                            beam.setHitEnemy(true);
                         }
-                        if (fixtureB.getBody().equals(beam.body)) {
-                            Beam colBeam = (Beam) fixtureB.getBody().getUserData();
-                            enemy.damage -= colBeam.getHitValue();
-                        }
-                        */
                     }
-                }
 
-                if ((fixtureA.getBody().equals(player.getPlayerBody()) && fixtureB.getBody().equals(enemy.getPlayerBody()))
-                        || (fixtureB.getBody().equals(player.getPlayerBody()) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
-                    player.updateCollisions(-1);
+
+                    if ((fixtureA.getBody().equals(player.getPlayerBody()) && fixtureB.getBody().equals(enemy.getPlayerBody()))
+                            || (fixtureB.getBody().equals(player.getPlayerBody()) && fixtureA.getBody().equals(enemy.getPlayerBody()))) {
+                        player.updateCollisions(-1);
+                    }
                 }
             }
 
@@ -171,7 +151,8 @@ public class Box2DRender extends ScreenAdapter {
         world.setContactListener(contactListener);
         debugRenderer = new Box2DDebugRenderer();
         player = new Box2DPlayer(world, playerBounds);
-        enemy = new Box2DEnemy(world, playerBounds, player);
+        enemy = null;
+        //enemy = new Box2DEnemy(world, playerBounds, player);
         walls = new Walls(world,0,0, scale);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(player.getX(), player.getY(), 0);
@@ -187,17 +168,29 @@ public class Box2DRender extends ScreenAdapter {
         timeSinceStart = 0;
 
         rhythmView = new RhythmView(batch);
+        playerHealth = new PlayerHealth(batch,player.health);
     }
 
 
     public void render(float delta) {
+        if(player.getHealth() <= 0 || (rhythmView.getSongLength() + 1 < rhythmView.getSongPosition())){
+
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
+            player.subractHealth(30);
+            System.out.println(player.getHealth());
+        }
         if(player.getPosition().dst(circlePosition) < 300){
+            if (!steppedOn) {
+                enemy = new Box2DEnemy(world, playerBounds, player);
+            }
             steppedOn = true;
             rhythmView.startMusic();
             caveMusic.stop();
         }
         tweenManager.update(delta);
         rhythmView.update(delta);
+        playerHealth.update(player.health,delta);
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         cameraUpdate();
         uiCamera.update();
@@ -207,7 +200,9 @@ public class Box2DRender extends ScreenAdapter {
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         player.setHitValue(rhythmView.getScore());
         player.act();
-        enemy.act();
+        if (steppedOn) {
+            enemy.act();
+        }
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
 
@@ -228,7 +223,9 @@ public class Box2DRender extends ScreenAdapter {
                 batch.draw(redRegion,1100,600,600,600);
             }
             player.draw(batch);
-            enemy.draw(batch);
+            if (steppedOn) {
+                enemy.draw(batch);
+            }
         }
         blackSprite.draw(batch);
         batch.end();
@@ -240,6 +237,7 @@ public class Box2DRender extends ScreenAdapter {
         batch.setTransformMatrix(uiCamera.view);
         batch.begin();
         rhythmView.draw();
+        playerHealth.draw();
         batch.end();
     }
     private void debugView() {
@@ -266,7 +264,9 @@ public class Box2DRender extends ScreenAdapter {
                 BOUND_HEIGHT - (2 * startY));
         walls.updateAnimations(delta);
         player.update(delta);
-        enemy.update(delta);
+        if (steppedOn) {
+            enemy.update(delta);
+        }
 
     }
 
@@ -281,6 +281,7 @@ public class Box2DRender extends ScreenAdapter {
         walls.dispose();
         world.destroyBody(walls.getBody());
         player.dispose();
+        playerHealth.dispose();
     }
 
     private void cameraUpdate() {

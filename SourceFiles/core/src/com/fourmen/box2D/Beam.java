@@ -20,11 +20,16 @@ public class Beam {
 
     private int hitValue;
 
+    private boolean hitEnemy;
+    private boolean ending;
+
     private float durationTimer = 0;
     private float stateTime = 0;
 
     private Animation<TextureRegion> beamShot;
     private Animation<TextureRegion> rainbowBeamShot;
+    private Animation<TextureRegion> beamShotEnd;
+    private Animation<TextureRegion> rainbowBeamShotEnd;
     private TextureRegion currentFrame;
 
     public Body body;
@@ -37,20 +42,23 @@ public class Beam {
 
         this.hitValue = hitValue;
 
-        beamShot = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/beamsheet.png", 1, 2));
+        hitEnemy = false;
+
+        beamShot = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/beamsheet.png", 1, 3));
         rainbowBeamShot = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/rainbowbeamsheet.png", 1, 3));
+        beamShotEnd = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/beamendsheet.png", 1, 5));
+        rainbowBeamShotEnd = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/rainbowendsheet.png", 1, 5));
         currentFrame = beamShot.getKeyFrame(stateTime);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(new Vector2(position));
         bodyDef.fixedRotation = true;
-        bodyDef.bullet = true;
 
         body = world.createBody(bodyDef);
 
         PolygonShape hitbox = new PolygonShape();
-        hitbox.setAsBox(200 * size * .5f, 200 * size * .5f);
+        hitbox.setAsBox(100 * size * .5f, 200 * size * .5f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = hitbox;
@@ -71,10 +79,20 @@ public class Beam {
 
     public void draw(Batch batch) {
         if (hitValue == 2) {
-            currentFrame = rainbowBeamShot.getKeyFrame(stateTime);
+            if (hitEnemy || durationTimer >= BEAM_DURATION) {
+                currentFrame = rainbowBeamShotEnd.getKeyFrame(stateTime);
+            }
+            else {
+                currentFrame = rainbowBeamShot.getKeyFrame(stateTime);
+            }
         }
         else {
-            currentFrame = beamShot.getKeyFrame(stateTime);
+            if (hitEnemy || durationTimer >= BEAM_DURATION) {
+                currentFrame = beamShotEnd.getKeyFrame(stateTime);
+            }
+            else {
+                currentFrame = beamShot.getKeyFrame(stateTime);
+            }
         }
 
 
@@ -84,6 +102,7 @@ public class Beam {
     }
 
     public void update(float delta) {
+        System.out.println(durationTimer);
         durationTimer += delta;
         stateTime += delta;
     }
@@ -99,6 +118,10 @@ public class Beam {
 
     public void setHitValue(int value) {
         hitValue = value;
+    }
+
+    public void setHitEnemy(boolean hitEnemy) {
+        this.hitEnemy = hitEnemy;
     }
 
     public int getHitValue() {

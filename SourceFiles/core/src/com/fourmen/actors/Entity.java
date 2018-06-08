@@ -19,9 +19,9 @@ public abstract class Entity extends Actor {
     private PlayerBounds playerBounds;
 
     //constructors
-    public Entity(int hp, PlayerBounds myPlayerBounds, float myWidth, float myHeight) {
+    public Entity(int hp, PlayerBounds myPlayerBounds, float myWidth, float myHeight, Vector2 position) {
         health = hp;
-        position = new Vector2(400, 400);
+        this.position = new Vector2(position);
         playerBounds = myPlayerBounds;
         width = myWidth;
         height = myHeight;
@@ -65,7 +65,9 @@ public abstract class Entity extends Actor {
     public Vector2 getPosition(){
         return position;
     }
-
+    public void subractHealth(int value){
+        health -= value;
+    }
     protected void updateHealth() {
         if (fixtureCollisions > 0 && !invincible && invTimer <= 0) {
             health -= 10;
