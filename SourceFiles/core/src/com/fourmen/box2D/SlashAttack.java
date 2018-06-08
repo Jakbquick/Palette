@@ -74,17 +74,17 @@ public class SlashAttack {
         direction.x = 0;
         direction.y = 0;
 
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
             direction.x -= 1;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
             direction.x += 1;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             //direction.y = 0;
             //direction.y += 1;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
             //direction.y = 0;
             //direction.y -= 1;
         }
@@ -98,7 +98,7 @@ public class SlashAttack {
 
     public boolean checkAttack() {
         updateAttackDirection();
-        if(!direction.isZero() && Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY) && hitValue > -1) {
+        if(!direction.isZero() && hitValue > -1) {
             stateTime = 0;
             return true;
         }
