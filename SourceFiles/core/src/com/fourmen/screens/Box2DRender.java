@@ -78,7 +78,7 @@ public class Box2DRender extends ScreenAdapter {
     }
 
     public void show() {
-        redCircle = new Animation<TextureRegion>(.03f, Animator.setUpSpriteSheet("Images/summoncircle2.png",
+        redCircle = new Animation<TextureRegion>(.03f, Animator.setUpSpriteSheet("Images/summoncircle.png",
                 1,60));
 
         setUpTween();
