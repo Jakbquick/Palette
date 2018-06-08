@@ -29,7 +29,7 @@ public class Splash implements Screen {
 
     @Override
     public void show() {
-        splashTexture = new Texture("images/Logo.jpg");
+        splashTexture = new Texture("Images/Logo.jpg");
         splash = new Sprite(splashTexture);
 
         music = Gdx.audio.newMusic(Gdx.files.internal("Music/LaurenPiano.mp3"));
