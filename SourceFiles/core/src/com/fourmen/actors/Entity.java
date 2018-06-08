@@ -69,6 +69,7 @@ public abstract class Entity extends Actor {
     public void subractHealth(int value){
         health -= value;
     }
+
     protected void updateHealth() {
         if (fixtureCollisions > 0 && !invincible && invTimer <= 0) {
             health -= 10;
