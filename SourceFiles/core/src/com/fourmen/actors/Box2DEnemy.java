@@ -12,8 +12,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.fourmen.utils.Animator;
 
-import javax.swing.*;
-
 
 public class Box2DEnemy extends Entity {
     //constants
@@ -23,13 +21,11 @@ public class Box2DEnemy extends Entity {
     private final static float ENEMY_HEIGHT = 30 * ENEMY_SIZE;
     private static final float ACCELERATION_CONSTANT = 1f;
     private static final float DECELERATION_CONSTANT = 1f;
-    private final int MAX_SPEED = 500;               // the max speed a player can move
-    private final float DASH_SPEED = 500;
+    private final int MAX_SPEED = 600;               // the max speed a player can move
+    private final float DASH_SPEED = 800;
     private final float CHARGE_SPEED = 2000;
     private final static float DASH_COOLDOWN = .6f;
-    private final static float DASH_DURATION = .2f;
-    private final static float CHARGE_COOLDOWN = .6f;
-    private final static float CHARGE_DURATION = 1f;
+    private final static float DASH_DURATION = .1f;
     private enum PlayerState {
         MOVING, DASHING, CHARGING, ENDCHARGE;
     }
@@ -48,11 +44,7 @@ public class Box2DEnemy extends Entity {
 
     private double dashDurationTimer = 0;
     private double dashCooldownTimer = 0;
-    private double chargeDurationTimer = 0;
-    private double chargeCooldownTimer = 0;
     private float stateTime = 0;
-
-    private int damage;
 
     public TextureRegion currentFrame;
     private Animation<TextureRegion> moving;
@@ -69,8 +61,8 @@ public class Box2DEnemy extends Entity {
     private boolean towardsPlayer;
 
     //constructors
-    public Box2DEnemy(World world, PlayerBounds myPlayerBounds, Box2DPlayer myPlayer) {
-        super(1000, myPlayerBounds, ENEMY_WIDTH, ENEMY_HEIGHT);
+    public Box2DEnemy(World world, Box2DPlayer myPlayer) {
+        super();
         lastDirectionfaced = LEFT;
         direction = new Vector2(0, 0);
         dashDirection = new Vector2(0, 0);
@@ -83,11 +75,9 @@ public class Box2DEnemy extends Entity {
         enemyState = enemyState.MOVING;
         player = myPlayer;
 
-        damage = 0;
-
-        moving = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/TempBoss.png", 1, 5));
-        dash = new Animation<TextureRegion>(0.08f, Animator.setUpSpriteSheet("Images/TempBoss.png", 1, 5));
-        charge = new Animation<TextureRegion>(0.08f, Animator.setUpSpriteSheet("Images/TempBoss.png", 1, 5));
+        moving = new Animation<TextureRegion>(0.06f, Animator.setUpSpriteSheet("Images/EnemyMove.png", 1, 18));
+        dash = new Animation<TextureRegion>(0.05f, Animator.setUpSpriteSheet("Images/EnemyMove.png", 1, 18));
+        charge = new Animation<TextureRegion>(0.05f, Animator.setUpSpriteSheet("Images/EnemyAttack.png", 1, 7));
         currentFrame = moving.getKeyFrame(stateTime, true);
 
         BodyDef bodyDef = new BodyDef();
@@ -106,130 +96,69 @@ public class Box2DEnemy extends Entity {
         body.createFixture(fixtureDef);
 
         bodySquare.dispose();
-
-        body.setUserData(this);
     }
 
     //methods
     public void act() {
-        int dirChance = MathUtils.random(10);
-        //if(dirChance == 1) {
-        //updateDirection();
-        //System.out.println(dashDirection);
-        System.out.println("Enemy Health: " + health + " " + damage + " " + fixtureCollisions);
+        updateDirection();
         switch (enemyState) {
             case MOVING:
                 currentFrame = getFrame(moving);
-                //move();
+                move();
                 if (dashCooldownTimer <= 0)
                     checkDash();
                 checkCharge();
+
                 break;
             case DASHING:
                 currentFrame = getFrame(dash);
-                //dash();
+                dash();
                 if (dashDurationTimer <= 0) {
                     enemyState = enemyState.MOVING;
                 }
                 break;
-                /*
-            case ENDCHARGE:
-                currentFrame = getFrame(dash);
-                dash();
-                if (dashDurationTimer <= -0.3) {
-                    enemyState = enemyState.MOVING;
-                }
-                break;
-                */
             case CHARGING:
                 currentFrame = getFrame(charge);
-                dash();
-                if(chargeDurationTimer <= 0) {
+                charge();
+                if (position.equals(player.position) || dashDurationTimer <= -0.1) {
                     enemyState = enemyState.MOVING;
                 }
         }
-        //}
-        /*
-        else{
-            if(direction.x >= 0)
-                direction.x++;
-            else if(direction.x < 0)
-                direction.x--;
-            if(direction.y >= 0)
-                direction.y++;
-            else if(direction.y < 0)
-                direction.y--;
-            //move();
-        }
-        */
-        blockLeavingTheWorld();
-        updateHealth();
         updatePosition();
-    }
-
-    private void dirTowardsPlayer() {
-        Vector2 playerDir = new Vector2(player.getX(), player.getY());
-        direction = playerDir.sub(direction);
     }
 
     private void updateDirection() {
         direction.x = 0;
         direction.y = 0;
-        if(distanceBetween(player, getX(), getY()) > 700) {
-            if (player.getX() > getX()) {
-                direction.x += 1;
-                lastDirectionfaced = RIGHT;
-            }
-            else if (player.getX() < getX()) {
-                direction.x -= 1;
-                lastDirectionfaced = LEFT;
-            }
-            if (player.getY() > getY())
-                direction.y += 1;
-            else if (player.getY() < getY())
-                direction.y -= 1;
 
-            towardsPlayer = true;
+        int randomFactor = MathUtils.random(2);
+        if(randomFactor == 0) {
+            if (distanceBetween(player, getX(), getY()) > 1000)
+                generateDirection();
+            else generateNegDirection();
         }
-        else if(distanceBetween(player, getX(), getY()) < 300) {
-            if (player.getX() > getX()) {
-                direction.x -= 1;
-                lastDirectionfaced = RIGHT;
+        else if(randomFactor == 1) {
+            if (distanceBetween(player, getX(), getY()) > 400)
+                generateDirection();
+            else generateNegDirection();
+        }
+        else if(randomFactor == 2) {
+            if (distanceBetween(player, getX(), getY()) > 200)
+                generateDirection();
+            else generateNegDirection();
+        }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.H)) {
+                position.set(0, 0);
             }
-            else if (player.getX() < getX()) {
-                direction.x += 1;
-                lastDirectionfaced = LEFT;
-            }
-            if (player.getY() > getY())
-                direction.y -= 1;
-            else if (player.getY() < getY())
-                direction.y += 1;
+            direction.nor();
 
-            towardsPlayer = false;
+            targetSpeed.x = (int) (direction.x * MAX_SPEED);
+            targetSpeed.y = (int) (direction.y * MAX_SPEED);
+
         }
-        else {
-            direction.setToRandomDirection();
-            if(direction.x >= 0)
-                direction.x++;
-            else if(direction.x < 0)
-                direction.x--;
-            if(direction.y >= 0)
-                direction.y++;
-            else if(direction.y < 0)
-                direction.y--;
-            towardsPlayer = false;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.H)) {
-            position.set(0,0);
-        }
-        direction.nor();
 
-        targetSpeed.x = (int) (direction.x * MAX_SPEED);
-        targetSpeed.y = (int) (direction.y * MAX_SPEED);
-
-    }
-
-    private void move() {
+    private void move(){
         Vector2 curDir = new Vector2(Math.signum(targetSpeed.x - currentSpeed.x), Math.signum(targetSpeed.y - currentSpeed.y));
 
         if(targetSpeed.x == 0) {                                            // checks want to be stopped on the x axis
@@ -261,9 +190,7 @@ public class Box2DEnemy extends Entity {
 
         int dashChance  = MathUtils.random(4);
 
-        if(dashChance == 3) {
-
-            chargePos = new Vector2(player.position);
+        if(dashChance == 0) {
             enemyState = enemyState.DASHING;
             dashDirection.x = direction.x;
             dashDirection.y = direction.y;
@@ -276,18 +203,17 @@ public class Box2DEnemy extends Entity {
 
     private void checkCharge() {
 
-        int chargeChance  = MathUtils.random(0);
+        int chargeChance  = MathUtils.random(50);
 
-        if(chargeChance == 0) {
+        if(chargeChance == 0 && distanceBetween(player, getX(), getY()) <= 600 && distanceBetween(player, getX(), getY()) >= 400) {
             enemyState = enemyState.CHARGING;
-            dashDirection.x = player.position.x - position.x;
-            dashDirection.y = player.position.y - position.y;
-
-            dashDirection.nor();
+            generateChargeDirection();
+            dashDirection.x = direction.x;
+            dashDirection.y = direction.y;
 
             currentSpeed = new Vector2(0,0);
-            chargeDurationTimer = CHARGE_DURATION;
-            chargeCooldownTimer = CHARGE_COOLDOWN;
+            dashDurationTimer = DASH_DURATION;
+            dashCooldownTimer = DASH_COOLDOWN;
         }
     }
 
@@ -300,19 +226,198 @@ public class Box2DEnemy extends Entity {
     }
 
     private void charge() {
-        prevX = getX();
-        prevY = getY();
-        double disBetween = distanceBetween(player, getX(), getY());
-        setPosition(player.getX(), player.getY());
+        currentSpeed.x = CHARGE_SPEED * dashDirection.x;
+        currentSpeed.y = CHARGE_SPEED * dashDirection.y;
+
+        setX(getX() + currentSpeed.x * Gdx.graphics.getDeltaTime());
+        setY(getY() + currentSpeed.y * Gdx.graphics.getDeltaTime());
     }
 
-    public void lookAt(Vector2 target) {
+    public void generateChargeDirection() {
+        direction.x = 0;
+        direction.y = 0;
 
-        float angle = (float) Math.atan2(target.y - this.position.y, target.x
-                - this.position.x);
-        angle = (float) (angle * (180 / Math.PI));
+        if(getX() >= player.getX())
+            direction.x--;
+        else direction.x++;
 
-        direction.setAngle(angle);
+        if(getY() >= player.getY())
+            direction.y--;
+        else direction.y++;
+    }
+
+    public void generateDirection() {
+        int dirVal = MathUtils.random(2);
+        // 1 if boss is at (-1,1) relative to player
+        if (getX() < player.getX() && getY() > player.getY()) {
+            if (dirVal == 0) {
+                direction.x++;
+            } else if(dirVal == 1) {
+                direction.x++;
+                direction.y--;
+            } else if (dirVal == 2)
+                direction.y--;
+        }
+        // 2 if boss is at (0,1) relative to player
+        else if (getX() == player.getX() && getY() > player.getY()) {
+            if (dirVal == 0) {
+                direction.x++;
+                direction.y--;
+            } else if (dirVal == 1) {
+                direction.y--;
+            } else if (dirVal == 2) {
+                direction.x--;
+                direction.y--;
+            }
+        }
+        // 3 if boss is at (1,1) relative to player
+        else if (getX() > player.getX() && getY() > player.getY()) {
+            if (dirVal == 0) {
+                direction.y--;
+            } else if(dirVal == 1) {
+                direction.x--;
+                direction.y--;
+            } else if (dirVal == 2) {
+                direction.x--;
+            }
+        }
+        // 4 if boss is at (1,0) relative to player
+        else if (getX() > player.getX() && getY() == player.getY()) {
+            if (dirVal == 0) {
+                direction.x--;
+                direction.y--;
+            } else if(dirVal == 1) {
+                direction.x--;
+            } else if (dirVal == 2) {
+                direction.x--;
+                direction.y++;
+            }
+        }
+        // 5 if boss is at (1,-1) relative to player
+        else if (getX() > player.getX() && getY() < player.getY()) {
+            if (dirVal == 0) {
+                direction.x--;
+            } else if (dirVal == 1) {
+                direction.x--;
+                direction.y++;
+            } else if (dirVal == 2) {
+                direction.y++;
+            }
+        }
+        // 6 if boss is at (0,-1) relative to player
+        else if (getX() == player.getX() && getY() < player.getY()) {
+            if (dirVal == 0) {
+                direction.x--;
+                direction.y++;
+            } else if (dirVal == 1) {
+                direction.y++;
+            } else if (dirVal == 2) {
+                direction.x++;
+                direction.y++;
+            }
+        }
+        // 7 if boss is at (-1,-1) relative to player
+        else if (getX() < player.getX() && getY() < player.getY()) {
+            if (dirVal == 0) {
+                direction.y++;
+            } else if (dirVal == 1) {
+                direction.x++;
+                direction.y++;
+            } else if (dirVal == 2) {
+                direction.x++;
+            }
+        }
+        // 8 if boss is at (-1,0) relative to player
+        else if (getX() < player.getX() && getY() == player.getY()) {
+            if (dirVal == 0) {
+                direction.x++;
+                direction.y++;
+            } else if (dirVal == 1) {
+                direction.x++;
+            } else if (dirVal == 2) {
+                direction.x++;
+                direction.y--;
+            }
+        }
+
+        towardsPlayer = true;
+    }
+
+    public void generateNegDirection() {
+        int dirVal = MathUtils.random(1);
+        // 1 if boss is at (-1,1) relative to player
+        if (getX() < player.getX() && getY() > player.getY()) {
+            if (dirVal == 0)
+                direction.x--;
+            else if (dirVal == 1)
+                direction.y++;
+        }
+        // 2 if boss is at (0,1) relative to player
+        else if (getX() == player.getX() && getY() > player.getY()) {
+            if (dirVal == 0) {
+                direction.x--;
+                direction.y++;
+            } else if (dirVal == 1) {
+                direction.x++;
+                direction.y++;
+            }
+        }
+        // 3 if boss is at (1,1) relative to player
+        else if (getX() > player.getX() && getY() > player.getY()) {
+            if (dirVal == 0) {
+                direction.y++;
+            } else if (dirVal == 1) {
+                direction.x++;
+            }
+        }
+        // 4 if boss is at (1,0) relative to player
+        else if (getX() > player.getX() && getY() == player.getY()) {
+            if (dirVal == 0) {
+                direction.x++;
+                direction.y++;
+            } else if (dirVal == 1) {
+                direction.x++;
+                direction.y--;
+            }
+        }
+        // 5 if boss is at (1,-1) relative to player
+        else if (getX() > player.getX() && getY() < player.getY()) {
+            if (dirVal == 0) {
+                direction.x++;
+            } else if (dirVal == 1) {
+                direction.y--;
+            }
+        }
+        // 6 if boss is at (0,-1) relative to player
+        else if (getX() == player.getX() && getY() < player.getY()) {
+            if (dirVal == 0) {
+                direction.x++;
+                direction.y--;
+            } else if (dirVal == 1) {
+                direction.x--;
+                direction.y--;
+            }
+        }
+        // 7 if boss is at (-1,-1) relative to player
+        else if (getX() < player.getX() && getY() < player.getY()) {
+            if (dirVal == 0) {
+                direction.y--;
+            } else if (dirVal == 1) {
+                direction.x--;
+            }
+        }
+        // 8 if boss is at (-1,0) relative to player
+        else if (getX() < player.getX() && getY() == player.getY()) {
+            if (dirVal == 0) {
+                direction.x--;
+                direction.y--;
+            } else if (dirVal == 1) {
+                direction.x--;
+                direction.y++;
+            }
+        }
+
+        towardsPlayer = false;
     }
 
     private double distanceBetween(Box2DPlayer player1, float xVal, float yVal){
@@ -333,17 +438,6 @@ public class Box2DEnemy extends Entity {
         return frame.getKeyFrame(stateTime, true);
     }
 
-    protected void updateHealth() {
-        if (fixtureCollisions > 0 && !invincible && invTimer <= 0) {
-            health -= 10 * damage;
-            invTimer = INV_COOLDOWN;
-        }
-    }
-
-    public void updateDamage(int hitValue) {
-        damage += hitValue;
-    }
-
     public float getEnemyWidth(){
         return ENEMY_WIDTH;
     }
@@ -360,16 +454,10 @@ public class Box2DEnemy extends Entity {
         body.setTransform(position, 0);
     }
 
-    public void update(float delta) {
-        super.update(delta);
+    public void updateTimers(float delta) {
         dashDurationTimer -= delta;
         dashCooldownTimer -= delta;
-        chargeDurationTimer -= delta;
-        chargeCooldownTimer -= delta;
         stateTime += delta;
-    }
-
-    public void dispose() {
-
+        //slash.update(delta);
     }
 }
