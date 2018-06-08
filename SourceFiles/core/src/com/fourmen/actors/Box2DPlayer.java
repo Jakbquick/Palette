@@ -326,6 +326,7 @@ public class Box2DPlayer extends Entity{
                 break;
         }
         blockLeavingTheWorld();
+
         removeBeams();
         moveBeams();
         updateHealth();
@@ -454,6 +455,7 @@ public class Box2DPlayer extends Entity{
         slash.update(delta);
         for (Beam beam : beams) {
             beam.update(delta);
+            beam.updateEnding();
         }
     }
 

@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public abstract class Entity extends Actor {
     //instance variables
-    protected final static float INV_COOLDOWN = .05f;
+    protected final static float INV_COOLDOWN = .5f;
 
     public int health;
     public Vector2 position;
@@ -65,12 +65,13 @@ public abstract class Entity extends Actor {
     public Vector2 getPosition(){
         return position;
     }
+
     public void subractHealth(int value){
         health -= value;
     }
     protected void updateHealth() {
         if (fixtureCollisions > 0 && !invincible && invTimer <= 0) {
-            health -= 10;
+            health -= 5;
             invTimer = INV_COOLDOWN;
         }
     }

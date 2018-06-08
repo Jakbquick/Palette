@@ -22,6 +22,7 @@ public class Beam {
 
     private boolean hitEnemy;
     private boolean ending;
+    private boolean delete;
 
     private float durationTimer = 0;
     private float stateTime = 0;
@@ -43,6 +44,8 @@ public class Beam {
         this.hitValue = hitValue;
 
         hitEnemy = false;
+        ending = false;
+        delete = false;
 
         beamShot = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/beamsheet.png", 1, 3));
         rainbowBeamShot = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/rainbowbeamsheet.png", 1, 3));
@@ -58,7 +61,7 @@ public class Beam {
         body = world.createBody(bodyDef);
 
         PolygonShape hitbox = new PolygonShape();
-        hitbox.setAsBox(100 * size * .5f, 200 * size * .5f);
+        hitbox.setAsBox(150 * size * .5f, 200 * size * .5f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = hitbox;
@@ -79,16 +82,22 @@ public class Beam {
 
     public void draw(Batch batch) {
         if (hitValue == 2) {
-            if (hitEnemy || durationTimer >= BEAM_DURATION) {
+            if (ending) {
                 currentFrame = rainbowBeamShotEnd.getKeyFrame(stateTime);
+                if (rainbowBeamShotEnd.getKeyFrameIndex(stateTime) == 4) {
+                    delete = true;
+                }
             }
             else {
                 currentFrame = rainbowBeamShot.getKeyFrame(stateTime);
             }
         }
         else {
-            if (hitEnemy || durationTimer >= BEAM_DURATION) {
+            if (ending) {
                 currentFrame = beamShotEnd.getKeyFrame(stateTime);
+                if (beamShotEnd.getKeyFrameIndex(stateTime) == 4) {
+                    delete = true;
+                }
             }
             else {
                 currentFrame = beamShot.getKeyFrame(stateTime);
@@ -102,18 +111,20 @@ public class Beam {
     }
 
     public void update(float delta) {
-        System.out.println(durationTimer);
         durationTimer += delta;
         stateTime += delta;
     }
 
+    public void updateEnding(){
+        if ((hitEnemy || durationTimer >= BEAM_DURATION) && !ending) {
+            ending = true;
+            stateTime = 0;
+        }
+    }
+
     public boolean checkRemoveFromWorld() {
-        if (durationTimer >= BEAM_DURATION) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        System.out.println(delete);
+        return delete;
     }
 
     public void setHitValue(int value) {
