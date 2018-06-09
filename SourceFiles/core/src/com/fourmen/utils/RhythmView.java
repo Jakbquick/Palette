@@ -111,6 +111,9 @@ public class RhythmView {
                         score = 2;
                     }
                 }
+                else{
+                    score = -1;
+                }
             }
         }
         if(i < mapValues.length && beatJams.getPosition() >= mapValues[i] + timeBeforeSpawn){

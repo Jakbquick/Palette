@@ -1,5 +1,6 @@
 package com.fourmen.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -30,7 +31,7 @@ public class AnimatedImage extends Image
 
     public void draw (Batch batch, float parentAlpha){
         current = animation.getKeyFrame(stateTime, true);
-        batch.draw(current, 0,0,width,height);
+        batch.draw(current, 0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
     }
     public void setAnimation(Animation<TextureRegion> setAnim){
         animation = setAnim;
