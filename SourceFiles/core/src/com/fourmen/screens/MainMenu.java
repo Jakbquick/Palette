@@ -115,7 +115,7 @@ public class MainMenu implements Screen {
 
         ImageButton playbutt = new ImageButton(skin);
 
-        playbutt.setPosition(Gdx.graphics.getWidth()*.186666666f, Gdx.graphics.getHeight() * .166666666f);
+        playbutt.setPosition(Gdx.graphics.getWidth()*.186666666f, Gdx.graphics.getHeight() * .3f);
 
 
 
