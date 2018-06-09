@@ -1,5 +1,6 @@
 package com.fourmen.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -14,6 +15,6 @@ public class ResizableImage  extends Image {
         this.height = height;
     }
     public void draw (Batch batch, float parentAlpha){
-        batch.draw(texture, 0,0,width,height);
+        batch.draw(texture, 0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
     }
 }

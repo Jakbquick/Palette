@@ -1,6 +1,7 @@
 package com.fourmen.utils;
 
 import aurelienribon.tweenengine.*;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -36,7 +37,7 @@ public class TextureFadeImage extends Image {
         //batch.draw(texture, 0,0,width,height);
         sprite = new Sprite(texture);
         sprite.setColor(0, 0, 0, opacity);
-        sprite.setSize(width, height);
+        sprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         //if(opacity<=.06){
         //opacity = 0;
         //}
