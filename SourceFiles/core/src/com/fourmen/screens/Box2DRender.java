@@ -170,7 +170,7 @@ public class Box2DRender extends ScreenAdapter {
         uiViewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, uiCamera);
         timeSinceStart = 0;
         gameMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/copyrightFree.mp3"));
-        rhythmView = new RhythmView(batch,gameMusic,294.0,128.0,.15);
+        rhythmView = new RhythmView(batch,gameMusic,294.0,128.0,.4525);
         playerHealth = new PlayerHealth(batch,player.health);
     }
 
@@ -187,7 +187,17 @@ public class Box2DRender extends ScreenAdapter {
             gameMusic.stop();
             ((Game) Gdx.app.getApplicationListener()).setScreen(new WinScreen());
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.R)){
+            rhythmView.getBeatJams().stop();
+            gameMusic.stop();
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new Box2DRender(Gdx.graphics.getWidth(),
+                    Gdx.graphics.getHeight()));
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.K)){
+            rhythmView.increaseOffset();
+            System.out.println(player.getHealth());
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.L)){
             player.subractHealth(30);
             System.out.println(player.getHealth());
         }
@@ -316,7 +326,7 @@ public class Box2DRender extends ScreenAdapter {
     }
 
     public void pause(){
-        //Gdx.app.exit();
+        Gdx.app.exit();
     }
 
     public void setUpTween(){

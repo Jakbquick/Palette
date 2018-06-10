@@ -52,7 +52,6 @@ public class RhythmView {
         this.offset = offset;
         //offset = .35;
         this.batch = spriteBatch;
-        createWithBPM();
         bar = new Texture("Images/Beat/rhythmBar.png");
         y = Gdx.graphics.getHeight() - 115;
         whenButton = new Texture("Images/Beat/hitarea.png");
@@ -74,6 +73,7 @@ public class RhythmView {
         timeBeforeSpawn = (velocity * 60f) / xDistance;
         remainder = timeBetweenNotes - (timeBeforeSpawn % timeBetweenNotes);
         timeToFillMap = timeBeforeSpawn + remainder + offset;
+        createWithBPM();
         beatList = new ArrayList<Beat>();
     }
     public void update(float delta){
@@ -98,12 +98,12 @@ public class RhythmView {
                 Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !drawClick){
             drawClick = true;
             if(beatList.size() > 0) {
-                if (centerWhen.dst(beatList.get(0).getXPosition(), centerWhen.y) < 300) {
+                if (centerWhen.dst(beatList.get(0).getXPosition(), centerWhen.y) < 70) {
                     float distance = centerWhen.dst(beatList.remove(0).getXPosition(), centerWhen.y);
-                    if (distance > 200) {
+                    if (distance > 50) {
                         clicked = missButton;
                         score = -1;
-                    } else if (distance > 100) {
+                    } else if (distance > 20) {
                         clicked = goodButton;
                         score = 1;
                     } else {
@@ -113,6 +113,7 @@ public class RhythmView {
                 }
                 else{
                     score = -1;
+                    clicked = missButton;
                 }
             }
         }
@@ -176,5 +177,11 @@ public class RhythmView {
     }
     public Music getBeatJams(){
         return beatJams;
+    }
+    public void increaseOffset(){
+        offset += 1.0;
+    }
+    public void decreaseOffset(){
+        offset -= 1.0;
     }
 }

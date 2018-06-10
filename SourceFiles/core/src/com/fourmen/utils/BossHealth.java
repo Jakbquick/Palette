@@ -21,8 +21,8 @@ public class BossHealth {
         previous = health;
         enemyBar = new Texture("Images/Healthbars/bossbar.png");
         enemyInside = new Texture("Images/Healthbars/bossInner.png");
-        x = (Gdx.graphics.getWidth()/2f) - (enemyBar.getWidth() /2f);
-        y = Gdx.graphics.getHeight() - 60;
+        x = 22;
+        y = Gdx.graphics.getHeight() - 240;
         Tween.registerAccessor(Float.class, new FloatAccessor());
     }
     /**
