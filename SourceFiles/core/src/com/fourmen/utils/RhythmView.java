@@ -98,12 +98,12 @@ public class RhythmView {
                 Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !drawClick){
             drawClick = true;
             if(beatList.size() > 0) {
-                if (centerWhen.dst(beatList.get(0).getXPosition(), centerWhen.y) < 70) {
+                if (centerWhen.dst(beatList.get(0).getXPosition(), centerWhen.y) < 110) {
                     float distance = centerWhen.dst(beatList.remove(0).getXPosition(), centerWhen.y);
-                    if (distance > 50) {
+                    if (distance > 75) {
                         clicked = missButton;
                         score = -1;
-                    } else if (distance > 20) {
+                    } else if (distance > 40) {
                         clicked = goodButton;
                         score = 1;
                     } else {
