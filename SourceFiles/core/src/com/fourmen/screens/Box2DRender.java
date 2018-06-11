@@ -2,13 +2,12 @@ package com.fourmen.screens;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -29,6 +28,8 @@ import com.fourmen.box2D.Walls;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.fourmen.tween.SpriteAccessor;
 import com.fourmen.utils.*;
+
+import java.awt.*;
 
 
 public class Box2DRender extends ScreenAdapter {
@@ -73,6 +74,9 @@ public class Box2DRender extends ScreenAdapter {
     private PlayerHealth playerHealth;
     private Music gameMusic;
     private BossHealth bossHealth;
+
+    Graphics.Monitor monitor = Gdx.graphics.getMonitor();
+    Graphics.DisplayMode displayMode = Gdx.graphics.getDisplayMode(monitor);
 
     public Box2DRender(int width, int height){
         WORLD_WIDTH = width;
@@ -249,8 +253,6 @@ public class Box2DRender extends ScreenAdapter {
         blackSprite.draw(batch);
         batch.end();
 
-
-
         //code to render the ui
         batch.setProjectionMatrix(uiCamera.projection);
         batch.setTransformMatrix(uiCamera.view);
@@ -261,6 +263,16 @@ public class Box2DRender extends ScreenAdapter {
             bossHealth.draw();
         }
         batch.end();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+            if (Gdx.graphics.isFullscreen()) {
+                Gdx.graphics.setWindowedMode(1500, 843);
+            }
+            else {
+                Gdx.graphics.setFullscreenMode(displayMode);
+            }
+        }
+
     }
     private void debugView() {
             debugRenderer.render(world, camera.combined);

@@ -17,7 +17,7 @@ import javax.swing.*;
 
 public class Box2DEnemy extends Entity {
     //constants
-    private final static float ENEMY_SIZE = 1f;
+    private final static float ENEMY_SIZE = 2f;
     private final static float BOX2D_SCALE = .5f;
     private final static float ENEMY_WIDTH = 30 * ENEMY_SIZE;
     private final static float ENEMY_HEIGHT = 30 * ENEMY_SIZE;
