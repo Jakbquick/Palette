@@ -85,6 +85,7 @@ public class Box2DPlayer extends Entity{
     private Animation<TextureRegion> dashEnd;
     private Animation<TextureRegion> empty;
     private Animation<TextureRegion> hitLag;
+    private Sound hit;
 
     ArrayList<Beam> beams;
 
@@ -133,6 +134,8 @@ public class Box2DPlayer extends Entity{
         bodyDef.fixedRotation = true;
 
         body = world.createBody(bodyDef);
+
+        hit = Gdx.audio.newSound(Gdx.files.internal("Music/hit.mp3"));
 
         /*
         PolygonShape square = new PolygonShape();
@@ -205,7 +208,7 @@ public class Box2DPlayer extends Entity{
         updateDirection();
         if (updateHealth()) {
             playerState = playerState.HITLAG;
-            glitch.play();
+            hit.play();
             stateTime = 0;
         }
 
