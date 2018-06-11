@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public abstract class Entity extends Actor {
     //instance variables
-    protected final static float INV_COOLDOWN = .5f;
+    protected final static float INV_COOLDOWN = 1f;
 
     public int health;
     public Vector2 position;

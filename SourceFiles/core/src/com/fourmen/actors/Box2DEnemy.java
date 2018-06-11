@@ -480,7 +480,7 @@ public class Box2DEnemy extends Entity {
     protected boolean updateHealth() {
         if (fixtureCollisions > 0 && !invincible && invTimer <= 0) {
             health -= 10 * damage;
-            invTimer = INV_COOLDOWN / 3;
+            invTimer = INV_COOLDOWN / 5;
             return true;
         }
         if (health <= 0 && !dead) {
