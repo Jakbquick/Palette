@@ -1,4 +1,3 @@
 Manifest-Version: 1.0
-Class-Path: D:\LibGDXProjects\Palette\SourceFiles\core\assets
 Main-Class: com.fourmen.apcs.desktop.DesktopLauncher
 

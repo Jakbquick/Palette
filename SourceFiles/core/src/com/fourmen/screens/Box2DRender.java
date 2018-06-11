@@ -177,17 +177,19 @@ public class Box2DRender extends ScreenAdapter {
 
     public void render(float delta) {
         if(player.getHealth() <= 0 || (rhythmView.getSongLength() + 1 < rhythmView.getSongPosition())){
-            //caveMusic.stop();
+            caveMusic.stop();
             rhythmView.getBeatJams().stop();
             gameMusic.stop();
             ((Game) Gdx.app.getApplicationListener()).setScreen(new GameOver());
         }
         if(steppedOn && enemy.end){
+            caveMusic.stop();
             rhythmView.getBeatJams().stop();
             gameMusic.stop();
             ((Game) Gdx.app.getApplicationListener()).setScreen(new WinScreen());
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.R)){
+            caveMusic.stop();
             rhythmView.getBeatJams().stop();
             gameMusic.stop();
             ((Game) Gdx.app.getApplicationListener()).setScreen(new Box2DRender(Gdx.graphics.getWidth(),
