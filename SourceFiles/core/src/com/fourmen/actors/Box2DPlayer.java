@@ -37,12 +37,12 @@ public class Box2DPlayer extends Entity{
     private final static float DECELERATION_CONSTANT = .2f;
     private final static float DASH_COOLDOWN = 1.2f;
     private final static float DASH_DURATION = .25f;
-    private final static float ATTACK_COOLDOWN = 0f;
-    private final static float ATTACK_DURATION = .72f;
+    private final static float HITLAG_COOLDOWN = 0f;
+    private final static float HITLAG_DURATION = .72f;
     private final static float DASH_END_LAG = .15f;
     private final static float STANDING_COOLDOWN = .25f;
     public enum PlayerState {
-        STANDING, MOVING, DASHING, ATTACKING
+        STANDING, MOVING, DASHING, ATTACKING, HITLAG
     }
 
     private Vector2 direction;
@@ -66,8 +66,10 @@ public class Box2DPlayer extends Entity{
     private SlashAttack slash;
 
     private float dashDurationTimer = 0;
+    private float hitDurationTimer = 0;
     private float attackDurationTimer = 0;
     private float dashCooldownTimer = 0;
+    private float hitCooldownTimer = 0;
     private float attackCooldownTimer = 0;
     private float standingCooldownTimer = 0;
     private float stateTime = 0;
@@ -82,6 +84,7 @@ public class Box2DPlayer extends Entity{
     private Animation<TextureRegion> dash;
     private Animation<TextureRegion> dashEnd;
     private Animation<TextureRegion> empty;
+    private Animation<TextureRegion> hitLag;
 
     ArrayList<Beam> beams;
 
@@ -119,6 +122,7 @@ public class Box2DPlayer extends Entity{
         dash = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/spritedashsheet.png", 1, 5));
         dashEnd = new Animation<TextureRegion>(.02f, Animator.setUpSpriteSheet("Images/spritedashendsheet.png", 1, 5));
         empty = new Animation<TextureRegion>(0.25f, Animator.setUpSpriteSheet("Images/emptyframe.png", 1, 1));
+        hitLag = new Animation<TextureRegion>(.01f, Animator.setUpSpriteSheet("Images/hitlagsheet.png", 1, 16));
         currentFrame = moving.getKeyFrame(stateTime, true);
         glitch = Gdx.audio.newSound(Gdx.files.internal("Music/glitch.mp3"));
         glitch.setVolume(1,.8f);
@@ -197,7 +201,13 @@ public class Box2DPlayer extends Entity{
         //System.out.println(currentSpeed + " " + playerState);
         //System.out.println(fixtureCollisions);
         //System.out.println("Player Health: " + health + " " + fixtureCollisions + " " + invincible);
+
         updateDirection();
+        if (updateHealth()) {
+            playerState = playerState.HITLAG;
+            stateTime = 0;
+        }
+
         switch (playerState) {
             case STANDING:
                 //slash.updateAttackDirection();
@@ -324,12 +334,16 @@ public class Box2DPlayer extends Entity{
                     playerState = playerState.MOVING;
                 }
                 break;
+            case HITLAG:
+                currentFrame = hitLag.getKeyFrame(stateTime);
+                if (hitLag.getKeyFrameIndex(stateTime) == 15) {
+                    playerState = playerState.MOVING;
+                }
+                break;
         }
         blockLeavingTheWorld();
-
         removeBeams();
         moveBeams();
-        updateHealth();
         updatePosition();
     }
 
@@ -450,6 +464,8 @@ public class Box2DPlayer extends Entity{
         dashCooldownTimer -= delta;
         attackDurationTimer += delta;
         attackCooldownTimer -= delta;
+        hitDurationTimer += delta;
+        hitCooldownTimer -= delta;
         standingCooldownTimer -= delta;
         stateTime += delta;
         slash.update(delta);

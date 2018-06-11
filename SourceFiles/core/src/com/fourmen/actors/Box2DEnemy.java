@@ -47,12 +47,13 @@ public class Box2DEnemy extends Entity {
 
     private double dashDurationTimer = 0;
     private double dashCooldownTimer = 0;
+    private float hitTime = 0;
     private float stateTime = 0;
 
     private int damage;
 
     private boolean dead;
-
+    private boolean hit;
     public boolean end;
 
     public TextureRegion currentFrame;
@@ -60,6 +61,7 @@ public class Box2DEnemy extends Entity {
     private Animation<TextureRegion> dash;
     private Animation<TextureRegion> charge;
     private Animation<TextureRegion> dying;
+    private Animation<TextureRegion> hitboss;
 
     private int lastDirectionfaced;
     private int LEFT = 0;
@@ -92,6 +94,7 @@ public class Box2DEnemy extends Entity {
         dash = new Animation<TextureRegion>(0.05f, Animator.setUpSpriteSheet("Images/EnemyMove.png", 1, 18));
         charge = new Animation<TextureRegion>(0.05f, Animator.setUpSpriteSheet("Images/EnemyAttack.png", 1, 7));
         dying = new Animation<TextureRegion>(0.05f, Animator.setUpSpriteSheet("Images/bossdeathsheet.png", 1, 20));
+        hitboss = new Animation<TextureRegion>(0.05f, Animator.setUpSpriteSheet("Images/hitbosssheet.png", 1, 13));
         currentFrame = moving.getKeyFrame(stateTime, true);
 
         BodyDef bodyDef = new BodyDef();
@@ -147,7 +150,10 @@ public class Box2DEnemy extends Entity {
                 break;
         }
         blockLeavingTheWorld();
-        updateHealth();
+        if (updateHealth()) {
+            hit = true;
+            hitTime = 0;
+        }
         updatePosition();
     }
 
@@ -453,6 +459,15 @@ public class Box2DEnemy extends Entity {
         batch.draw(currentFrame, flip ? getX() - (16f * ENEMY_SIZE) - (141.5f * ENEMY_SIZE)+currentFrame.getRegionWidth()* ENEMY_SIZE : getX() - (141.5f * ENEMY_SIZE),
                 getY() - 146 * ENEMY_SIZE, flip ? -currentFrame.getRegionWidth()* ENEMY_SIZE: currentFrame.getRegionWidth()* ENEMY_SIZE,
                 currentFrame.getRegionHeight()* ENEMY_SIZE);
+
+        if (hit) {
+            batch.draw(hitboss.getKeyFrame(hitTime), flip ? getX() - (16f * ENEMY_SIZE) - (141.5f * ENEMY_SIZE) + hitboss.getKeyFrame(hitTime).getRegionWidth() * ENEMY_SIZE : getX() - (141.5f * ENEMY_SIZE),
+                    getY() - 146 * ENEMY_SIZE, flip ? -hitboss.getKeyFrame(hitTime).getRegionWidth() * ENEMY_SIZE : hitboss.getKeyFrame(hitTime).getRegionWidth() * ENEMY_SIZE,
+                    hitboss.getKeyFrame(hitTime).getRegionHeight() * ENEMY_SIZE);
+            if (hitboss.getKeyFrameIndex(hitTime) == 12) {
+                hit = false;
+            }
+        }
     }
 
     public TextureRegion getFrame(Animation<TextureRegion> frame) {
@@ -462,16 +477,18 @@ public class Box2DEnemy extends Entity {
         return frame.getKeyFrame(stateTime, true);
     }
 
-    protected void updateHealth() {
+    protected boolean updateHealth() {
         if (fixtureCollisions > 0 && !invincible && invTimer <= 0) {
             health -= 10 * damage;
             invTimer = INV_COOLDOWN / 3;
+            return true;
         }
         if (health <= 0 && !dead) {
             enemyState = enemyState.DYING;
             dead = true;
             stateTime = 0;
         }
+        return false;
     }
 
     public void updateDamage(int hitValue) {
@@ -502,6 +519,7 @@ public class Box2DEnemy extends Entity {
         super.update(delta);
         dashDurationTimer -= delta;
         dashCooldownTimer -= delta;
+        hitTime += delta;
         stateTime += delta;
     }
 

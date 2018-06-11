@@ -70,10 +70,14 @@ public abstract class Entity extends Actor {
         health -= value;
     }
 
-    protected void updateHealth() {
+    protected boolean updateHealth() {
         if (fixtureCollisions > 0 && !invincible && invTimer <= 0) {
             health -= 10;
             invTimer = INV_COOLDOWN;
+            return true;
+        }
+        else {
+            return false;
         }
     }
 
