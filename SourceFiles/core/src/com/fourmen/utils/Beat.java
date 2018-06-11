@@ -29,4 +29,7 @@ public class Beat {
     public void dispose(){
         beatTexture.dispose();
     }
+    public float getDistanceFromBeat(Vector2 centerWhen){
+        return centerWhen.dst(getXPosition(), centerWhen.y);
+    }
 }

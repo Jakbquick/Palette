@@ -170,7 +170,7 @@ public class Box2DRender extends ScreenAdapter {
         uiViewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, uiCamera);
         timeSinceStart = 0;
         gameMusic = Gdx.audio.newMusic(Gdx.files.internal("Music/copyrightFree.mp3"));
-        rhythmView = new RhythmView(batch,gameMusic,294.0,128.0,.4525);
+        rhythmView = new RhythmView(batch,gameMusic,294.0,128.0,0);//.4525);
         playerHealth = new PlayerHealth(batch,player.health);
     }
 

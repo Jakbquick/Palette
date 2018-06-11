@@ -66,7 +66,7 @@ public class RhythmView {
         //beatJams = Gdx.audio.newMusic(Gdx.files.internal("Music/song2.mp3"));
         this.beatJams = beatJams;
 
-        xDistance = Gdx.graphics.getWidth() + (.5f * beatWidth) -        //the first beatSize here is the size of the beat transitioning across the map (replace later)
+        xDistance = Gdx.graphics.getWidth() + (.5f * Beat.beatWidth) -        //the first beatSize here is the size of the beat transitioning across the map (replace later)
                 100 - (.5f * beatWidth);
         centerWhen = new Vector2(100 + (beatWidth/2f), y + (.5f * bar.getHeight()));
         velocity = 350f / 60f;
@@ -98,8 +98,9 @@ public class RhythmView {
                 Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !drawClick){
             drawClick = true;
             if(beatList.size() > 0) {
-                if (centerWhen.dst(beatList.get(0).getXPosition(), centerWhen.y) < 110) {
-                    float distance = centerWhen.dst(beatList.remove(0).getXPosition(), centerWhen.y);
+                int b = getClosestBeat();
+                if (centerWhen.dst(beatList.get(b).getXPosition(), centerWhen.y) < 110) {
+                    float distance = centerWhen.dst(beatList.remove(b).getXPosition(), centerWhen.y);
                     if (distance > 75) {
                         clicked = missButton;
                         score = -1;
@@ -184,4 +185,13 @@ public class RhythmView {
     public void decreaseOffset(){
         offset -= 1.0;
     }
+    private int getClosestBeat(){
+      if(beatList.get(0).getDistanceFromBeat(centerWhen) > beatList.get(0).getDistanceFromBeat(centerWhen)){
+          return 1;
+      }
+      else{
+          return 0;
+      }
+    }
+
 }
