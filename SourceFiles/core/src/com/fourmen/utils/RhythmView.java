@@ -159,14 +159,14 @@ public class RhythmView {
     }
     public void createWithBPM(){
         mapValues = new float[(int)(songLength/timeBetweenNotes)];
-        System.out.println(mapValues.length + "");
+        //System.out.println(mapValues.length + "");
         while(index < mapValues.length){
             mapValues[index] = ((float)(timeToFillMap));
             timeToFillMap += timeBetweenNotes;
             index++;
         }
         for(float f : mapValues){
-            System.out.println(f + "");
+            //System.out.println(f + "");
         }
     }
     public float getSongPosition(){
