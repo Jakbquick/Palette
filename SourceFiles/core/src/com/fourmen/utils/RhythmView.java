@@ -69,7 +69,7 @@ public class RhythmView {
         xDistance = Gdx.graphics.getWidth() + (.5f * Beat.beatWidth) -        //the first beatSize here is the size of the beat transitioning across the map (replace later)
                 100 - (.5f * beatWidth);
         centerWhen = new Vector2(100 + (beatWidth/2f), y + (.5f * bar.getHeight()));
-        velocity = 350f / 60f;
+        velocity = ((5.83f)*(Gdx.graphics.getWidth())) / 1920fs;
         timeBeforeSpawn = (velocity * 60f) / xDistance;
         remainder = timeBetweenNotes - (timeBeforeSpawn % timeBetweenNotes);
         timeToFillMap = timeBeforeSpawn + remainder + offset;
