@@ -205,6 +205,7 @@ public class Box2DPlayer extends Entity{
         updateDirection();
         if (updateHealth()) {
             playerState = playerState.HITLAG;
+            glitch.play();
             stateTime = 0;
         }
 
