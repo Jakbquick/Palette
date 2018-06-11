@@ -342,6 +342,7 @@ public class Box2DPlayer extends Entity{
                 currentFrame = hitLag.getKeyFrame(stateTime);
                 if (hitLag.getKeyFrameIndex(stateTime) == 15) {
                     playerState = playerState.MOVING;
+                    dashCooldownTimer = 0;
                 }
                 break;
         }
