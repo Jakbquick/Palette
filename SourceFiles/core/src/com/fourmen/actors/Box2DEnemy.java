@@ -2,6 +2,7 @@ package com.fourmen.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -71,6 +72,7 @@ public class Box2DEnemy extends Entity {
     private Box2DPlayer player;
     private Body body;
     private boolean towardsPlayer;
+    private Sound squish = Gdx.audio.newSound(Gdx.files.internal("Music/squish.mp3"));
 
     //constructors
     public Box2DEnemy(World world, PlayerBounds myPlayerBounds, Box2DPlayer myPlayer) {
@@ -151,6 +153,7 @@ public class Box2DEnemy extends Entity {
         }
         blockLeavingTheWorld();
         if (updateHealth()) {
+            //squish.play();
             hit = true;
             hitTime = 0;
         }
