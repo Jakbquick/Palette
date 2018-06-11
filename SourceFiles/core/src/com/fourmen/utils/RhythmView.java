@@ -97,7 +97,7 @@ public class RhythmView {
         if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) ||
                 Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !drawClick){
             drawClick = true;
-            if(beatList.size() > 0) {
+            if(beatList.size() > 1) {
                 int b = getClosestBeat();
                 if (centerWhen.dst(beatList.get(b).getXPosition(), centerWhen.y) < 110) {
                     float distance = centerWhen.dst(beatList.remove(b).getXPosition(), centerWhen.y);
@@ -186,7 +186,7 @@ public class RhythmView {
         offset -= 1.0;
     }
     private int getClosestBeat(){
-      if(beatList.get(0).getDistanceFromBeat(centerWhen) > beatList.get(0).getDistanceFromBeat(centerWhen)){
+      if(beatList.get(0).getDistanceFromBeat(centerWhen) > beatList.get(0).getDistanceFromBeat(centerWhen) + 25){
           return 1;
       }
       else{
