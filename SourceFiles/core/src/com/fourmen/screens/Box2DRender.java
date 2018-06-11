@@ -195,14 +195,6 @@ public class Box2DRender extends ScreenAdapter {
             ((Game) Gdx.app.getApplicationListener()).setScreen(new Box2DRender(Gdx.graphics.getWidth(),
                     Gdx.graphics.getHeight()));
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.K)){
-            rhythmView.increaseOffset();
-            System.out.println(player.getHealth());
-        }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.L)){
-            player.subractHealth(30);
-            System.out.println(player.getHealth());
-        }
         if(player.getPosition().dst(circlePosition) < 300){
             if (!steppedOn) {
                 enemy = new Box2DEnemy(world, playerBounds, player);

@@ -123,7 +123,7 @@ public class Beam {
     }
 
     public boolean checkRemoveFromWorld() {
-        System.out.println(delete);
+        //System.out.println(delete);
         return delete;
     }
 
