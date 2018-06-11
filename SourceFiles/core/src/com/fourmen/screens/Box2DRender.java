@@ -264,6 +264,7 @@ public class Box2DRender extends ScreenAdapter {
         }
         batch.end();
 
+        /*
         if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             if (Gdx.graphics.isFullscreen()) {
                 Gdx.graphics.setWindowedMode(1500, 843);
@@ -272,6 +273,7 @@ public class Box2DRender extends ScreenAdapter {
                 Gdx.graphics.setFullscreenMode(displayMode);
             }
         }
+        */
 
     }
     private void debugView() {
